@@ -2,6 +2,7 @@
 * Core Framework
 * 
 * @version 1.0.0
+* @author Angel Kostadinov (angel.kostadinov@toxicmedia.bg)
 * @copyright Creozon
 */
 (function() {
