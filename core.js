@@ -224,6 +224,106 @@ Core.define('Core.ui', Core.data.extend(
 * Core.ui.forms
 * @version 1.0.0
 */
+Core.define('Core.ui.element', Core.data.extend(
+{
+	element: null,
+	init: function(element, config)
+	{
+		this.element = $(element);
+		
+		/* Apply additional configuration directives */
+		Core.apply(this, config);
+	},
+	replace: function(){ /* Override */ } /* Abstract method */
+}))
+
+/** 
+* Core.ui.element.select
+*/
+Core.define('Core.ui.element.select', Core.ui.element.extend(
+{
+	bindOption: function(index, option, data)
+	{
+		var o = 
+		{
+			text:  $(option).text(), 
+			value: $(option).val()
+		}
+		
+		var row = $('<div/>').css(
+		{
+			cursor: 'pointer'
+		}).html(o.text);
+		
+		if ($(option).attr('selected'))
+		{
+			/* Select the default value */
+			data.container.text(o.text);
+		}
+		
+		/* Bind option click */
+		row.bind('click', this.delegate(this, this.selectOption,[$(option), data,  o.text, o.value])).appendTo(data.dropdown);
+	},
+	selectOption: function(event, option, data, text, value)
+	{
+		/* Show the selected option */
+		data.container.text(text);
+		
+		/* Refresh real select element */
+		$('option', this.element).each(function()
+		{
+			if ($(this).attr('value') == value)
+			{
+				$(this).attr('selected', true);
+				
+				/* Trigger onChange */
+				data.element.trigger('onchange');
+			}
+			else 
+			{
+				$(this).attr('selected', false);
+			}
+		});
+	},
+	replace: function()
+	{
+		var data =
+		{
+			element: 	this.element,
+			container:  $('<div/>').bind('click',this.delegate(this, this.open)),
+			dropdown: 	$('<div/>').css(
+			{
+				position:'absolute',
+				top:	 20,
+				left:	 0
+			})
+		}
+
+		/* Collect options */
+		$('option',this.element).each(this.delegate(this, this.bindOption,[data]));
+		
+		/* Wrapper */
+		var wrapper = $('<div/>').css(
+		{
+			position: 'relative'
+		});
+		
+		wrapper.append(data.container).append(data.dropdown);
+		
+		/* Replace select */
+		this.element.replaceWith(wrapper);
+	},
+	test: function()
+	{
+		alert(1);
+	}
+}));
+
+
+/**
+* Core.ui.forms
+* @version 1.0.0
+*/
 Core.define('Core.ui.forms', Core.ui.extend(
 {
 	options: 
@@ -257,108 +357,13 @@ Core.define('Core.ui.forms', Core.ui.extend(
 	},
 	applyTheme: function()
 	{
-		/* Replace select input(s) */
-		$('select').each(this.delegate(this, this.replaceSelect));
+		$('select').each(this.delegate(this, this.replace));
 	},
-	listeners: 
+	replace: function(index, item)
 	{
-		select: function(event)
-		{
-			event.stopPropagation();
-			
-			/* Hide active drops */
-			$('.ui-form-select-dropdown').slideUp(Functions.timeout.slide);
-
-			$(this).next().slideToggle(Functions.timeout.slide);
-			
-			$(document.body).bind('click', function(event)
-			{
-				$('.ui-form-select-dropdown').slideUp(Functions.timeout.slide);
-				
-				$(this).unbind('click');
-			});
-		}
+		var element = item.tagName.toLowerCase();
 		
-	},
-	replaceSelect: function(index, item)
-	{
-		var replace = /* Bundle of select and corresponding dropdown */
-		{
-			select:   $('<div/>').addClass(this.getTheme().classes.select).bind('click',this.delegate(this, this.open)),
-			dropdown: $('<div/>').addClass(this.getTheme().classes.dropdown)
-		}
-
-		/* Collect options */
-		$('option',item).each(this.delegate(this, this.bindOption,[replace.dropdown]));
-		
-		
-	},
-	bindOption: function(index, option, dropdown)
-	{
-		var option = 
-		[
-			$(option).text(), 
-			$(option).attr('value')
-		];
-		
-		var row = $('<div/>').html($(this).text());
-		
-		if ($(this).attr(this.getTheme().classes.selected))
-		{
-			row.addClass(this.getTheme().classes.selected);
-			
-			/* Select the default value */
-			bundle.select.text(option[0]);
-		}
-		
-		row.bind('click', this.delegate(this, this.selectOption,[this]));
-		
-		dropdown.append(row);
-	},
-	open: function(event)
-	{
-		event.stopPropagation();
-		
-		var dropdown = $(event.target).next();
-		
-		dropdown.slideToggle(this.getTheme().timeout);
-		
-		$(document.body).bind('click', this.delegate(this,this.close));
-
-	},
-	hide: function()
-	{
-		
-	},
-	hideAll: function()
-	{
-		$('.ui-form-select-dropdown').slideUp(this.getTheme().timeout);
-	},
-	close: function(event)
-	{
-		$('.ui-form-select-dropdown').slideUp(this.getTheme().timeout);
-		
-		/* Remove document click event */
-		$(event.target).unbind('click');
-	},
-	selectOption: function(option, select, element, text, value)
-	{
-		/* Deselect siblings and select the element */
-		$(option).siblings().removeClass(this.getTheme().classes.selected).end().addClass(this.getTheme().classes.selected);
-		
-		/* Hide dropdown */
-		$(option).parents().filter('.ui-form-select-dropdown').slideUp(Functions.timeout.slide);
-	
-		/* Show the selected option */
-		$(element).text(text);
-		
-		$('option', $(select)).each(function()
-		{
-			if ($(this).attr('value') == value)
-			{
-				$(this).attr('selected', true);
-			}
-			else $(this).attr('selected', false);
-		});
+		/* Replace element */
+		return (new Core.ui.element[element](item)).replace()
 	}
 }));
