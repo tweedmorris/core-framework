@@ -210,3 +210,17 @@ Core.define('Core.data', Core.Class.extend(
 		Core.apply(this, config);
 	}
 }));
+
+
+/**
+* Core.ui
+* @version 1.0.0
+*/
+Core.define('Core.ui', Core.data.extend(
+{
+}));
+
+Core.define('Core.ui.forms', Core.ui.extend(
+{
+	
+}));
