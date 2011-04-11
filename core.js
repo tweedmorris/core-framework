@@ -230,33 +230,33 @@ Core.define('Core.ui.forms', Core.ui.extend(
 	{
 		themes:[
 		{
-			minimal:
+			name: 'minimal',
+			classes:
 			{
-				classes:
-				{
-					select:	  'ui-form-select',
-					selected: 'ui-form-select-option-selected',
-					dropdown: 'ui-form-select-dropdown'
-				},
-				effect: 'slide',
-				timeout: 300
-			}
-		}],
+				select:	  'ui-form-select',
+				selected: 'ui-form-select-option-selected',
+				dropdown: 'ui-form-select-dropdown'
+			},
+			effect: 'slide',
+			timeout: 300
+		},
+		{
+			name: 'my'
+		}
+		],
 		theme:  'minimal',
 		speed:  300
 	},
 	getTheme: function()
 	{
-		return $.grep(this.themes, this.delegate(this, this.activeTheme));
+		return $.grep(this.options.themes, this.delegate(this, this.activeTheme))[0];
 	},
 	activeTheme: function(theme)
 	{
-		return theme.indexOf(this.options.theme) == -1 ? false : true;
+		return theme.name.indexOf(this.options.theme) == -1 ? false : true;
 	},
 	applyTheme: function()
 	{
-		alert(this.getTheme().classes.select);
-		
 		/* Replace select input(s) */
 		$('select').each(this.delegate(this, this.replaceSelect));
 	},
@@ -282,14 +282,16 @@ Core.define('Core.ui.forms', Core.ui.extend(
 	},
 	replaceSelect: function(index, item)
 	{
-		var Replace = /* Bundle of select and corresponding dropdown */
+		var replace = /* Bundle of select and corresponding dropdown */
 		{
-			select:   $('<div/>').addClass(this.options.defaultClass.select).bind('click',this.delegate(this, this.listeners.select)),
-			dropdown: $('<div/>').addClass(this.options.defaultClass.dropdown)
+			select:   $('<div/>').addClass(this.getTheme().classes.select).bind('click',this.delegate(this, this.open)),
+			dropdown: $('<div/>').addClass(this.getTheme().classes.dropdown)
 		}
 
 		/* Collect options */
-		$('option',item).each(this.delegate(this, this.bindOption,[Replace.dropdown]));
+		$('option',item).each(this.delegate(this, this.bindOption,[replace.dropdown]));
+		
+		
 	},
 	bindOption: function(index, option, dropdown)
 	{
@@ -301,9 +303,9 @@ Core.define('Core.ui.forms', Core.ui.extend(
 		
 		var row = $('<div/>').html($(this).text());
 		
-		if ($(this).attr(this.options.defaultClass.selected))
+		if ($(this).attr(this.getTheme().classes.selected))
 		{
-			row.addClass(this.options.defaultClass.selected);
+			row.addClass(this.getTheme().classes.selected);
 			
 			/* Select the default value */
 			bundle.select.text(option[0]);
@@ -313,10 +315,36 @@ Core.define('Core.ui.forms', Core.ui.extend(
 		
 		dropdown.append(row);
 	},
+	open: function(event)
+	{
+		event.stopPropagation();
+		
+		var dropdown = $(event.target).next();
+		
+		dropdown.slideToggle(this.getTheme().timeout);
+		
+		$(document.body).bind('click', this.delegate(this,this.close));
+
+	},
+	hide: function()
+	{
+		
+	},
+	hideAll: function()
+	{
+		$('.ui-form-select-dropdown').slideUp(this.getTheme().timeout);
+	},
+	close: function(event)
+	{
+		$('.ui-form-select-dropdown').slideUp(this.getTheme().timeout);
+		
+		/* Remove document click event */
+		$(event.target).unbind('click');
+	},
 	selectOption: function(option, select, element, text, value)
 	{
 		/* Deselect siblings and select the element */
-		$(option).siblings().removeClass(this.options.defaultClass.selected).end().addClass(this.options.defaultClass.selected);
+		$(option).siblings().removeClass(this.getTheme().classes.selected).end().addClass(this.getTheme().classes.selected);
 		
 		/* Hide dropdown */
 		$(option).parents().filter('.ui-form-select-dropdown').slideUp(Functions.timeout.slide);
