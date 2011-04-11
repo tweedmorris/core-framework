@@ -307,7 +307,7 @@ Core.define('Core.ui.forms', Core.ui.extend(
 			bundle.select.text(option[0]);
 		}
 		
-		row.bind('click', this.delegate(this, this.selectOption,[this]);
+		row.bind('click', this.delegate(this, this.selectOption,[this]));
 		
 		function()
 		{
