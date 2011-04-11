@@ -309,13 +309,6 @@ Core.define('Core.ui.forms', Core.ui.extend(
 		
 		row.bind('click', this.delegate(this, this.selectOption,[this]));
 		
-		function()
-		{
-			selectOption(this,self, select, option[0], option[1]);
-			
-			self.trigger('onchange');
-		});
-		
 		dropdown.append(row);
 	},
 	selectOption: function(option, select, element, text, value)
