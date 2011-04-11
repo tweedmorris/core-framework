@@ -220,7 +220,122 @@ Core.define('Core.ui', Core.data.extend(
 {
 }));
 
+/**
+* Core.ui.forms
+* @version 1.0.0
+*/
 Core.define('Core.ui.forms', Core.ui.extend(
 {
+	options: 
+	{
+		themes:[
+		{
+			minimal:
+			{
+				classes:
+				{
+					select:	  'ui-form-select',
+					selected: 'ui-form-select-option-selected',
+					dropdown: 'ui-form-select-dropdown'
+				},
+				effect: 'slide',
+				timeout: 300
+			}
+		}],
+		theme:  'minimal',
+		speed:  300
+	},
+	getTheme: function()
+	{
+		return $.grep(this.themes, this.delegate(this, this.activeTheme));
+	},
+	activeTheme: function(theme)
+	{
+		return theme.indexOf(this.options.theme) == -1 ? false : true;
+	},
+	applyTheme: function()
+	{
+		/* Replace select input(s) */
+		$('select').each(this.delegate(this, this.replaceSelect));
+	},
+	listeners: 
+	{
+		select: function(event)
+		{
+			event.stopPropagation();
+			
+			/* Hide active drops */
+			$('.ui-form-select-dropdown').slideUp(Functions.timeout.slide);
+
+			$(this).next().slideToggle(Functions.timeout.slide);
+			
+			$(document.body).bind('click', function(event)
+			{
+				$('.ui-form-select-dropdown').slideUp(Functions.timeout.slide);
+				
+				$(this).unbind('click');
+			});
+		}
+		
+	},
+	replaceSelect: function(index, item)
+	{
+		var Replace = /* Bundle of select and corresponding dropdown */
+		{
+			select:   $('<div/>').addClass(this.options.defaultClass.select).bind('click',this.delegate(this, this.listeners.select)),
+			dropdown: $('<div/>').addClass(this.options.defaultClass.dropdown)
+		}
+
+		/* Collect options */
+		$('option',item).each(this.delegate(this, this.bindOption,[Replace.dropdown]));
+	},
+	bindOption: function(index, option, dropdown)
+	{
+		var option = 
+		[
+			$(option).text(), 
+			$(option).attr('value')
+		];
+		
+		var row = $('<div/>').html($(this).text());
+		
+		if ($(this).attr(this.options.defaultClass.selected))
+		{
+			row.addClass(this.options.defaultClass.selected);
+			
+			/* Select the default value */
+			bundle.select.text(option[0]);
+		}
+		
+		row.bind('click', this.delegate(this, this.selectOption,[this]);
+		
+		function()
+		{
+			selectOption(this,self, select, option[0], option[1]);
+			
+			self.trigger('onchange');
+		});
+		
+		dropdown.append(row);
+	},
+	selectOption: function(option, select, element, text, value)
+	{
+		/* Deselect siblings and select the element */
+		$(option).siblings().removeClass(this.options.defaultClass.selected).end().addClass(this.options.defaultClass.selected);
+		
+		/* Hide dropdown */
+		$(option).parents().filter('.ui-form-select-dropdown').slideUp(Functions.timeout.slide);
 	
+		/* Show the selected option */
+		$(element).text(text);
+		
+		$('option', $(select)).each(function()
+		{
+			if ($(this).attr('value') == value)
+			{
+				$(this).attr('selected', true);
+			}
+			else $(this).attr('selected', false);
+		});
+	};
 }));
