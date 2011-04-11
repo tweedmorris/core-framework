@@ -330,5 +330,5 @@ Core.define('Core.ui.forms', Core.ui.extend(
 			}
 			else $(this).attr('selected', false);
 		});
-	};
+	}
 }));
