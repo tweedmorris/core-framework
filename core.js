@@ -3,6 +3,7 @@
 * 
 * @version 1.0.0
 * @copyright Creozon
+* @author Angel Kostadinov (angel.kostadinov@toxicmedia.bg)
 */
 (function() {
 	
