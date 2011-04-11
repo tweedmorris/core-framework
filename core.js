@@ -255,6 +255,8 @@ Core.define('Core.ui.forms', Core.ui.extend(
 	},
 	applyTheme: function()
 	{
+		alert(this.getTheme().classes.select);
+		
 		/* Replace select input(s) */
 		$('select').each(this.delegate(this, this.replaceSelect));
 	},
