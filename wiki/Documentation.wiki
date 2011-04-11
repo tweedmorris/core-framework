@@ -63,3 +63,12 @@ var ui = new My.personal.UI()
 = Delegation =
 
 Method delegation has become inseparable part of our daily development activities. Main objective of CF is to provide as clean code as possible thus reducing time required for debugging and support. Most of the UI interactions with jQuery involve working with events and callbacks. However callback functions have private scope, which disables access to other methods of our class(es)
+
+This can be explained best with the following example. Binding click listener with jQuery is simple as follows:
+
+{{{
+$('.button').bind('click', function()
+{
+    alert('');
+}
+}}}
