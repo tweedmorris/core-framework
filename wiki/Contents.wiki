@@ -1,6 +1,6 @@
 #summary Table of Contents
 
-  * [Articles Core Framework (CF)]
+  * [Introduction Core Framework (CF)]
     * [Articles General Information]
     * [Creozon]
   * [Articles CF Reference]
