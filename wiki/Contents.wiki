@@ -3,7 +3,7 @@
   * [Articles Core Framework (CF)]
     * [Introduction General Information]
     * [Creozon Creozon]
-  * [Articles CF Reference]
+  * [Documentation CF Reference]
     * [ArticlesXSS Defining namespace]
     * [ArticlesDom Defining class]
     * [ArticlesStyle Class inheritance in JavaScript with CF]
