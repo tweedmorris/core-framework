@@ -1,8 +1,8 @@
 #summary Table of Contents
 
-  * [Introduction Core Framework (CF)]
-    * [Articles General Information]
-    * [Creozon]
+  * [Articles Core Framework (CF)]
+    * [Introduction General Information]
+    * [Creozon Creozon]
   * [Articles CF Reference]
     * [ArticlesXSS Defining namespace]
     * [ArticlesDom Defining class]
