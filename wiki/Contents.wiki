@@ -7,7 +7,7 @@
     * [ArticlesXSS Defining namespace]
     * [ArticlesDom Defining class]
     * [ArticlesStyle Class inheritance in JavaScript with CF]
-    * [ArticlesTips Method delegation in JavaScript with CF]
+    * [Delegation Method delegation in JavaScript with CF]
   * [Articles Examples]
     * [Articles Callback delegation]
     * [Articles Multiple inheritance]
