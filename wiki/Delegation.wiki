@@ -13,30 +13,57 @@ CF provides handy method: delegate() which allows for easy delegation of methods
 Assume there is a "click" listener binded to a button:
 
 {{{
-$('.button').bind("click", function(event)
+Core.define('My.ui', Core.Class.extend(
 {
-    alert('Button was clicked');
-}
+    bind: function()
+    {
+        $('.button').bind("click", function(event)
+        {
+            alert('Button was clicked');
+        }
+    }
+})));
+
+/* Create new instance of My.ui */
+var ui = new My.ui();
+
+/* Call bind method */
+ui.bind();
 }}}
 
 In the example above, we have binded with jQuery an click event listener to element with class *.button*
 
-The important part of the example is actually the callback closure. If we reference *this* inside our closer we will get access to the event target element because of the private scope of the callback. 
+The important part of the example is actually the callback closure. If we reference *this* inside our closer we will get access to the event target element because of the private scope of the callback, thus losing our class scope.
 
 So far so good. 
 
-But let's assume that we are building OOP application and want to pass class method as callback of the binded click event. In the following example we will define very basic class to provide callback methods:
+But let's assume that we are building OOP application and want to pass class method as callback of the binded click event. 
+
+Now, let's alter the click listener example and use the new delegation approach provided by CF:
 
 {{{
-Core.define('My.listeners', Core.Class.extend(
+Core.define('My.ui', Core.Class.extend(
 {
-     debug: function(message)
-     {
-         alert(message);
-     }
-     click: function(event)
-     {
-         this.debug($(event.target) + ' was clicked');
-     }
-}))
+    getTime: function()
+    { 
+       return (new Date()).getTime();
+    }
+    listeners:
+    {
+        click: function(event)
+        {
+            alert('Button clicked on ' + this.getTime());
+        }
+    }
+    bind: function()
+    {
+        $('.button').bind("click", this.delegate(this, this.listeners.click))
+    }
+})));
+}}}
+
+
+
+
+{{{
 }}}
