@@ -8,6 +8,7 @@
     * [ArticlesDom Defining class]
     * [ArticlesStyle Class inheritance in JavaScript with CF]
     * [Delegation Method delegation in JavaScript with CF]
+      * [DelegationParams Custom parameters]
   * [Articles Examples]
     * [Articles Callback delegation]
     * [Articles Multiple inheritance]
