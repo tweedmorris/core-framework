@@ -1,4 +1,5 @@
 #summary General information about Core Framework (CF)
+#sidebar Contents
 
 = Introduction =
 
