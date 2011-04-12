@@ -62,8 +62,6 @@ Core.define('My.ui', Core.Class.extend(
 })));
 }}}
 
+In the example above, we are no longer using closure, but class method instead. The essential here is that the callback method does not loose scope and can call other methods of our class. Example: *this.getTime()* called from inside the listener method.
 
-
-
-{{{
-}}}
+With CF's delegate() method, one can pass any scope to the delegated method.
