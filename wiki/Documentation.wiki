@@ -1,4 +1,5 @@
 #summary How to define class with Core Framework(CF)
+#sidebar Contents
 
 = Defining class =
 
