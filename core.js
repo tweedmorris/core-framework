@@ -211,25 +211,72 @@ Core.define('Core.data', Core.Class.extend(
 	}
 }));
 
-
 /**
-* Core.ui
+* Core.animation
 * @version 1.0.0
 */
-Core.define('Core.ui', Core.data.extend(
+Core.define('Core.animation', Core.Class.extend(
 {
-}));
+	options:
+	{
+		speed:  300,
+		easing: 'linear'
+	},
+	animationQueue:[],
+	listeners: 
+	{
+		complete: function(event, ui){}
+	},
+	init: function(options)
+	{
+		Core.apply(this.options, options);
+	},
+	queue: function(item, animation, callback)
+	{
+		this.animationQueue.push(
+        {
+        	item:	 	item,
+        	callback:   callback,
+        	animation:  $.extend(true, {}, animation)
+        });
+        
+        return this;
+	},
+	reset: function()
+	{
+		this.animationQueue = [];
+		
+		return this;
+	},
+	animate: function()
+	{
+		for (i = 0; i < this.animationQueue.length; i++)
+		{
+			var callback = i == this.animationQueue.length - 1 ? this.listeners.complete: this.animationQueue[i].callback;
+			
+			this.animationQueue[i].item.animate(this.animationQueue[i].animation, this.options.speed, this.options.easing, callback);
+		}
+		
+		/* Reset animation queue */
+		this.reset();
+	},
+	addListener: function(listener, fn)
+	{
+		this.listeners[listener] = fn;
+	}
+}))
+
 
 /**
 * Core.ui.forms
 * @version 1.0.0
 */
-Core.define('Core.ui.element', Core.data.extend(
+Core.define('Core.element', Core.data.extend(
 {
 	element: null,
 	init: function(element, config)
 	{
-		this.element = $(element);
+		this.element = element;
 		
 		/* Apply additional configuration directives */
 		Core.apply(this, config);
@@ -240,82 +287,165 @@ Core.define('Core.ui.element', Core.data.extend(
 /** 
 * Core.ui.element.select
 */
-Core.define('Core.ui.element.select', Core.ui.element.extend(
+Core.define('Core.element.select', Core.element.extend(
 {
-	bindOption: function(index, option, data)
+	options: 
 	{
-		var o = 
+		theme: {},
+		placeholder: null
+	},
+	listeners:
+	{
+		select: function(event, ui){},
+		change: function(event, ui){}
+	},
+	animation: new Core.animation(
+	{
+		speed: 100
+	}),
+	open: function(event)
+	{
+		/* Close previously opened dropdowns */
+		this.closeAll();
+		
+		var dropdown = $('<div/>').addClass('ui-form-select-dropdown').addClass(this.options.theme.classes.dropdown).css(
 		{
-			text:  $(option).text(), 
-			value: $(option).val()
+			position:	'absolute',
+			top: 		this.placeholder.offset().top + this.placeholder.height(),
+			left: 		this.placeholder.offset().left,
+			width: 		this.placeholder.outerWidth() - 4
+		}).appendTo(document.body);
+		
+		$('option',this.element).each(this.delegate(this, this.collect,[dropdown]));
+		
+		/* Animate dropdown */
+		this.animation.reset().queue(dropdown,
+		{
+			height: "show"
+		}).animate();
+		
+		/* Bind document */
+		$(document).bind('mousedown',this.delegate(this, this.forceClose));
+	},
+	close: function(index, item)
+	{
+		this.animation.queue($(item),
+		{
+			height: "hide"
+		}, function()
+		{
+			$(this).remove();
+		});
+	},
+	closeAll: function()
+	{
+		$(document.body).children('.ui-form-select-dropdown').each(this.delegate(this, this.close));
+		
+		/* Hide all dropdowns */
+		this.animation.animate();
+	},
+	forceClose: function(event)
+	{
+		var abort = $(event.target).parents('.ui-form-select-dropdown').length;
+		
+		if (!abort)
+		{
+			this.closeAll();
+		}
+	},
+	placeholder: function()
+	{
+		if (!this.options.placeholder)
+		{
+			this.options.placeholder = 
+			{
+				element: function()
+				{
+					var placeholder =  $('<div/>').addClass('ui-form-select')
+									  .addClass(this.options.theme.classes.select)
+									  .bind(
+									  {
+									  		mouseenter: this.delegate(this, this.mouse.over),
+									  		mouseleave: this.delegate(this,this.mouse.out),
+									  		click: this.delegate(this, this.open)
+									  });
+					
+				    var wrapper = $('<div/>').appendTo(placeholder), input = $('<input/>',
+				    {
+				    	type: "text"
+				    }).css(
+				    {
+				    	cursor: 		'pointer',
+				    	width: 			100 + '%',
+				    	background: 	'none',
+				    	border: 		'none'
+				    }).appendTo(wrapper);
+					
+					return placeholder;
+				}
+			}
 		}
 		
-		var row = $('<div/>').css(
-		{
-			cursor: 'pointer'
-		}).html(o.text);
+		this.placeholder = this.options.placeholder.element.apply(this,[]);
 		
+		return this.placeholder;
+	},
+	update: function(index, option, newOption )
+	{
+		if ($(option).val() == newOption.val())
+		{
+			$(option).attr('selected', true);
+			
+			this.placeholder.find(':text').val($(option).text());
+			
+			/* Trigger used defined onchange event(s) */
+			this.element.trigger('onchange');
+			
+			/* Trigger listener */
+			this.listeners.change.apply(this,[]);
+		}
+		else 
+		{
+			$(option).attr('selected', false);
+		}
+	},
+	selectOption: function(event)
+	{
+		this.element.find('option').each(this.delegate(this, this.update,[$(event.target).data('option')]));
+		
+		this.closeAll();
+	},
+	mouse:
+	{
+		over: function(event)
+		{
+			$(event.target).addClass(this.options.theme.classes.selectOver);
+		},
+		out: function(event)
+		{
+			$(event.target).addClass(this.options.theme.classes.selectOver);
+		}
+	},
+	collect: function(index, option, dropdown)
+	{
+		var row = $('<a/>', 
+		{
+			title: $(option).text()
+		}).data('option', $(option)).appendTo(dropdown).bind('click', this.delegate(this, this.selectOption)).html($(option).text());
+		
+		/* Check selected state */
 		if ($(option).attr('selected'))
 		{
-			/* Select the default value */
-			data.container.text(o.text);
+			this.placeholder.find(':text').val($(option).text());
 		}
-		
-		/* Bind option click */
-		row.bind('click', this.delegate(this, this.selectOption,[$(option), data,  o.text, o.value])).appendTo(data.dropdown);
 	},
-	selectOption: function(event, option, data, text, value)
+	replace: function(options)
 	{
-		/* Show the selected option */
-		data.container.text(text);
+		/* Set options */
+		$.extend(true, this.options,options);
 		
-		/* Refresh real select element */
-		$('option', this.element).each(function()
-		{
-			if ($(this).attr('value') == value)
-			{
-				$(this).attr('selected', true);
-				
-				/* Trigger onChange */
-				data.element.trigger('onchange');
-			}
-			else 
-			{
-				$(this).attr('selected', false);
-			}
-		});
-	},
-	replace: function()
-	{
-		var data =
-		{
-			element: 	this.element,
-			container:  $('<div/>').bind('click',this.delegate(this, this.open)),
-			dropdown: 	$('<div/>').css(
-			{
-				position:'absolute',
-				top:	 20,
-				left:	 0
-			})
-		}
-
-		/* Collect options */
-		$('option',this.element).each(this.delegate(this, this.bindOption,[data]));
-		
-		/* Wrapper */
-		var wrapper = $('<div/>').css(
-		{
-			position: 'relative'
-		});
-		
-		wrapper.append(data.container).append(data.dropdown);
-		
-		/* Replace select */
-		this.element.replaceWith(wrapper);
-	},
-	test: function()
-	{
-		alert(1);
+		/* Create placeholder */
+		this.placeholder().insertAfter(this.element);
 	}
 }));
 
@@ -324,7 +454,7 @@ Core.define('Core.ui.element.select', Core.ui.element.extend(
 * Core.ui.forms
 * @version 1.0.0
 */
-Core.define('Core.ui.forms', Core.ui.extend(
+Core.define('Core.forms', Core.Class.extend(
 {
 	options: 
 	{
@@ -332,10 +462,12 @@ Core.define('Core.ui.forms', Core.ui.extend(
 		{
 			name: 'minimal',
 			classes:
-			{
-				select:	  'ui-form-select',
-				selected: 'ui-form-select-option-selected',
-				dropdown: 'ui-form-select-dropdown'
+			{	
+				arrow:	  	'ui-form-select-arrow',
+				select:	  	'ui-form-select',
+				selectOver: 'ui-form-select-over',
+				selected: 	'ui-form-select-option-selected',
+				dropdown: 	'ui-form-select-dropdown'
 			},
 			effect: 'slide',
 			timeout: 300
@@ -364,6 +496,9 @@ Core.define('Core.ui.forms', Core.ui.extend(
 		var element = item.tagName.toLowerCase();
 		
 		/* Replace element */
-		return (new Core.ui.element[element](item)).replace()
+		return (new Core.element[element]($(item))).replace(
+		{
+			theme: this.getTheme()
+		});
 	}
 }));
