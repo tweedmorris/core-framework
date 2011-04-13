@@ -3,7 +3,7 @@
 * 
 * @version 1.0.0
 * @copyright Creozon
-* @author Angel Kostadinov (angel.kostadinov@toxicmedia.bg)
+* @author Angel Kostadinov
 */
 (function() {
 	
@@ -359,14 +359,14 @@ Core.define('Core.element.select', Core.element.extend(
 		{
 			this.options.placeholder = 
 			{
-				element: function()
+				element: function( select )
 				{
 					var placeholder =  $('<div/>').addClass('ui-form-select')
 									  .addClass(this.options.theme.classes.select)
 									  .bind(
 									  {
 									  		mouseenter: this.delegate(this, this.mouse.over),
-									  		mouseleave: this.delegate(this,this.mouse.out),
+									  		mouseleave: this.delegate(this, this.mouse.out),
 									  		click: this.delegate(this, this.open)
 									  });
 					
@@ -379,14 +379,24 @@ Core.define('Core.element.select', Core.element.extend(
 				    	width: 			100 + '%',
 				    	background: 	'none',
 				    	border: 		'none'
-				    }).appendTo(wrapper);
-					
+				    }).appendTo(wrapper).val();
+				    
+				    /* Simulate dropdown arrow */
+				    var arrow = $('<span/>').addClass('ui-form-select-arrow').appendTo(placeholder);
+				    
 					return placeholder;
+				},
+				update: function( placeholder )
+				{
+					placeholder.find(':text').val(this.element.find('option:selected').text());
 				}
 			}
 		}
 		
-		this.placeholder = this.options.placeholder.element.apply(this,[]);
+		this.placeholder = this.options.placeholder.element.apply(this,[this.element]);
+		
+		/* Update placeholder */
+		this.options.placeholder.update.apply(this,[this.placeholder]);
 		
 		return this.placeholder;
 	},
@@ -418,12 +428,12 @@ Core.define('Core.element.select', Core.element.extend(
 	mouse:
 	{
 		over: function(event)
-		{
-			$(event.target).addClass(this.options.theme.classes.selectOver);
+		{	
+			this.placeholder.addClass(this.options.theme.classes.selectOver);
 		},
 		out: function(event)
 		{
-			$(event.target).addClass(this.options.theme.classes.selectOver);
+			this.placeholder.removeClass(this.options.theme.classes.selectOver);
 		}
 	},
 	collect: function(index, option, dropdown)
@@ -437,6 +447,8 @@ Core.define('Core.element.select', Core.element.extend(
 		if ($(option).attr('selected'))
 		{
 			this.placeholder.find(':text').val($(option).text());
+			
+			row.addClass('ui-form-select-option-selected');
 		}
 	},
 	replace: function(options)
