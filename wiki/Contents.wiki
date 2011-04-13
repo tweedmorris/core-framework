@@ -3,7 +3,6 @@
   * [Introduction Introduction]
     * [Creozon About Creozon]
   * [Documentation Reference Guide]
-    * [DefineNamespace Defining namespace]
     * [DefineClass Defining class]
     * [Inheritance Polymorphism]
     * [Delegation Delegation]
