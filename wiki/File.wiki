@@ -6,6 +6,11 @@ Most of the user interaction in rich UI's happens on screen without refreshing t
 
 = Uploading file with CF =
 
+The next example shows how to upload file with CF:
+
+  * Assume there is a form defined with action *upload.php*
+  * Assume there is a container defined with class *.ajaxUpload*
+
 {{{
 var upload = new Core.data.FileUpload(
 {
@@ -24,5 +29,6 @@ var upload = new Core.data.FileUpload(
 			
 /* Render upload */
 upload.render();
-
 }}}
+
+The example above will render a file upload field in the container with class *.ajaxUpload* and will post data to *upload.php* via AJAX call.
