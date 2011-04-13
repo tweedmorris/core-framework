@@ -18,6 +18,8 @@ Core.loader.addScripts(
 }).autoload(function()
 {
 	alert('All scripts loaded successfully');
+
+        /* Execute your code here */
 })
 }}}
 
