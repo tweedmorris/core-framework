@@ -1,6 +1,6 @@
 #summary Class Inheritance with CF
 
-= Class Inheritance =
+= Class Inheritance & Polymorphism =
 
 There are multiple ways to achieve class inheritance in JavaScript. One of the primary goals of Core Framework (CF) is to simplify and unify class inheritance. Example of class inheritance with CF.
 
