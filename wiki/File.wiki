@@ -4,6 +4,9 @@
 
 Most of the user interaction in rich UI's happens on screen without refreshing the page. File upload with JavaScript can be painful process in terms of crossbrowser issues. CF provides file upload interface to simplify this process. There are also handy callback functions i.e listeners which can be used to track the upload status.
 
+= IFrame =
+CF's AJAX File Upload makes use of dynamically generated iframe invisible to the end user.
+
 = Uploading file with CF =
 
 The next example shows how to upload file with CF:
