@@ -13,6 +13,7 @@
       * [Sortables Sortables]
         * [NestedSortable Nested sortables]
       * [Preloading Preloading]
+        * [ScriptAutoloader Script autoloader]
         * [ImagePreloading Image preloading]
       * [Pickers Pickers]
         * [Calendar Date picker]
