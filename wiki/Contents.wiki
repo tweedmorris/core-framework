@@ -5,7 +5,7 @@
   * [Documentation Reference Guide]
     * [DefineNamespace Defining namespace]
     * [DefineClass Defining class]
-    * [Inheritance Extending class, Inheritance]
+    * [Inheritance Polymorphism]
     * [Delegation Delegation]
       * [DelegationParams Custom parameters]
     * [UI User Interface]
