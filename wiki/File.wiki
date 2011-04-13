@@ -1,0 +1,28 @@
+#summary Ajax File Upload with CF
+
+= File upload =
+
+Most of the user interaction in rich UI's happens on screen without refreshing the page. File upload with JavaScript can be painful process in terms of crossbrowser issues. CF provides file upload interface to simplify this process. There are also handy callback functions i.e listeners which can be used to track the upload status.
+
+= Uploading file with CF =
+
+{{{
+var upload = new Core.data.FileUpload(
+{
+	listeners: 
+	{
+		before: function(event, ui)
+		{
+                },
+		success: function(event, response)
+		{
+                }
+         },
+         renderTo: '.ajaxUpload'
+         
+});
+			
+/* Render upload */
+upload.render();
+
+}}}
