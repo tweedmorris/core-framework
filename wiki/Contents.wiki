@@ -5,7 +5,7 @@
   * [Documentation Reference Guide]
     * [DefineNamespace Defining namespace]
     * [DefineClass Defining class]
-    * [Inheritance Class inheritance in JavaScript with CF]
+    * [Inheritance Extending class, Inheritance]
     * [Delegation Delegation]
       * [DelegationParams Custom parameters]
     * [UI User Interface]
