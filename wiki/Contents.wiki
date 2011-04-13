@@ -2,7 +2,7 @@
 
   * [Articles Core Framework (CF)]
     * [Introduction General Information]
-    * [Creozon Creozon]
+    * [Creozon About Creozon]
   * [Documentation CF Reference]
     * [ArticlesXSS Defining namespace]
     * [ArticlesDom Defining class]
