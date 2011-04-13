@@ -212,6 +212,96 @@ Core.define('Core.data', Core.Class.extend(
 }));
 
 /**
+* Core.data.FileUpload - Ajax File Upload
+* @version 1.0.0
+*/
+Core.define('Core.data.FileUpload', Core.data.extend(
+{
+	form: 		null,
+	iframe: 	null,
+	listeners: 
+	{
+		before: function(event, response){},
+		success: function(event, response){}
+	},
+	options:
+	{
+		id: "myAjaxUpload"
+	},
+	complete:function(event, response) /* Upload complete */
+	{
+		this.getForm().removeAttr('target');
+		
+		var json = $.parseJSON(response.text());
+		
+		this.listeners.success.apply(this, [event, json]);
+	},
+	loaded: function(id)
+	{
+		if (this.iframe.contents().attr("location") == "about:blank")
+		{
+			return;
+		}
+		
+		/* Loaded callback */
+		this.iframe.trigger("complete",[this.iframe.contents()]);
+		
+		return false;
+	},
+	upload: function()
+	{	
+		/* Call before listener  */
+		this.listeners.before.apply(this, [{}]);
+		
+		return this.getForm().attr("target",this.options.id).trigger("submit");
+	},
+	submit: function()
+	{
+		return true;
+	},
+	getFileInput: function()
+	{
+		var uniqueId = (new Date().getTime());
+
+		return $('<input/>',
+		{
+			id: 	uniqueId,
+			name: 	"file"
+		}).attr(
+		{
+			type: "file"
+		}).bind('change', this.delegate(this, this.upload));
+	},
+	getForm: function()
+	{
+		if (!this.form)
+		{
+			this.form = $(this.renderTo).parents('form:first');
+		}
+		return this.form;
+	},
+	render: function()
+	{
+		/* Create hidden IFrame */
+		this.iframe = $('<iframe />',
+		{
+			id: 	this.options.id,
+			name:	this.options.id,
+			scr: 	"about:blank"
+		}).hide().load(this.delegate(this,this.loaded)).bind("complete",this.delegate(this,this.complete)).appendTo(document.body);
+
+		/* Internet Explorer 6 and 7 fix */
+		if ($.browser.msie) 
+		{
+			document.frames[this.options.id].name = this.options.id;
+		}
+		
+		this.getFileInput().appendTo(this.renderTo);
+	},
+	renderTo: null
+}));
+
+/**
 * Core.animation
 * @version 1.0.0
 */
