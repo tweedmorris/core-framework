@@ -31,4 +31,8 @@ var upload = new Core.data.FileUpload(
 upload.render();
 }}}
 
-The example above will render a file upload field in the container with class *.ajaxUpload* and will post data to *upload.php* via AJAX call.
+The example above will render a file upload field in the container with class *.ajaxUpload* and will post data to *upload.php* via AJAX call once the value of the input changes i.e user selects file from local system.
+
+Notice the 2 listeners provided by CF (before, success). They are called respectively before file upload and once upload is complete.
+
+Response object of the success listener passed as second argument contains the output of file *upload.php*. Recommended output is *JSON*
