@@ -2,7 +2,7 @@
 
   * [Introduction Introduction]
     * [Creozon About Creozon]
-  * [Documentation Reference Guide]
+  * [Reference Reference Guide]
     * [DefineClass Defining class]
     * [Inheritance Polymorphism]
     * [Delegation Delegation]
