@@ -5,14 +5,11 @@
 * @copyright Creozon
 * @author Angel Kostadinov
 */
+
+
 (function() {
 	
 	this.Core = function() {}
-
-	Core.apply = function(object, config)
-	{
-		return $.extend(true, object, config);
-	}
 	
 	/* Inheritance */
 	Core.extend = function(object)
@@ -43,6 +40,12 @@
 		return Class;
 	}
 
+
+	Core.apply = function(object, config)
+	{
+		return $.extend(object, config);
+	}
+	
 	Core.apply(Core, 
 	{
 		namespace: (function()
@@ -367,12 +370,134 @@ Core.define('Core.element', Core.data.extend(
 	init: function(element, config)
 	{
 		this.element = element;
-		
+
 		/* Apply additional configuration directives */
 		Core.apply(this, config);
 	},
 	replace: function(){ /* Override */ } /* Abstract method */
-}))
+}));
+
+/** 
+* Core.ui.element.input
+*/
+Core.define('Core.element.input', Core.element.extend(
+{
+	replace: function(options)
+	{
+		/* Replace element */
+		return (new Core.element[this.element.attr('type').toLowerCase()](this.element)).replace(
+		{
+			theme: options.theme
+		});
+	}
+}));
+
+/** 
+* Core.ui.element.select
+*/
+Core.define('Core.element.checkbox', Core.element.extend(
+{
+	options: 
+	{
+		theme: {},
+		placeholder: null
+	},
+	listeners:
+	{
+		click: function(event, ui){}
+	},
+	click: function()
+	{
+		if (this.element.attr('checked'))
+		{
+			this.placeholder.find('a').removeClass('checked');
+			
+			/* Uncheck hidden element */
+			this.element.attr('checked', false)
+		}
+		else 
+		{
+			this.placeholder.find('a').addClass('checked'); 
+			
+			/* Uncheck hidden element */
+			this.element.attr('checked', true);
+		}
+		
+		return false;
+	},
+	placeholder: function()
+	{
+		if (!this.options.placeholder)
+		{
+			this.options.placeholder = 
+			{
+				element: function( select )
+				{
+					var placeholder =  $('<div/>').addClass('ui-form-checkbox')
+									  .addClass(this.options.theme.classes.checkbox)
+									  .bind(
+									  {
+									  		click: this.delegate(this, this.click)
+									  });
+					
+					var C = $('<a/>').appendTo(placeholder);
+					
+					if (this.element.attr('checked'))
+					{
+						C.addClass('checked');
+					}
+					
+					return placeholder;
+				},
+				update: function( placeholder )
+				{
+					var label = $('label[for=' + this.element.attr('id') + ']');
+					
+					/* Hide label & element */
+					this.element.add(label).hide();
+					
+					this.placeholder.append(label.text());
+					
+					
+				}
+			}
+		}
+		
+		this.placeholder = this.options.placeholder.element.apply(this,[this.element]);
+		
+		/* Update placeholder */
+		this.options.placeholder.update.apply(this,[this.placeholder]);
+		
+		return this.placeholder;
+	},
+	update: function(index, option, newOption )
+	{
+		if ($(option).val() == newOption.val())
+		{
+			$(option).attr('selected', true);
+			
+			this.placeholder.find(':text').val($(option).text());
+			
+			/* Trigger used defined onchange event(s) */
+			this.element.trigger('onchange');
+			
+			/* Trigger listener */
+			this.listeners.change.apply(this,[]);
+		}
+		else 
+		{
+			$(option).attr('selected', false);
+		}
+	},
+	replace: function(options)
+	{
+		/* Set options */
+		this.options = $.extend(true,{},this.options,options);
+
+		/* Create placeholder */
+		this.placeholder().insertAfter(this.element);
+	}
+}));
 
 /** 
 * Core.ui.element.select
@@ -397,6 +522,7 @@ Core.define('Core.element.select', Core.element.extend(
 	{
 		/* Close previously opened dropdowns */
 		this.closeAll();
+				
 		
 		var dropdown = $('<div/>').addClass('ui-form-select-dropdown').addClass(this.options.theme.classes.dropdown).css(
 		{
@@ -544,8 +670,8 @@ Core.define('Core.element.select', Core.element.extend(
 	replace: function(options)
 	{
 		/* Set options */
-		$.extend(true, this.options,options);
-		
+		this.options = $.extend(true,{},this.options,options);
+
 		/* Create placeholder */
 		this.placeholder().insertAfter(this.element);
 	}
@@ -560,9 +686,10 @@ Core.define('Core.forms', Core.Class.extend(
 {
 	options: 
 	{
+		applyTo: null,
 		themes:[
 		{
-			name: 'minimal',
+			name: 'dark',
 			classes:
 			{	
 				arrow:	  	'ui-form-select-arrow',
@@ -575,10 +702,20 @@ Core.define('Core.forms', Core.Class.extend(
 			timeout: 300
 		},
 		{
-			name: 'my'
+			name: 'white',
+			classes:
+			{	
+				arrow:	  	'ui-form-select-arrow',
+				select:	  	'ui-form-select ui-form-select-white',
+				selectOver: 'ui-form-select-over-white',
+				selected: 	'ui-form-select-option-selected-white ui-form-select-option-selected-white',
+				dropdown: 	'ui-form-select-dropdown ui-form-select-dropdown-white'
+			},
+			effect: 'slide',
+			timeout: 300
 		}
 		],
-		theme:  'minimal',
+		theme:  'dark',
 		speed:  300
 	},
 	getTheme: function()
@@ -591,10 +728,13 @@ Core.define('Core.forms', Core.Class.extend(
 	},
 	applyTheme: function()
 	{
-		$('select').each(this.delegate(this, this.replace));
+		if (this.options.applyTo)
+		{
+			$('select, :checkbox', $(this.options.applyTo)).each(this.delegate(this, this.replace));
+		}
 	},
 	replace: function(index, item)
-	{
+	{	
 		var element = item.tagName.toLowerCase();
 		
 		/* Replace element */
@@ -602,5 +742,9 @@ Core.define('Core.forms', Core.Class.extend(
 		{
 			theme: this.getTheme()
 		});
+	},
+	init: function(options)
+	{
+		this.options = $.extend(true, {}, this.options, options);
 	}
 }));
