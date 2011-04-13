@@ -27,9 +27,9 @@ In the example above, on autoload() call, CF will iterate through an array of re
 
 *addScripts* method receives a JSON object with the following structure:
 
-'script' : [ 'dependencies'] 
+'script' : `[`'dependencies'`] `
 
 In the example above, CF will try to load the following script in this sequence:
-1) plugins/view.js
-2) plugins/browse.js
-3) data.js
+ # plugins/view.js
+ # plugins/browse.js
+ # data.js
