@@ -2,7 +2,7 @@
 
   * [Introduction Introduction]
     * [Creozon About Creozon]
-  * [Documentation Programmer's Reference Guide]
+  * [Documentation Reference Guide]
     * [ArticlesXSS Defining namespace]
     * [ArticlesDom Defining class]
     * [ArticlesStyle Class inheritance in JavaScript with CF]
