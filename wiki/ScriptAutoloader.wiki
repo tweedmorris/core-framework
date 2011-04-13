@@ -20,3 +20,16 @@ Core.loader.addScripts(
 	alert('All scripts loaded successfully');
 })
 }}}
+
+= How it works? =
+
+In the example above, on autoload() call, CF will iterate through an array of registered scripts via *addScripts* method. Notice that the script extension (*.js*) is not provided.
+
+*addScripts* method receives a JSON object with the following structure:
+
+'script' : [ 'dependencies'] 
+
+In the example above, CF will try to load the following script in this sequence:
+1) plugins/view.js
+2) plugins/browse.js
+3) data.js
