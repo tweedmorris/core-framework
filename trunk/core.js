@@ -322,7 +322,7 @@ Core.define('Core.animation', Core.Class.extend(
 	},
 	init: function(options)
 	{
-		Core.apply(this.options, options);
+		this.options = $.extend(true,{}, this.options, options);
 	},
 	queue: function(item, animation, callback)
 	{
@@ -730,13 +730,15 @@ Core.define('Core.forms', Core.Class.extend(
 	{
 		if (this.options.applyTo)
 		{
-			$('select, :checkbox', $(this.options.applyTo)).each(this.delegate(this, this.replace));
+			var applyTo = $(this.options.applyTo);
+
+			$('select',applyTo).add(':checkbox',applyTo).each(this.delegate(this, this.replace));
 		}
 	},
 	replace: function(index, item)
 	{	
 		var element = item.tagName.toLowerCase();
-		
+
 		/* Replace element */
 		return (new Core.element[element]($(item))).replace(
 		{
