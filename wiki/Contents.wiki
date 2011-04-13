@@ -1,7 +1,6 @@
 #summary Table of Contents, Core Framework Version 1.0.0 Build 12.04.2011
 
-  * [Articles Core Framework (CF)]
-    * [Introduction General Information]
+  * [Introduction Introduction
     * [Creozon About Creozon]
   * [Documentation CF Reference]
     * [ArticlesXSS Defining namespace]
