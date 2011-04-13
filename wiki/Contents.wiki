@@ -6,7 +6,7 @@
     * [ArticlesXSS Defining namespace]
     * [ArticlesDom Defining class]
     * [ArticlesStyle Class inheritance in JavaScript with CF]
-    * [Delegation Method delegation in JavaScript with CF]
+    * [Delegation Delegation]
       * [DelegationParams Custom parameters]
     * [UI User Interface]
       * [Sortables Sortables]
