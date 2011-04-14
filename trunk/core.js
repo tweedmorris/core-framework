@@ -525,12 +525,22 @@ Core.define('Core.element.select', Core.element.extend(
 				
 		
 		var dropdown = $('<div/>').addClass('ui-form-select-dropdown').addClass(this.options.theme.classes.dropdown).css(
+		$.extend(
 		{
 			position:	'absolute',
 			top: 		this.placeholder.offset().top + this.placeholder.height(),
 			left: 		this.placeholder.offset().left,
 			width: 		this.placeholder.outerWidth() - 4
-		}).appendTo(document.body);
+		}, this.options.theme.css)).appendTo(document.body);
+		
+		if ($('option',this.element).length > this.options.theme.options.limit)
+		{
+			dropdown.css(
+			{
+				height: this.options.theme.options.maxHeight,
+				overflow: 'auto'
+			});
+		}
 		
 		$('option',this.element).each(this.delegate(this, this.collect,[dropdown]));
 		
@@ -564,7 +574,7 @@ Core.define('Core.element.select', Core.element.extend(
 	{
 		var abort = $(event.target).parents('.ui-form-select-dropdown').length;
 		
-		if (!abort)
+		if (!abort && !$(event.target).is('.ui-form-select-dropdown'))
 		{
 			this.closeAll();
 		}
@@ -687,9 +697,13 @@ Core.define('Core.forms', Core.Class.extend(
 	options: 
 	{
 		applyTo: null,
-		themes:[
+		theme:
 		{
-			name: 'dark',
+			options: 
+			{
+				limit: 		20,
+				maxHeight: 	320,
+			},
 			classes:
 			{	
 				arrow:	  	'ui-form-select-arrow',
@@ -698,33 +712,10 @@ Core.define('Core.forms', Core.Class.extend(
 				selected: 	'ui-form-select-option-selected',
 				dropdown: 	'ui-form-select-dropdown'
 			},
-			effect: 'slide',
-			timeout: 300
+			effect: 		'slide',
+			timeout: 		300
 		},
-		{
-			name: 'white',
-			classes:
-			{	
-				arrow:	  	'ui-form-select-arrow',
-				select:	  	'ui-form-select ui-form-select-white',
-				selectOver: 'ui-form-select-over-white',
-				selected: 	'ui-form-select-option-selected-white ui-form-select-option-selected-white',
-				dropdown: 	'ui-form-select-dropdown ui-form-select-dropdown-white'
-			},
-			effect: 'slide',
-			timeout: 300
-		}
-		],
-		theme:  'dark',
-		speed:  300
-	},
-	getTheme: function()
-	{
-		return $.grep(this.options.themes, this.delegate(this, this.activeTheme))[0];
-	},
-	activeTheme: function(theme)
-	{
-		return theme.name.indexOf(this.options.theme) == -1 ? false : true;
+		speed:  			300
 	},
 	applyTheme: function()
 	{
@@ -738,11 +729,10 @@ Core.define('Core.forms', Core.Class.extend(
 	replace: function(index, item)
 	{	
 		var element = item.tagName.toLowerCase();
-
 		/* Replace element */
 		return (new Core.element[element]($(item))).replace(
 		{
-			theme: this.getTheme()
+			theme: this.options.theme
 		});
 	},
 	init: function(options)
