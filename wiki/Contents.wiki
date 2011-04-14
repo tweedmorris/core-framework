@@ -5,6 +5,7 @@
     * [Creozon About Creozon]
   * [Reference Reference Guide]
     * [Functions Core functions]
+      * [namespace namespace]
       * [extend extend]
       * [define define]
       * [delegate delegate]
