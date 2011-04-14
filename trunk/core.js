@@ -702,7 +702,7 @@ Core.define('Core.forms', Core.Class.extend(
 			options: 
 			{
 				limit: 		20,
-				maxHeight: 	320,
+				maxHeight: 	320
 			},
 			classes:
 			{	
