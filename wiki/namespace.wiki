@@ -1,0 +1,5 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Core.namespace.register() registers object within given namespace. It's sort of safe operation, because the functions checks if the namespace exists and if not it creates it automatically
