@@ -1,0 +1,45 @@
+#summary One-sentence summary of this page.
+
+= Mixins =
+
+In object-oriented programming languages, a mixin is a class that provides a certain functionality to be inherited by a subclass, while not meant for instantiation (the generation of objects of that class). Inheriting from a mixin is not a form of specialization but is rather a means of collecting functionality. A class may inherit most or all of its functionality from one or more mixins through multiple inheritance.
+
+
+= Mixins in CF =
+
+Mixins in CF are passed uppon class definition. Class can implement multiple mixins. 
+
+{{{
+/* Simple draggable class */
+Core.define('draggable', Core.extend(
+{
+	drag: function()
+	{
+	     alert('I am Draggable');
+	}
+}));
+
+/* Simple sortable class */
+Core.define('sortable', Core.extend(
+{
+	sortable: function()
+	{
+	     alert('I am Sortable');
+	}
+}));
+
+/* Custom user defined class using mixins */
+Core.define('My.box', Core.extend(
+{
+        mixins:
+       [
+          draggable, 
+          sortable,
+          {
+              who: 'I am Special'
+          }
+       ]
+}));
+}}}
+
+In the example above, we have defined our custom class and have passed 3 mixins to implement from. You may have noticed that mixins allow for different type of mixins to be bassed. CF allows for objects and classes to be passed as mixins
