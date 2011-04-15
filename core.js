@@ -67,7 +67,11 @@
 	/* Inheritance */
 	Core.extend = function(object)
 	{
+		Core.constructing = true;
+		
 		var prototype = new this();
+		
+		delete Core.constructing;
 		
 		Core.apply(prototype, object);
 		
@@ -75,13 +79,13 @@
 		function Class() 
 		{
 			// All construction is actually done in the init method
-			if (this.init)
+			if (!Core.constructing && this.init)
 			{
 				this.init.apply(this, arguments);
 			}
 			
 			/* Mixins */
-			if (this.mixins)
+			if (!Core.constructing && this.mixins)
 			{
 				for (var mixin in this.mixins)
 				{
