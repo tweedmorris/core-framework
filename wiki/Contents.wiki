@@ -12,7 +12,7 @@
       * [define define]
       * [delegate delegate]
     * [DefineClass Defining class]
-    * [Inheritance Polymorphism]
+    * [Inheritance Inheritance]
     * [Delegation Delegation]
       * [DelegationParams Custom parameters]
     * [UI User Interface]
