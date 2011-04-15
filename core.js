@@ -259,6 +259,37 @@
 			}
 		})()
 	});
+	
+	/**
+	* Automatically extend array prototype
+	* @version 1.0.0
+	*/
+	Core.apply(Array.prototype,
+	{
+		each: Array.prototype.forEach,
+		clear: function() /* Clear array */
+		{
+			this.length = 0;
+			
+			return this;
+		},
+		shuffle: function() /* Shuffle array */
+		{
+			for(var j, x, i = this.length; i; j = parseInt(Math.random() * i), x = this[--i], this[i] = this[j], this[j] = x);
+			
+			return this;
+	    },
+		invoke: function(method) 
+		{
+			var args = Array.prototype.slice.call(arguments, 1);
+			
+			return this.map(function(element) 
+			{
+				return element[method].apply(element, args);
+			});
+		}
+
+	});
 })();
 
 
