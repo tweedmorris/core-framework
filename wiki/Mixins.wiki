@@ -42,4 +42,4 @@ Core.define('My.box', Core.extend(
 }));
 }}}
 
-In the example above, we have defined our custom class and have passed 3 mixins to implement from. You may have noticed that mixins allow for different type of mixins to be bassed. CF allows for objects and classes to be passed as mixins
+In the example above, we have defined our custom class and have passed 3 mixins to implement from. You may have noticed that mixins allow for different type of mixins to be passed. CF allows for objects and classes to be passed as mixins
