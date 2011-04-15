@@ -13,6 +13,7 @@
       * [delegate delegate]
     * [DefineClass Defining class]
     * [Inheritance Inheritance]
+    * [Mixins Mixins]
     * [Delegation Delegation]
       * [DelegationParams Custom parameters]
     * [UI User Interface]
