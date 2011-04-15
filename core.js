@@ -10,14 +10,66 @@
 
 (function() {
 	
+	var global = this, enumerables = true, enumerablesTest = { toString: 1 }
+	
+	/* Create Core */
 	this.Core = function() {}
 	
+	for (i in enumerablesTest) {
+        enumerables = null;
+    }
+
+    if (enumerables) 
+    {
+        enumerables = 
+        [
+        	'hasOwnProperty', 
+        	'valueOf', 
+        	'isPrototypeOf', 
+        	'propertyIsEnumerable',
+            'toLocaleString', 
+            'toString', 
+            'constructor'
+        ];
+    }
+	
+	Core.apply = function(object, config, defaults) 
+	{
+        if (defaults) {
+            Ext.apply(object, defaults);
+        }
+
+        if (object && config && typeof config === 'object') 
+        {
+            var i, j, k;
+
+            for (i in config) {
+                object[i] = config[i];
+            }
+
+            if (enumerables) {
+                for (j = enumerables.length; j--;) {
+                    k = enumerables[j];
+                    if (config.hasOwnProperty(k)) {
+                        object[k] = config[k];
+                    }
+                }
+            }
+        }
+        else if(object && config && typeof config === 'function' && config.prototype)
+        {
+        	arguments.callee.apply(this, [object, config.prototype, defaults]);
+        }
+
+        return object;
+    };
+    
 	/* Inheritance */
 	Core.extend = function(object)
 	{
 		var prototype = new this();
 		
-		$.extend(true, prototype, object);
+		Core.apply(prototype, object);
 		
 		// The dummy class constructor
 		function Class() 
@@ -26,6 +78,15 @@
 			if (this.init)
 			{
 				this.init.apply(this, arguments);
+			}
+			
+			/* Mixins */
+			if (this.mixins)
+			{
+				for (var mixin in this.mixins)
+				{
+					Core.apply(this, this.mixins[mixin]);
+				}
 			}
 		}
 		
@@ -39,12 +100,6 @@
 		Class.extend = arguments.callee;
 		
 		return Class;
-	}
-
-
-	Core.apply = function(object, config)
-	{
-		return $.extend(object, config);
 	}
 	
 	Core.apply(Core, 
