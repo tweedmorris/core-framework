@@ -1,5 +1,6 @@
 /**
 * Core Framework
+* http://code.google.com/p/core-framework/
 * 
 * @version 1.0.0
 * @copyright Creozon
