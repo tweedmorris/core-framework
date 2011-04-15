@@ -36,7 +36,7 @@
 	Core.apply = function(object, config, defaults) 
 	{
         if (defaults) {
-            Ext.apply(object, defaults);
+            Core.apply(object, defaults);
         }
 
         if (object && config && typeof config === 'object') 
@@ -128,16 +128,58 @@
 		return Class;
 	}
 	
+	/**
+	* Automatically extend array prototype
+	* @version 1.0.0
+	*/
+	Core.apply(Array.prototype,
+	{
+		each: Array.prototype.forEach,
+		clear: function() /* Clear array */
+		{
+			this.length = 0;
+			
+			return this;
+		},
+		shuffle: function() /* Shuffle array */
+		{
+			for(var j, x, i = this.length; i; j = parseInt(Math.random() * i), x = this[--i], this[i] = this[j], this[j] = x);
+			
+			return this;
+	    },
+		map: function(mapper, context)
+		{
+			var result = new Array(this.length);
+			
+			for (var i = 0, n = this.length; i<n; i++)
+			
+			if (i in this) result[i] = mapper.call(context, this[i], i, this);
+				
+			return result;
+		},
+		invoke: function(method) 
+		{
+			var args = Array.prototype.slice.call(arguments, 1);
+			
+			return this.map(function(element) 
+			{
+				return element[method].apply(element, args);
+			});
+		}
+	});
+	
 	Core.apply(Core, 
 	{
 		namespace: (function()
 		{
-			return {
+			var SEP = '.'
+			
+			return Core.apply(Core, {
 				register: function(namespace, scope, object)
 				{
-					var namespaces = namespace.split('.');
+					var namespaces = this.split(namespace);
 					
-					for (var i in namespaces)
+					for (i = 0; i < namespaces.length; i++)
 					{
 						var namespace = namespaces[i];
 
@@ -153,27 +195,58 @@
 				},
 				exists: function(namespace, scope)
 				{
-					return typeof scope[namespace] === "undefined" ? false : true;
+					return !scope || typeof scope[namespace] === "undefined" ? false : true;
+				},
+				split: function(namespace)
+				{
+					return namespace.split(SEP);
+				},
+				autoload: function(namespace, scope, callback)
+				{
+					var namespaces = this.split(namespace), path = [], scripts = {}
+					
+					for (i = 0; i < namespaces.length; i++)
+					{
+						var namespace = namespaces[i];
+						
+						if (!this.exists(namespace, scope))
+						{
+							path.push(namespace);
+							
+							var script = path.invoke('toLowerCase').join('/');
+
+							/* Push script to params */
+							scripts[script] = [];		
+						}
+							
+						scope = scope[namespace] || {};
+					}
+
+					this.loader.addScripts(scripts).autoload(callback);
 				}
-			}
+			})
 		})(),
 		define: function(namespace, object)
 		{
 			return this.namespace.register(namespace, window, object);
+		},
+		require: function(namespace, callback)
+		{
+			this.namespace.autoload(namespace, window, callback);
 		},
 		loader: (function()
 		{
 			// Table of script names and their dependencies.
 			var scripts = {}
 			
-			var queue = [], counter = 0;
+			var queue = [], errors = [], counter = 0;
 			
 			/** @lends core.loader */
 			return {
 				addScripts: function( collection )
 				{
 					scripts = $.extend(true, {}, scripts, collection);
-					
+
 					return this;
 				},
 				loadScript: function(url, callback, context) 
@@ -211,10 +284,20 @@
 								});
 								
 								script.callbacks.length = 0;
+							},
+							error: function(request, status, error)
+							{
+								throw 'thrown by Core Framework ( Script ' + url + '.js was not found )';
 							}
 						});
 					}
 				
+				},
+				clear: function()
+				{
+					this.queue.clear();
+					
+					return this;
 				},
 				queue: function()
 				{
@@ -244,7 +327,7 @@
 				{
 					/* Build queue */
 					this.queue();
-					
+
 					/* Sequential loading via closure */
 					(function() 
 					{
@@ -252,43 +335,12 @@
 						{
 							return callback.apply(window);
 						}
-						
+
 						Core.loader.loadScript(queue[counter++], arguments.callee);
 					})();
 				}
 			}
 		})()
-	});
-	
-	/**
-	* Automatically extend array prototype
-	* @version 1.0.0
-	*/
-	Core.apply(Array.prototype,
-	{
-		each: Array.prototype.forEach,
-		clear: function() /* Clear array */
-		{
-			this.length = 0;
-			
-			return this;
-		},
-		shuffle: function() /* Shuffle array */
-		{
-			for(var j, x, i = this.length; i; j = parseInt(Math.random() * i), x = this[--i], this[i] = this[j], this[j] = x);
-			
-			return this;
-	    },
-		invoke: function(method) 
-		{
-			var args = Array.prototype.slice.call(arguments, 1);
-			
-			return this.map(function(element) 
-			{
-				return element[method].apply(element, args);
-			});
-		}
-
 	});
 })();
 
