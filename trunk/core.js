@@ -62,8 +62,27 @@
         }
 
         return object;
-    };
+    }
     
+    Core.delegate = function(target, method, args) /* Javascript Delegate */
+	{
+		return (typeof method == "function") ? function() 
+		{ 
+			/* Override prototype */
+			arguments.push = Array.prototype.push;
+			
+			/* Push additional arguments */
+			for (var arg in args)
+			{
+				arguments.push(args[arg]);
+			}
+			return method.apply(target, arguments); 
+		} : function()
+		{
+			return false;
+		};
+	}
+
 	/* Inheritance */
 	Core.extend = function(object)
 	{
@@ -102,6 +121,9 @@
 		
 		// And make this class extendable
 		Class.extend = arguments.callee;
+		
+		/* Add delegation */
+		Class.prototype.delegate = Core.delegate;
 		
 		return Class;
 	}
@@ -240,26 +262,13 @@
 })();
 
 
+/**
+* Core.Class
+* @version 1.0.0
+*/
 Core.define('Core.Class', Core.extend(
 {
-	delegate: function(target, method, args) /* Javascript Delegate */
-	{
-		return (typeof method == "function") ? function() 
-		{ 
-			/* Override prototype */
-			arguments.push = Array.prototype.push;
-			
-			/* Push additional arguments */
-			for (var arg in args)
-			{
-				arguments.push(args[arg]);
-			}
-			return method.apply(target, arguments); 
-		} : function()
-		{
-			return false;
-		};
-	}
+	
 }));
 
 /**
