@@ -11,27 +11,8 @@
 (function() {
 	
 	var global = this, enumerables = true, enumerablesTest = { toString: 1 }
-	
-	/* Create Core */
-	this.Core = function() {}
-	
-	for (i in enumerablesTest) {
-        enumerables = null;
-    }
-
-    if (enumerables) 
-    {
-        enumerables = 
-        [
-        	'hasOwnProperty', 
-        	'valueOf', 
-        	'isPrototypeOf', 
-        	'propertyIsEnumerable',
-            'toLocaleString', 
-            'toString', 
-            'constructor'
-        ];
-    }
+	 
+	this.Core = {}, Core.Class = function(){}
 	
 	Core.apply = function(object, config, defaults) 
 	{
@@ -47,88 +28,96 @@
                 object[i] = config[i];
             }
 
-            if (enumerables) {
-                for (j = enumerables.length; j--;) {
+            if (enumerables) 
+            {
+                for (j = enumerables.length; j--;) 
+                {
                     k = enumerables[j];
-                    if (config.hasOwnProperty(k)) {
+                    if (config.hasOwnProperty(k)) 
+                    {
                         object[k] = config[k];
                     }
                 }
             }
         }
-        else if(object && config && typeof config === 'function' && config.prototype)
-        {
-        	arguments.callee.apply(this, [object, config.prototype, defaults]);
-        }
-
+        
         return object;
     }
     
-    Core.delegate = function(target, method, args) /* Javascript Delegate */
-	{
-		return (typeof method == "function") ? function() 
-		{ 
-			/* Override prototype */
-			arguments.push = Array.prototype.push;
-			
-			/* Push additional arguments */
-			for (var arg in args)
-			{
-				arguments.push(args[arg]);
-			}
-			return method.apply(target, arguments); 
-		} : function()
+    Core.Class.prototype = /* Auto-Inherited method(s) */
+    {
+    	delegate: function(target, method, args)
 		{
-			return false;
-		};
-	}
-
-	/* Inheritance */
-	Core.extend = function(object)
-	{
-		Core.constructing = true;
-		
-		var prototype = new this();
-		
-		delete Core.constructing;
-		
-		Core.apply(prototype, object);
-		
-		// The dummy class constructor
-		function Class() 
-		{
-			// All construction is actually done in the init method
-			if (!Core.constructing && this.init)
-			{
-				this.init.apply(this, arguments);
-			}
-			
-			/* Mixins */
-			if (!Core.constructing && this.mixins)
-			{
-				for (var mixin in this.mixins)
+			return (typeof method == "function") ? function() 
+			{ 
+				/* Override prototype */
+				arguments.push = Array.prototype.push;
+				
+				/* Push additional arguments */
+				for (var arg in args)
 				{
-					Core.apply(this, this.mixins[mixin]);
+					arguments.push(args[arg]);
+				}
+				return method.apply(target, arguments); 
+			} : function()
+			{
+				return false;
+			};
+		}
+    }
+    
+    Core.apply(Core.Class,
+    {
+    	propertyMap:
+    	[
+    		'mixins'
+    	],
+		extend: function(object)
+		{
+			this.constructing = true;
+		
+			var proto = new this(), superclass = this.prototype;
+
+			delete this.constructing;
+
+			Core.apply(proto, object);
+			
+			// The dummy class constructor
+			var Class = proto.constructor = function() 
+			{
+				// All construction is actually done in the init method
+				if (!Core.constructing && this.init)
+				{
+					this.init.apply(this, arguments);
+				}
+				
+				/* Mixins */
+				if (!Core.constructing && this.mixins)
+				{
+					for (var i = 0; i < this.mixins.length; i++)
+					{
+						Core.apply(this, this.mixins[i].prototype);
+					}
 				}
 			}
+			
+			/* Associate superclass */
+			proto.superclass = superclass;
+			
+			// Populate our constructed prototype object
+			Class.prototype = proto;
+			
+			// Enforce the constructor to be what we expect
+			Class.constructor = Class;
+			
+			// And make this class extendable
+			Class.extend = this.extend;
+			
+			return Class;
 		}
-		
-		// Populate our constructed prototype object
-		Class.prototype = prototype;
-		
-		// Enforce the constructor to be what we expect
-		Class.constructor = Class;
-		
-		// And make this class extendable
-		Class.extend = arguments.callee;
-		
-		/* Add delegation */
-		Class.prototype.delegate = Core.delegate;
-		
-		return Class;
-	}
-	
-	/**
+    });
+    
+    /**
 	* Automatically extend array prototype
 	* @version 1.0.0
 	*/
@@ -167,17 +156,16 @@
 			});
 		}
 	});
-	
-	Core.apply(Core, 
-	{
-		namespace: (function()
+    
+    Core.apply(Core, 
+    {
+    	namespace: (function()
 		{
-			var SEP = '.'
-			
-			return Core.apply(Core, {
+			return Core.apply(Core.Class,
+			{
 				register: function(namespace, scope, object)
 				{
-					var namespaces = this.split(namespace);
+					var namespaces = namespace.split('.')
 					
 					for (i = 0; i < namespaces.length; i++)
 					{
@@ -197,32 +185,13 @@
 				{
 					return !scope || typeof scope[namespace] === "undefined" ? false : true;
 				},
-				split: function(namespace)
+				autoload: function(namespace, callback)
 				{
-					return namespace.split(SEP);
-				},
-				autoload: function(namespace, scope, callback)
-				{
-					var namespaces = this.split(namespace), path = [], scripts = {}
+					var params = namespace.split('.').invoke('toLowerCase').join('/'), scripts = {}
 					
-					for (i = 0; i < namespaces.length; i++)
-					{
-						var namespace = namespaces[i];
-						
-						if (!this.exists(namespace, scope))
-						{
-							path.push(namespace);
-							
-							var script = path.invoke('toLowerCase').join('/');
-
-							/* Push script to params */
-							scripts[script] = [];		
-						}
-							
-						scope = scope[namespace] || {};
-					}
-
-					this.loader.addScripts(scripts).autoload(callback);
+					scripts[params] = [];
+					
+					Core.loader.addScripts(scripts).autoload(callback);
 				}
 			})
 		})(),
@@ -234,12 +203,20 @@
 		{
 			this.namespace.autoload(namespace, window, callback);
 		},
+    	extend: function(object)
+    	{
+    		return this.Class.extend(object);
+    	},
+    	override: function(origclass, overrides) 
+		{
+			this.apply(origclass.prototype, overrides);
+		},
 		loader: (function()
 		{
 			// Table of script names and their dependencies.
 			var scripts = {}
 			
-			var queue = [], errors = [], counter = 0;
+			var queue = [], counter = 0;
 			
 			/** @lends core.loader */
 			return {
@@ -287,7 +264,7 @@
 							},
 							error: function(request, status, error)
 							{
-								throw 'thrown by Core Framework ( Script ' + url + '.js was not found )';
+								throw 'thrown by Core Framework (Unable to load script ' + url + '.js)';
 							}
 						});
 					}
@@ -341,18 +318,8 @@
 				}
 			}
 		})()
-	});
+    })
 })();
-
-
-/**
-* Core.Class
-* @version 1.0.0
-*/
-Core.define('Core.Class', Core.extend(
-{
-	
-}));
 
 /**
 * Core.data
