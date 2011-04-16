@@ -1,0 +1,31 @@
+#summary JavaScript Delegate
+
+= Delegate =
+
+Most of the user interaction involves events and event manipulation. Usually events in JavaScript are handled by closures with their own private scope. We found this unpractical in object oriented environment. 
+
+The idea is to be able to pass methods as event callbacks without losing scope (*this* will still point to our class scope, thus making the remaining methods available within the callback)
+
+We want to go even further and pass additional arguments to the callback alongside the default arguments.
+
+Reusable JavaScript delegate:
+{{{ 
+function delegate(target, method, args)
+{
+    return (typeof method == "function") ? function() 
+    { 
+         /* Override prototype */
+         arguments.push = Array.prototype.push;
+            
+         /* Push additional arguments */
+         for (var arg in args)
+         {
+             arguments.push(args[arg]);
+         }
+         return method.apply(target, arguments); 
+    } : function()
+    {
+        return false;
+    };
+}
+}}}
