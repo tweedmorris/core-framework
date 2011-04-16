@@ -43,7 +43,7 @@ var MyClass = (function()
     },
     send: function(event, message)
     {
-        alert(this.name + ':' + message)
+        alert(this.name + ':' + message) /* Alerts: "MyClass: Sending notification after 1000ms timeout" */
     }
 })();
 
