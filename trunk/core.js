@@ -14,6 +14,24 @@
 	 
 	this.Core = {}, Core.Class = function(){}
 	
+	for (i in enumerablesTest) {
+        enumerables = null;
+    }
+
+    if (enumerables) 
+    {
+        enumerables = 
+        [
+        	'hasOwnProperty', 
+        	'valueOf', 
+        	'isPrototypeOf', 
+        	'propertyIsEnumerable',
+            'toLocaleString', 
+            'toString', 
+            'constructor'
+        ];
+    }
+	
 	Core.apply = function(object, config, defaults) 
 	{
         if (defaults) {
