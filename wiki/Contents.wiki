@@ -15,6 +15,7 @@
     * [Inheritance Inheritance]
     * [Mixins Mixins]
     * [Delegation Delegation]
+      * [JavascriptDelegate Delegate]
       * [DelegationParams Custom parameters]
     * [UI User Interface]
       * [Sortables Sortables]
