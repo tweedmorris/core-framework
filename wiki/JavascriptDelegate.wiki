@@ -49,4 +49,4 @@ var MyClass = (function()
 
 MyClass.notify(); /* Will call method MyClass.send() after 1000 ms timeout */
 }}}
-Take a look at the arguments passed to *setTimeout()* function. The first argument is actually the essential part of this example, it's a delegate to *MyClass.send()* method. Instead of passing nameless closure, we pass class method.
+Take a look at the arguments passed to *setTimeout()* function. The first argument is actually the essential part of this example, it's a delegate to *MyClass.send()* method. Instead of passing nameless closure, we pass class method. Note that the delegate passes the proper class scope and we can still call this.name inside our method.
