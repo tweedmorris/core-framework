@@ -73,7 +73,7 @@ Note that the delegate passes the proper class scope and we can still call *this
 
 The example also demonstrates how to pass additional arguments via delegation. In this particular example we are passing a simple message to be alerted from *MyClass.send()* method.
 
-== 2. jQuery Ajax success callback
+== 2. jQuery Ajax success callback ==
 
 {{{
 {{{
