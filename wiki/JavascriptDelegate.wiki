@@ -6,7 +6,7 @@ Most of the user interaction involves events and event manipulation. Usually eve
 
 The idea is to be able to pass methods as event callbacks without losing scope (*this* will still point to our class scope, thus making the remaining methods available within the callback)
 
-We want to go even further and pass additional arguments to the callback alongside the default arguments.
+We want to go even further and pass additional arguments to the callback alongside the default arguments. It's good idea also to ensure that the delegated method exists.
 
 Reusable JavaScript delegate:
 {{{ 
