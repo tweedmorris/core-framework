@@ -32,19 +32,20 @@ function delegate(target, method, args)
 
 = Examples =
 Some application of the delegation described above
-== setInterval() & setTimeout() ==
+== 1. setInterval() & setTimeout() ==
 {{{
 var MyClass = (function()
 {
     notify: function()
     {
-        setTimeout(this.delegate(this, this.send),1000)
+        setTimeout(this.delegate(this, this.send,['Sending notification after 1000ms timeout]),1000)
     },
-    send: function()
+    send: function(event, message)
     {
-        alert('Sending notification after 1000ms timeout')
+        alert(message)
     }
 })();
 
 MyClass.notify(); /* Will call method MyClass.send() after 1000 ms timeout */
 }}}
+Take a look of *setTimeout()* function
