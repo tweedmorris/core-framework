@@ -37,7 +37,7 @@ Some application of the delegation described above
 var MyClass = (function()
 {
 	name: "My Class",
-	delegate(target, method, args)
+	delegate: function(target, method, args)
 	{
 		return (typeof method == "function") ? function() 
 		{ 
@@ -77,22 +77,44 @@ The example also demonstrates how to pass additional arguments via delegation. I
 
 {{{
 {{{
+{{{
 var MyClass = (function()
 {
-    handle: function(response)
-    {
-    },
-    request: function()
-    {
-        $.ajax({
-	   type: 'POST',
-	   url: url,
-	   data: data,
-	   success: this.delegate(this, this.handle),
-	   dataType: dataType
-        });
-    }
+	name: "My Class",
+	delegate: function(target, method, args)
+	{
+		return (typeof method == "function") ? function() 
+		{ 
+			/* Override prototype */
+			arguments.push = Array.prototype.push;
+			
+			/* Push additional arguments */
+			for (var arg in args)
+			{
+				arguments.push(args[arg]);
+			}
+			return method.apply(target, arguments); 
+			} : function()
+			{
+			return false;
+		};
+	}
+	handle: function(response)
+        {
+        },
+        request: function()
+        {
+              $.ajax(
+              {
+	            type: 'POST',
+	            url: url,
+	            data: data,
+	            success: this.delegate(this, this.handle),
+	            dataType: dataType
+              });
+       }
 })();
+
 
 MyClass.notify(); /* Will call method MyClass.send() after 1000 ms timeout */
 }}}
