@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Collection of CSS rules to reset differences across browsers
 #labels Phase-Implementation
 
 = CSS Reset =
