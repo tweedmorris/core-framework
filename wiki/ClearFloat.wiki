@@ -17,3 +17,4 @@ Good (x)HTML practices involves reduction of the number of elements in the code.
    <div style="float:left">Content</div>
 </div>
 }}}
+In the example above there is no need for additional clearing div.
