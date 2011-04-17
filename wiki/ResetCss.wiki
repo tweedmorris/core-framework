@@ -1,15 +1,13 @@
 #summary One-sentence summary of this page.
 
-= Introduction =
+= CSS Reset =
 
-Add your content here.
-
+Special CSS collection to reset differences across browsers.
 
 {{{
 /**
-* Resets paddings, margins &fonts 
+* Resets paddings, margins &fonts across browsers
 * @version 1.0.0
-* @author Angel Kostadinov
 * @copyright Creozon
 */
 
@@ -56,9 +54,4 @@ img{border:none}
 
 /* Chrome fix */
 textarea { resize:none }
-
-/* Crossbrowser float clear */
-.fix { position:relative; display:inline-block; }
-.fix { zoom:1; display:block; }/* IE6 fix */
-.fix:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
 }}}
