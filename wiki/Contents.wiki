@@ -29,6 +29,7 @@
       * [Forms Forms]
         * [File Ajax File Upload]
   * [Articles Examples]
-    * [ResetCss Reset CSS across browsers]
+    * [Reusable Reusable code]
+       * [ResetCss CSS Reset]
     * [Articles Callback delegation]
     * [Articles Multiple inheritance]
