@@ -9,3 +9,11 @@ Good (x)HTML practices involves reduction of the number of elements in the code.
 .fix { zoom:1; display:block; }/* IE6 fix */
 .fix:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
 }}}
+
+= Example usage =
+{{{
+<div class="content fix">
+   <div style="float:left">Sidebar</div>
+   <div style="float:left">Content</div>
+</div>
+}}}
