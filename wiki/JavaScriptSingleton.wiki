@@ -20,7 +20,10 @@ var Singleton = (function()
 })();
 }}}
 
+
 = Example =
+Having our class defined as shown above, we can call public methods like this:
 {{{
 Singleton.get();
 }}}
+However, we can't call private method *find()* directly.
