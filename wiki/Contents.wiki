@@ -31,5 +31,6 @@
   * [Articles Examples]
     * [Reusable Reusable code]
        * [ResetCss CSS Reset]
+       * [ClearFloat Clear float]
     * [Articles Callback delegation]
     * [Articles Multiple inheritance]
