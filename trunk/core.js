@@ -31,7 +31,7 @@
             'constructor'
         ];
     }
-	
+
 	Core.apply = function(object, config, defaults) 
 	{
         if (defaults) {
@@ -64,6 +64,7 @@
     
     Core.Class.prototype = /* Auto-Inherited method(s) */
     {
+    	mixinPrototypes:[],
     	delegate: function(target, method, args)
 		{
 			return (typeof method == "function") ? function() 
@@ -81,23 +82,32 @@
 			{
 				return false;
 			};
+		},
+		getMixin: function(name) 
+		{
+			return this.getMixins()[name];
+		},
+		/**
+		* Get all mixin prototypes used in this class
+		* @return {Object} mixins The mixin prototypes as key-value pairs
+		*/
+		getMixins: function() 
+		{
+			return this.mixinPrototypes || {};
 		}
     }
     
     Core.apply(Core.Class,
     {
-    	propertyMap:
-    	[
-    		'mixins'
-    	],
 		extend: function(object)
 		{
 			this.constructing = true;
-		
+			
 			var proto = new this(), superclass = this.prototype;
 
 			delete this.constructing;
 
+			/* Extend object prototypes */
 			Core.apply(proto, object);
 			
 			// The dummy class constructor
@@ -108,72 +118,82 @@
 				{
 					this.init.apply(this, arguments);
 				}
-				
-				/* Mixins */
-				if (!Core.constructing && this.mixins)
-				{
-					for (var i = 0; i < this.mixins.length; i++)
-					{
-						Core.apply(this, this.mixins[i].prototype);
-					}
-				}
 			}
-			
+
 			/* Associate superclass */
 			proto.superclass = superclass;
 			
-			// Populate our constructed prototype object
-			Class.prototype = proto;
+			Core.apply(Class, 
+			{
+				prototype:   proto,
+				constructor: Class,
+				ancestor:    this,
+				extend: 	 this.extend,
+				mixin: 		 this.mixin
+			});
 			
-			// Enforce the constructor to be what we expect
-			Class.constructor = Class;
-			
-			// And make this class extendable
-			Class.extend = this.extend;
+			if (object.mixins)
+			{
+				for (var i in object.mixins)
+				{
+					this.mixin(i, object.mixins[i]);
+				}
+			}
 			
 			return Class;
-		}
+		},
+		mixin: function(name, mixin)
+    	{
+    		Core.apply(this.prototype, mixin.prototype);
+    		
+    		/* Store mixin prototype */
+    		this.prototype.mixinPrototypes[name] = mixin.prototype;
+    	}
     });
     
-    /**
-	* Automatically extend array prototype
-	* @version 1.0.0
-	*/
-	Core.apply(Array.prototype,
-	{
-		each: Array.prototype.forEach,
-		clear: function() /* Clear array */
-		{
-			this.length = 0;
-			
-			return this;
-		},
-		shuffle: function() /* Shuffle array */
-		{
-			for(var j, x, i = this.length; i; j = parseInt(Math.random() * i), x = this[--i], this[i] = this[j], this[j] = x);
-			
-			return this;
-	    },
-		map: function(mapper, context)
-		{
-			var result = new Array(this.length);
-			
-			for (var i = 0, n = this.length; i<n; i++)
-			
-			if (i in this) result[i] = mapper.call(context, this[i], i, this);
-				
-			return result;
-		},
-		invoke: function(method) 
-		{
-			var args = Array.prototype.slice.call(arguments, 1);
-			
-			return this.map(function(element) 
-			{
-				return element[method].apply(element, args);
-			});
-		}
-	});
+    Core.apply(Core, 
+    {
+    	Array: (function()
+    	{
+    		var extendedPrototype = 
+    		{
+    			clear: function()
+				{
+					this.length = 0;
+					
+					return this;
+				},
+				map: function(mapper, context)
+				{
+					var result = new Array(this.length);
+					
+					for (var i = 0, n = this.length; i<n; i++)
+					
+					if (i in this) result[i] = mapper.call(context, this[i], i, this);
+						
+					return result;
+				},
+				invoke: function(method) 
+				{
+					var args = Array.prototype.slice.call(arguments, 1);
+					
+					return this.map(function(element) 
+					{
+						return element[method].apply(element, args);
+					});
+				}
+    		}
+    		
+    		return {
+    			get: function(array)
+    			{
+    				Core.apply(array, extendedPrototype);
+    				
+    				return array;
+    			}
+    		}
+    	})()
+    });
     
     Core.apply(Core, 
     {
@@ -183,7 +203,7 @@
 			{
 				register: function(namespace, scope, object)
 				{
-					var namespaces = namespace.split('.')
+					var namespaces = namespace.split('.');
 					
 					for (i = 0; i < namespaces.length; i++)
 					{
@@ -205,7 +225,7 @@
 				},
 				autoload: function(namespace, callback)
 				{
-					var params = namespace.split('.').invoke('toLowerCase').join('/'), scripts = {}
+					var params = Core.Array.get(namespace.split('.')).invoke('toLowerCase').join('/'), scripts = {}
 					
 					scripts[params] = [];
 					
@@ -337,7 +357,7 @@
 			}
 		})()
     })
-})();
+})(jQuery, window);
 
 /**
 * Core.data
