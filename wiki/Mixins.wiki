@@ -34,12 +34,9 @@ Core.define('My.box', Core.extend(
         mixins:
        {
           drag: draggable, 
-          sort: sortable,
-          mine: {
-              who: 'I am Special'
-          }
+          sort: sortable
        }
 }));
 }}}
 
-In the example above, we have defined our custom class and have passed 3 mixins to implement from. You may have noticed that mixins allow for different type of mixins to be passed. CF allows for objects and classes to be passed as mixins
+In the example above, we have defined our custom class and have passed 2 mixins to inherit from. 
