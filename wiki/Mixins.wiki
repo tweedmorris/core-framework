@@ -32,13 +32,13 @@ Core.define('sortable', Core.extend(
 Core.define('My.box', Core.extend(
 {
         mixins:
-       [
-          draggable, 
-          sortable,
-          {
+       {
+          drag: draggable, 
+          sort: sortable,
+          mine: {
               who: 'I am Special'
           }
-       ]
+       }
 }));
 }}}
 
