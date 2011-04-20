@@ -5,7 +5,7 @@
 In object-oriented programming languages, a mixin is a class that provides a certain functionality to be inherited by a subclass, while not meant for instantiation (the generation of objects of that class). Inheriting from a mixin is not a form of specialization but is rather a means of collecting functionality. A class may inherit most or all of its functionality from one or more mixins through multiple inheritance.
 
 
-= Mixins in CF =
+= Mixins in Core Framework (CF) =
 
 Mixins in CF are passed uppon class definition. Class can implement multiple mixins. 
 
