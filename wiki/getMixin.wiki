@@ -2,4 +2,35 @@
 
 = getMixin() =
 
-Each class defined via Core.define() method has getMixin() method available. This methods allows you to call methods from specific mixin.
+Each class defined via *Core.define()* method has *getMixin()* method available. This methods allows you to call methods from specific mixin.
+
+{{{
+Core.define('Draggable', Core.extend(
+{
+	drag: function()
+	{
+		alert('I am draggable');
+	}
+}));
+
+Core.define('Sortable', Core.extend(
+{
+	drag: function()
+	{
+		alert('I am sortable');
+	}
+}));
+
+
+Core.define('My.ui.element', Core.extend(
+{
+	test: function()
+	{
+		this.getMixin('draggable').drag();
+	}
+}).mixin(
+{
+	draggable: Draggable,
+	sortable:  Sortable
+}));
+}}}
