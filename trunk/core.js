@@ -87,6 +87,8 @@
 					
 					/* TODO: Determine whether to override or compose */
 					this.override();
+					
+					return this.proto;
     			},
     			compose: function(){},
     			override: function()
@@ -99,7 +101,7 @@
     					Core.apply(this.proto.prototype, proto);
     				
     					/* Store mixin prototype */	
-    					this.proto.prototype.mixinPrototypes[mixin] = this.mixins[mixin];
+    					this.proto.prototype.mixinPrototypes[mixin] = proto;
     				}
     			}
     		}
