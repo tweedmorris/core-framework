@@ -47,3 +47,19 @@ e.test();
 }}}
 
 In the example above, we have defined our custom class and have passed 2 mixins to inherit from. 
+
+The class can be also defined like this:
+{{{
+Core.define('My.ui.element', Core.extend(
+{
+	test: function()
+	{
+		this.drag(); /* Alerts I am draggable */
+		this.sort(); /* Alerts I am sortable */
+	}
+}).mixin(
+{
+	sortable:  Sortable,
+	draggable: Draggable
+}));
+}}}
