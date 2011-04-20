@@ -289,12 +289,27 @@
 		loader: (function()
 		{
 			// Table of script names and their dependencies.
-			var scripts = {}
+			var scripts = {}, config = 
+			{
+				basePath: ''
+			}
 			
 			var queue = [], counter = 0;
 			
+			var config
+			
 			/** @lends core.loader */
 			return {
+				setConfig: function(options)
+				{
+					$.extend(config, options);
+					
+					return this;
+				},
+				getConfig: function()
+				{
+					return config;
+				},
 				addScripts: function( collection )
 				{
 					scripts = $.extend(true, {}, scripts, collection);
@@ -323,7 +338,7 @@
 						$.ajax(
 						{
 							type     : 'GET',
-							url      : url + '.js',
+							url      : [config.basePath,url + '.js'].join('/'),
 							dataType : 'script',
 							cache    : false,
 							success  : function() 
