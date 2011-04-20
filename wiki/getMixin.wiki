@@ -1,0 +1,5 @@
+#summary One-sentence summary of this page.
+
+= getMixin() =
+
+Each class defined via Core.define() method has getMixin() method available. This methods allows you to call methods from specific mixin.
