@@ -2,7 +2,7 @@
 
 = getMixin() =
 
-Each class defined via *Core.define()* method has *getMixin()* method available. This methods allows you to call methods from specific mixin.
+In the current release, mixins override existing methods. We are planning a smart processor for mixins to allow one to choose how exactly to "mixin". For that reason CF allows you to call methods from mixins directly via the following code:
 
 {{{
 Core.define('Draggable', Core.extend(
