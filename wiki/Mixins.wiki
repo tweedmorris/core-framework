@@ -48,7 +48,7 @@ e.test();
 
 In the example above, we have defined our custom class and have passed 2 mixins to inherit from. 
 
-The class can be also defined like this:
+Core framework also allows for the class to be defined with the following construction:
 {{{
 Core.define('My.ui.element', Core.extend(
 {
