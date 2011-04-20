@@ -6,8 +6,6 @@
 * @copyright Creozon
 * @author Angel Kostadinov
 */
-
-
 (function() {
 	
 	var global = this, enumerables = true, enumerablesTest = { toString: 1 }
@@ -31,7 +29,7 @@
             'constructor'
         ];
     }
-
+    
 	Core.apply = function(object, config, defaults) 
 	{
         if (defaults) {
@@ -62,6 +60,62 @@
         return object;
     }
     
+    Core.mixin = (function()
+    {
+    	var options = /* Private options */
+    	{
+    		defer:	  [],
+    		override: true
+    	}
+    	
+    	/**
+    	* Mixin Class 
+    	* @version 1.0
+    	* @copyright Core Framework 
+    	*/
+    	var Mixin = (function() /* Mixin Class */
+    	{
+    		return { 
+    			proto: null,
+    			mixins: null,
+    			augment: function(args)
+    			{
+					this.proto   	 = args.shift(),
+					this.mixins    	 = args.shift(),
+					options.defer    = args.shift() || [],
+					options.override = args.shift() || false;
+					
+					/* TODO: Determine whether to override or compose */
+					this.override();
+    			},
+    			compose: function(){},
+    			override: function()
+    			{
+    				for (var mixin in this.mixins)
+    				{
+						/* Allow both classes and objects to be used as mixin(s) */
+						proto = this.mixins[mixin].prototype || this.mixins[mixin];
+					
+    					Core.apply(this.proto.prototype, proto);
+    				
+    					/* Store mixin prototype */	
+    					this.proto.prototype.mixinPrototypes[mixin] = this.mixins[mixin];
+    				}
+    			}
+    		}
+    	})()
+
+    	return function()
+    	{
+    		var args = Array.prototype.slice.call(arguments);
+    		
+    		/* Unshift scope */
+    		args.unshift(this);
+
+    		return Mixin.augment(args);
+    	}
+    })()
+    
     Core.Class.prototype = /* Auto-Inherited method(s) */
     {
     	mixinPrototypes:[],
@@ -87,10 +141,6 @@
 		{
 			return this.getMixins()[name];
 		},
-		/**
-		* Get all mixin prototypes used in this class
-		* @return {Object} mixins The mixin prototypes as key-value pairs
-		*/
 		getMixins: function() 
 		{
 			return this.mixinPrototypes || {};
@@ -134,21 +184,12 @@
 			
 			if (object.mixins)
 			{
-				for (var i in object.mixins)
-				{
-					this.mixin(i, object.mixins[i]);
-				}
+				this.mixin(object.mixins);
 			}
 			
 			return Class;
 		},
-		mixin: function(name, mixin)
-    	{
-    		Core.apply(this.prototype, mixin.prototype);
-    		
-    		/* Store mixin prototype */
-    		this.prototype.mixinPrototypes[name] = mixin.prototype;
-    	}
+		mixin: Core.mixin
     });
     
     Core.apply(Core, 
@@ -199,7 +240,7 @@
     {
     	namespace: (function()
 		{
-			return Core.apply(Core.Class,
+			return Core.apply(Core,
 			{
 				register: function(namespace, scope, object)
 				{
@@ -233,6 +274,10 @@
 				}
 			})
 		})(),
+		extend: function(object)
+		{
+			return Core.Class.extend(object);
+		},
 		define: function(namespace, object)
 		{
 			return this.namespace.register(namespace, window, object);
@@ -240,14 +285,6 @@
 		require: function(namespace, callback)
 		{
 			this.namespace.autoload(namespace, window, callback);
-		},
-    	extend: function(object)
-    	{
-    		return this.Class.extend(object);
-    	},
-    	override: function(origclass, overrides) 
-		{
-			this.apply(origclass.prototype, overrides);
 		},
 		loader: (function()
 		{
@@ -363,7 +400,7 @@
 * Core.data
 * @version 1.0.0
 */
-Core.define('Core.data', Core.Class.extend(
+Core.define('Core.data', Core.extend(
 {
 	init: function(config)
 	{
@@ -465,7 +502,7 @@ Core.define('Core.data.FileUpload', Core.data.extend(
 * Core.animation
 * @version 1.0.0
 */
-Core.define('Core.animation', Core.Class.extend(
+Core.define('Core.animation', Core.extend(
 {
 	options:
 	{
@@ -849,7 +886,7 @@ Core.define('Core.element.select', Core.element.extend(
 * Core.ui.forms
 * @version 1.0.0
 */
-Core.define('Core.forms', Core.Class.extend(
+Core.define('Core.forms', Core.extend(
 {
 	options: 
 	{
