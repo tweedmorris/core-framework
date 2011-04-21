@@ -12,7 +12,7 @@ Core.require("plugins.test", function()
 });
 }}}
 
-In the example above CF will try to load file: *plugins/test.js*. When loaded successfully, it will execute the callback function passes as second argument.
+In the example above CF will try to load file: *plugins/test.js*. When loaded successfully, it will execute the callback function passed as second argument.
 
 == Autoload array of scripts ==
 Once can load array of scripts by passing the array to Core.require() method.
