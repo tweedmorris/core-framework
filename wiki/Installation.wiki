@@ -17,4 +17,8 @@ Core.define('My.own.class',
         alert('It works')
     }
 }
+
+var ob = new My.own.class();
+ob.myMethod() /* Alerts It works */
+
 }}}
