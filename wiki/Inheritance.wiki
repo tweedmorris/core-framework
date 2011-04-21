@@ -1,4 +1,4 @@
-#summary Class Inheritance with CF
+#summary JavaScript Class Inheritance with Core Framework
 
 = Class Inheritance & Polymorphism =
 
