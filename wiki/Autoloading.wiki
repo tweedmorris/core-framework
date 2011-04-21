@@ -12,6 +12,8 @@ Core.require("plugins.test", function()
 });
 }}}
 
+In the example above CF will try to load file: plugins/test.js. When loaded successfully, it will execute the callback function passes as second argument.
+
 == Autoload map ==
 One can load an entire map of files with their dependencies. Maps are passed as parameters to *Core.require()* method and are actually key:value paired JSON object.
 
