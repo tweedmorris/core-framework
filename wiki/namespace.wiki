@@ -14,4 +14,7 @@ Core.namespace.register('My.personal.data', window,
 alert(My.personal.data.name); /* Outputs Angel */
 }}}
 
-Note that if My & My.personal do not have to exists. If they don't exists, CF will create them automatically as object literals {}
+Note that 
+{{{
+My & My.personal
+}}} do not have to exists. If they don't exists, CF will create them automatically as object literals {}
