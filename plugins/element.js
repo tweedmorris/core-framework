@@ -12,5 +12,8 @@ Core.define('Core.element', Core.data.extend(
 		/* Apply additional configuration directives */
 		Core.apply(this, config);
 	},
-	replace: function(){ /* Override */ } /* Abstract method */
+	replace: function()
+	{
+		/* Override */ 
+	}
 }));

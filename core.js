@@ -7,19 +7,18 @@
 * @author Angel Kostadinov
 */
 (function() {
+	this.Core = {}; Core.Class = function(){};
 	
-	var global = this, enumerables = true, enumerablesTest = { toString: 1 }
+	var enumerables = true, enumerablesTest = { toString: 1 };
 	 
-	this.Core = {}, Core.Class = function(){}
 	
-	for (i in enumerablesTest) {
+	for (var i in enumerablesTest) {
         enumerables = null;
     }
 
     if (enumerables) 
     {
-        enumerables = 
-        [
+        enumerables = [
         	'hasOwnProperty', 
         	'valueOf', 
         	'isPrototypeOf', 
@@ -27,7 +26,7 @@
             'toLocaleString', 
             'toString', 
             'constructor'
-        ];
+        ]
     }
     
 	Core.apply = function(object, config, defaults) 
@@ -58,7 +57,7 @@
         }
         
         return object;
-    }
+    };
     
     /**
     * Delegate
@@ -69,7 +68,7 @@
     */
     Core.delegate = function(target, method, args)
 	{
-		return (typeof method == "function") ? function() 
+		return (typeof method === "function") ? function() 
 		{ 
 			/* Override prototype */
 			arguments.push = Array.prototype.push;
@@ -84,7 +83,7 @@
 		{
 			return false;
 		};
-	}
+	};
 	
 	Core.pattern = (function()
 	{
@@ -123,7 +122,7 @@
 		    	return (typeof(value) == "function" && typeof(value.prototype) == "object") ? true : false; 
 		    }
 		}
-	})()
+	})();
     
     Core.mixin = (function()
     {
@@ -131,7 +130,7 @@
     	{
     		defer:	  [],
     		override: true
-    	}
+    	};
     	
     	/**
     	* Mixin Class 
@@ -170,7 +169,7 @@
     				}
     			}
     		}
-    	})()
+    	})();
 
     	return function()
     	{
@@ -181,7 +180,7 @@
 
     		return Mixin.augment(args);
     	}
-    })()
+    })();
     
         
     Core.Class.prototype = /* Auto-Inherited method(s) */
@@ -196,7 +195,7 @@
 		{
 			return this.mixinPrototypes || {};
 		}
-    }
+    };
     
     Core.apply(Core.Class,
     {
@@ -219,7 +218,7 @@
 				{
 					this.init.apply(this, arguments);
 				}
-			}
+			};
 
 			/* Associate superclass */
 			proto.superclass = superclass;
@@ -279,9 +278,9 @@
 					return this.filter(function(value, index)
 					{
 						return null === value ? false : value.length;
-					})
+					});
 				}
-    		}
+    		};
     		
     		return {
     			get: function(array)
@@ -304,7 +303,7 @@
 				{
 					var namespaces = namespace.split('.');
 					
-					for (i = 0; i < namespaces.length; i++)
+					for (var i = 0; i < namespaces.length; i++)
 					{
 						var namespace = namespaces[i];
 
@@ -320,7 +319,7 @@
 				},
 				exists: function(namespace, scope)
 				{
-					return !scope || typeof scope[namespace] === "undefined" ? false : true;
+					return (!scope || typeof scope[namespace] === "undefined") ? false : true;
 				},
 				autoload: function(namespace, callback)
 				{
@@ -328,10 +327,10 @@
 
 					var queue = function(namespace)
 					{
-						var script = Core.Array.get(namespace.split('.')).invoke('toLowerCase').join('/')
+						var script = Core.Array.get(namespace.split('.')).invoke('toLowerCase').join('/');
 						
 						scripts[script] = [];
-					}
+					};
 					
 					if (Core.pattern.isFilemap(namespace))
 					{
@@ -371,16 +370,12 @@
 		loader: (function()
 		{
 			// Table of script names and their dependencies.
-			var scripts = {}, config = 
+			var scripts = {}, queue = [], counter = 0, config = 
 			{
 				path: 	 	null,
 				basePath:	null
-			}
-			
-			var queue = [], counter = 0;
-			
-			var config
-			
+			};
+
 			/** @lends core.loader */
 			return {
 				setConfig: function(options)
@@ -407,11 +402,13 @@
 						callbacks : []
 					});
 				
-					if(script.loaded) {
+					if(script.loaded) 
+					{
 						return callback.apply(context);
 					}
 				
-					script.callbacks.push({
+					script.callbacks.push(
+					{
 						fn      : callback,
 						context : context
 					});
@@ -437,11 +434,10 @@
 							},
 							error: function(request, status, error)
 							{
-								throw 'thrown by Core Framework (Unable to load script ' + url + '.js)';
+								return false;
 							}
 						});
 					}
-				
 				},
 				clear: function()
 				{
@@ -457,7 +453,7 @@
 						{
 							queue.push(script);
 						}
-					}
+					};
 					
 					$.each(scripts, function(script, scripts)
 					{
@@ -497,7 +493,7 @@
 					{
 						var exists = $('script').filter(function()
 						{
-							return this.src.indexOf(file) != -1
+							return this.src.indexOf(file) != -1;
 						}).eq(0);
 						
 						/* Core has been found */
