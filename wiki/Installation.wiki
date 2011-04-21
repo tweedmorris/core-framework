@@ -7,3 +7,14 @@ Core Framework is easy to use. All you need is to include it in your projects.
 {{{
 <script type="text/javascript" src="http://core-framework.googlecode.com/svn/trunk/core.js"></script>
 }}}
+
+Once include in the project, you can create classes with ease: 
+{{{
+Core.define('My.own.class',
+{
+    myMethod: function()
+    {
+        alert('It works')
+    }
+}
+}}}
