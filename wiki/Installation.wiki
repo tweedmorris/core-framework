@@ -1,0 +1,9 @@
+#summary How to use Core Framework in your projects?
+
+= Installation =
+
+Core Framework is easy to use. All you need is to include it in your projects.
+
+{{{
+<script type="text/javascript" src=""http://core-framework.googlecode.com/svn/trunk/core.js></script>
+}}}
