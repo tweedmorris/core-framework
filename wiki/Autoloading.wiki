@@ -24,11 +24,11 @@ Core.require(['plugins.test', 'plugins.forms'], function()
 }}}
 
 In the example above the library will load scripts as follows:
-# plugins/test.js
-# plugins/forms.js
+ # plugins/test.js
+ # plugins/forms.js
 
 == 3. Autoload map of scripts (several scripts at once) ==
-One can load an entire map of files with their dependencies. Maps are passed as parameters to *Core.require()* method and are actually key:value paired JSON object.
+One can load an entire map of files with their dependencies. Maps are passed as parameters to *Core.require()* method and are actually key:value paired JSON object. Essential with maps is that they provide dependent loading. They specify the script to be loaded and it's dependencies.
 
 
 {{{
@@ -46,3 +46,14 @@ Core.require(
 	alert('All scripts loaded');
 });
 }}}
+
+In the example above, the library will load the scripts in the following sequence:
+ # plugins/data.js
+ # plugins/animation.js
+ # plugins/element.js
+ # plugins/element/input.js
+ # plugins/element/select.js
+ # plugins/element/checkbox.js
+ # plugins/element.forms.js
+
+Not that plugins/element.js is loaded only once.
