@@ -60,6 +60,32 @@
         return object;
     }
     
+    /**
+    * Delegate
+    *
+    * Delegates method execution to specified scope(target)
+    * @version 1.0
+    * @copyright Creozon
+    */
+    Core.delegate = function(target, method, args)
+	{
+		return (typeof method == "function") ? function() 
+		{ 
+			/* Override prototype */
+			arguments.push = Array.prototype.push;
+			
+			/* Push additional arguments */
+			for (var arg in args)
+			{
+				arguments.push(args[arg]);
+			}
+			return method.apply(target, arguments); 
+		} : function()
+		{
+			return false;
+		};
+	}
+    
     Core.mixin = (function()
     {
     	var options = /* Private options */
@@ -118,27 +144,11 @@
     	}
     })()
     
+        
     Core.Class.prototype = /* Auto-Inherited method(s) */
     {
     	mixinPrototypes:[],
-    	delegate: function(target, method, args)
-		{
-			return (typeof method == "function") ? function() 
-			{ 
-				/* Override prototype */
-				arguments.push = Array.prototype.push;
-				
-				/* Push additional arguments */
-				for (var arg in args)
-				{
-					arguments.push(args[arg]);
-				}
-				return method.apply(target, arguments); 
-			} : function()
-			{
-				return false;
-			};
-		},
+    	delegate: Core.delegate,
 		getMixin: function(name) 
 		{
 			return this.getMixins()[name];
@@ -224,6 +234,13 @@
 					{
 						return element[method].apply(element, args);
 					});
+				},
+				clean: function()
+				{
+					return this.filter(function(value, index)
+					{
+						return null === value ? false : value.length;
+					})
 				}
     		}
     		
@@ -293,7 +310,8 @@
 			// Table of script names and their dependencies.
 			var scripts = {}, config = 
 			{
-				basePath: ''
+				path: 	 	null,
+				basePath:	null
 			}
 			
 			var queue = [], counter = 0;
@@ -334,13 +352,13 @@
 						fn      : callback,
 						context : context
 					});
-				
+
 					if(script.callbacks.length == 1) 
 					{
 						$.ajax(
 						{
 							type     : 'GET',
-							url      : [config.basePath,url + '.js'].join('/'),
+							url      : Core.Array.get([config.path, config.basePath, url + '.js']).clean().join('/'),
 							dataType : 'script',
 							cache    : false,
 							success  : function() 
@@ -394,6 +412,8 @@
 				},
 				autoload: function( callback )
 				{
+					var path = this.path();
+
 					/* Build queue */
 					this.queue();
 
@@ -407,7 +427,29 @@
 
 						Core.loader.loadScript(queue[counter++], arguments.callee);
 					})();
-				}
+				},
+				path: (function(file)
+				{
+					if (!config.path)
+					{
+						var exists = $('script').filter(function()
+						{
+							return this.src.indexOf(file) != -1
+						}).eq(0);
+						
+						/* Core has been found */
+						if (exists.size())
+						{
+							config.path = exists.attr('src').slice(0, -1 - file.length)
+						}
+					}
+					
+					return function()
+					{
+						return config.path;
+					}
+					
+				})('core.js')
 			}
 		})()
     })
