@@ -1,0 +1,25 @@
+#summary Autoloading
+
+= Autoloading =
+
+Core Framework implements smart system for dynamic inclusion of scripts. 
+
+== Autoload map ==
+One can load an entire map of files with their dependencies. Maps are passed as parameters to *Core.require()* method and are actually key:value paired JSON object.
+
+
+{{{
+Core.require(
+{
+	'plugins/data'			: [],
+	'plugins/animation'		: [],
+	'plugins/element/input'		: ['plugins/element'],
+	'plugins/element/select'	: ['plugins/element'],
+	'plugins/element/checkbox'	: ['plugins/element'],
+	'plugins/forms'			: []
+	
+}, function()
+{
+	alert('All scripts loaded');
+});
+}}}
