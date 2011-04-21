@@ -3,7 +3,7 @@
   * [Start Getting Started]
     * [Introduction Introduction]
     * [Creozon About Creozon]
-    * [Installation Using Core Framework]
+    * [Installation Installation]
   * [Reference Reference Guide]
     * [Functions Core functions]
       * [nr namespace]
