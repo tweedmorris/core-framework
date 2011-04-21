@@ -14,7 +14,20 @@ Core.require("plugins.test", function()
 
 In the example above CF will try to load file: *plugins/test.js*. When loaded successfully, it will execute the callback function passes as second argument.
 
-== 2. Autoload map of scripts (several scripts at once) ==
+== Autoload array of scripts ==
+Once can load array of scripts by passing the array to Core.require() method.
+{{{
+Core.require(['plugins.test', 'plugins.forms'], function()
+{
+	alert('All scripts loaded');
+});
+}}}
+
+In the example above the library will load scripts as follows:
+# plugins/test.js
+# plugins/forms.js
+
+== 3. Autoload map of scripts (several scripts at once) ==
 One can load an entire map of files with their dependencies. Maps are passed as parameters to *Core.require()* method and are actually key:value paired JSON object.
 
 
