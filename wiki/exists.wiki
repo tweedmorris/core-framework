@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Checks if given namespace exists
+Checks if given namespace exists within given scope.
 
 
 = Example =
