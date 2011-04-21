@@ -18,6 +18,7 @@
     * [Delegation Delegation]
       * [JavascriptDelegate Delegate]
       * [DelegationParams Custom parameters]
+    * [Autoloading Autoloading]
     * [UI User Interface]
       * [Sortables Sortables]
         * [NestedSortable Nested sortables]
