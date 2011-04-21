@@ -4,7 +4,7 @@
 
 Core Framework implements smart system for dynamic inclusion of scripts. 
 
-= Autoload single script =
+== Autoload single script ==
 {{{
 Core.require("plugins.test", function()
 {
@@ -14,7 +14,7 @@ Core.require("plugins.test", function()
 
 In the example above CF will try to load file: *plugins/test.js*. When loaded successfully, it will execute the callback function passes as second argument.
 
-== Autoload map ==
+== Autoload map (several scripts at once) ==
 One can load an entire map of files with their dependencies. Maps are passed as parameters to *Core.require()* method and are actually key:value paired JSON object.
 
 
