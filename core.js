@@ -273,6 +273,21 @@
 						return element[method].apply(element, args);
 					});
 				},
+				filter: function(fn) 
+				{
+				    var a = [];
+				    
+				    for ( var i=0, j=this.length; i < j; ++i ) 
+				    {
+				        if ( !fn.call(this, this[i], i, this) ) 
+				        {
+				            continue;
+				        }
+				        
+				        a.push(this[i]);
+				    }
+				    return a;
+				},
 				clean: function()
 				{
 					return this.filter(function(value, index)
