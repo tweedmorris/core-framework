@@ -75,8 +75,7 @@ The example also demonstrates how to pass additional arguments via delegation. I
 
 == 2. jQuery Ajax success callback ==
 
-{{{
-{{{
+
 {{{
 var MyClass = (function()
 {
@@ -117,5 +116,4 @@ var MyClass = (function()
 
 
 MyClass.notify(); /* Will call method MyClass.send() after 1000 ms timeout */
-}}}
 }}}
