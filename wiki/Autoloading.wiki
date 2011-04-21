@@ -4,6 +4,14 @@
 
 Core Framework implements smart system for dynamic inclusion of scripts. 
 
+= Autoload single script =
+{{{
+Core.require("plugins.test", function()
+{
+	new Test().notify()
+});
+}}}
+
 == Autoload map ==
 One can load an entire map of files with their dependencies. Maps are passed as parameters to *Core.require()* method and are actually key:value paired JSON object.
 
