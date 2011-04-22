@@ -1,0 +1,3 @@
+#summary Interactive examples with Core Framework
+
+<wiki:gadget url="http://core-framework.googlecode.com/svn/trunk/gadgets/welcome.xml?nocache=true" />
