@@ -78,8 +78,8 @@
 		    },
 		    isFilemap: function(value)
 		    {
-		    	if (this.isObject(value))
-		    	{
+		    	if (this.isObject(value) && !this.isString(value))
+		    	{	
 		    		for (var key in value)
 		    		{
 		    			
@@ -89,6 +89,10 @@
 		    			/* Return false immediatly if value is not array */
 		    			if (!this.isArray(value[key])) return false;
 		    		}
+		    	}
+		    	else 
+		    	{
+		    		return false;
 		    	}
 		    	
 		    	return true;
@@ -161,8 +165,8 @@
     		return Mixin.augment(args);
     	}
     })();
-
-    Core.Class.prototype = /* Auto-Inherited method(s) */
+    
+	Core.Class.prototype = /* Auto-Inherited method(s) */
     {
     	mixinPrototypes:[],
     	delegate: Core.delegate,
@@ -175,7 +179,7 @@
 			return this.mixinPrototypes || {};
 		}
     };
-    
+ 
     Core.apply(Core.Class,
     {
 		extend: function(object)
@@ -353,6 +357,10 @@
 		{
 			return Core.Class.extend(object);
 		},
+		override: function(origclass, overrides)
+		{
+			Core.apply(origclass.prototype, overrides);
+		},
 		define: function(namespace, object)
 		{
 			return this.namespace.register(namespace, window, object);
@@ -507,4 +515,14 @@
 			}
 		})()
     })
+    
+    /**
+    * Widget
+    *
+    * Uses $.widget factory to define widget
+    */
+    Core.widget = function(widget, prototype)
+    {
+    	$.widget(widget, new Core.extend(prototype).prototype);
+    }
 })(jQuery, window);
