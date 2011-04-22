@@ -3,7 +3,7 @@
 	<ModulePrefs title="Core Framework 1.0.0" height="200"/>
 	<Content type="html"> 
 	<![CDATA[ 
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
 		<script type="text/javascript" src="http://core-framework.googlecode.com/svn/trunk/core.js"></script>
 		<script type="text/javascript" src="http://core-framework.googlecode.com/svn/trunk/gadgets/demo.js"></script>
 	]]> 
