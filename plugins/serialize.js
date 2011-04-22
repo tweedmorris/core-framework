@@ -4,9 +4,9 @@
 */
 Core.define('Core.tree.serialize', Core.data.extend(
 {
-	level:1,
-	sequence:1,
-	items:[],
+	level:		1,
+	sequence:	1,
+	items:		[],
 	serialize: function(tree)
 	{
 		this.level   = 1;
