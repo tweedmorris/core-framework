@@ -6,29 +6,22 @@
 * @copyright Creozon
 * @author Angel Kostadinov
 */
-(function() {
-	this.Core = {}; Core.Class = function(){};
+(function() 
+{
+	/**
+	* Core (Singleton Pattern)
+	*
+	* @version 1.0
+	* @copyright Creozon
+	*/
+	this.Core = {}; 
 	
-	var enumerables = true, enumerablesTest = { toString: 1 };
-	 
+	/* Base class */
+	Core.Class = function(){};
 	
-	for (var i in enumerablesTest) {
-        enumerables = null;
-    }
-
-    if (enumerables) 
-    {
-        enumerables = [
-        	'hasOwnProperty', 
-        	'valueOf', 
-        	'isPrototypeOf', 
-        	'propertyIsEnumerable',
-            'toLocaleString', 
-            'toString', 
-            'constructor'
-        ]
-    }
-    
+  	 /**
+     * Copies all the properties of config to the specified object.
+     */
 	Core.apply = function(object, config, defaults) 
 	{
         if (defaults) {
@@ -37,22 +30,9 @@
 
         if (object && config && typeof config === 'object') 
         {
-            var i, j, k;
-
-            for (i in config) {
-                object[i] = config[i];
-            }
-
-            if (enumerables) 
+            for (var i in config) 
             {
-                for (j = enumerables.length; j--;) 
-                {
-                    k = enumerables[j];
-                    if (config.hasOwnProperty(k)) 
-                    {
-                        object[k] = config[k];
-                    }
-                }
+                object[i] = config[i];
             }
         }
         
@@ -181,8 +161,7 @@
     		return Mixin.augment(args);
     	}
     })();
-    
-        
+
     Core.Class.prototype = /* Auto-Inherited method(s) */
     {
     	mixinPrototypes:[],
@@ -388,7 +367,8 @@
 			var scripts = {}, queue = [], counter = 0, config = 
 			{
 				path: 	 	null,
-				basePath:	null
+				basePath:	null,
+				cache: 		true
 			};
 
 			/** @lends core.loader */
@@ -435,7 +415,7 @@
 							type     : 'GET',
 							url      : Core.Array.get([config.path, config.basePath, url + '.js']).clean().join('/'),
 							dataType : 'script',
-							cache    : false,
+							cache    : config.cache,
 							success  : function() 
 							{
 								script.loaded = true;
