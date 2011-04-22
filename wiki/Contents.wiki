@@ -31,7 +31,7 @@
         * [Color Color picker]
       * [Forms Forms]
         * [File Ajax File Upload]
-  * [Examplles Examples]
+  * [Examples Examples]
     * [Reusable Reusable code]
        * [CSS CSS]
          * [ResetCss CSS Reset]
