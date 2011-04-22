@@ -3,7 +3,9 @@
 	<ModulePrefs title="Core Framework" height="200"/>
 	<Content type="html"> 
 	<![CDATA[ 
-	
+		<script type="text/javascript">
+			alert(1);
+		</script>
 	]]> 
 	</Content>
 </Module>
