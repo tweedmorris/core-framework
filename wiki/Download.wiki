@@ -1,7 +1,7 @@
 #summary Download Core Framework
 
 = Download =
-Core Framework is available here:
+Latest version of Core Framework is available here:
 {{{
 http://core-framework.googlecode.com/svn/trunk/core.js
 }}}
