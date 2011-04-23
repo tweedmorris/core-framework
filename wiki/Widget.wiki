@@ -20,3 +20,7 @@ Core.jQuery.widget('ui.observer',
 	}
 });
 }}}
+The example above will create simple widget *$.ui.obersver* which can be used like this:
+{{{
+$('ul > li').observer();
+}}}
