@@ -1,1 +1,3 @@
 #summary Share your feedback
+
+http://core-framework.googlecode.com/svn/trunk/logo/logo.png
