@@ -33,6 +33,7 @@
       * [Forms Forms]
         * [File Ajax File Upload]
   * [Examples Examples]
+    * [Widget jQuery Widget]
     * [Reusable Reusable code]
        * [CSS CSS]
          * [ResetCss CSS Reset]
