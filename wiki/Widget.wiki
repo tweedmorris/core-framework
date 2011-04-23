@@ -1,7 +1,7 @@
 #summary jQuery Widget with Core Framrwork
 
 = Widget =
-Core Framework allows you to easily create jQuery widgets
+jQuery Widget example with Core Framework
 {{{
 Core.jQuery.widget('ui.observer',
 {
