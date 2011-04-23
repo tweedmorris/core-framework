@@ -2,7 +2,8 @@
 
 = Autoloading =
 
-Core Framework implements smart system for dynamic inclusion of scripts. 
+Core Framework implements smart system for dynamic inclusion of scripts. This is probably one of the greatest features of the framework because it allows greater resource control. 
+
 
 == 1. Autoload single script ==
 {{{
