@@ -580,5 +580,5 @@
 			upper: function(value) /* Check whether value contains only upper characters */ {}
 		}
 	})();
-	
+	/* EOF Core */
 })(jQuery, window);
