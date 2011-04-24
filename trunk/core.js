@@ -110,7 +110,7 @@
 	
 	Core.validator = (function() /* TODO: Complete Validators */
 	{
-		var Valid = this.extend(
+		var Valid = Core.extend(
 		{
 			rules:[],
 			element:null,
