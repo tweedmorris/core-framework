@@ -107,57 +107,6 @@
 		    }
 		}
 	})();
-	
-	Core.validator = (function() /* TODO: Complete Validators */
-	{
-		var Valid = Core.extend(
-		{
-			rules:[],
-			element:null,
-			init: function(element, rules)
-			{
-				/* Set element */
-				this.element = element;
-				
-				/* Initialize rules */
-				if (rules)
-				{
-					for (var i in rules)
-					{
-						this.addRule(rules[i])
-					}
-				}
-			},
-			addRule: function(rule) /* Add rule */
-			{
-				this.rules.push(rule);
-			},
-			valid: function()
-			{
-				var i = this.rules.length;
-				
-				while(i--) /* Atomic loop */
-				{
-					if (!this.rules[i].valid) return false;
-				}
-				
-				return true;
-			}
-		});
-		
-		return { /* Static patterns */
-			rules:[],
-			empty: function(value) /* Check whether value is empty string */{},
-			email: function(value) /* Check whether the value is valid email */{},
-			alnum: function(value) /* Check whether value contains alphabetic or numeric characters only */ {},
-			digit: function(value) /* Check whether value contains numeric characters only */ {},
-			alpha: function(value) /* Check whether value contains alphabetic only */ {},
-			space: function(value) /* Check whether value contains space characters only */ {},
-			lower: function(value) /* Check whether value contains only lower characters */ {},
-			upper: function(value) /* Check whether value contains only upper characters */ {}
-		}
-	})();
-	
     
     Core.mixin = (function()
     {
@@ -581,4 +530,55 @@
 		    }
     	}
     })()
+    
+    Core.validator = (function() /* TODO: Complete Validators */
+	{
+		var Valid = this.extend(
+		{
+			rules:[],
+			element:null,
+			init: function(element, rules)
+			{
+				/* Set element */
+				this.element = element;
+				
+				/* Initialize rules */
+				if (rules)
+				{
+					for (var i in rules)
+					{
+						this.addRule(rules[i])
+					}
+				}
+			},
+			addRule: function(rule) /* Add rule */
+			{
+				this.rules.push(rule);
+			},
+			valid: function()
+			{
+				var i = this.rules.length;
+				
+				while(i--) /* Atomic loop */
+				{
+					if (!this.rules[i].valid) return false;
+				}
+				
+				return true;
+			}
+		});
+		
+		return { /* Static patterns */
+			rules:[],
+			empty: function(value) /* Check whether value is empty string */{},
+			email: function(value) /* Check whether the value is valid email */{},
+			alnum: function(value) /* Check whether value contains alphabetic or numeric characters only */ {},
+			digit: function(value) /* Check whether value contains numeric characters only */ {},
+			alpha: function(value) /* Check whether value contains alphabetic only */ {},
+			space: function(value) /* Check whether value contains space characters only */ {},
+			lower: function(value) /* Check whether value contains only lower characters */ {},
+			upper: function(value) /* Check whether value contains only upper characters */ {}
+		}
+	})();
+	
 })(jQuery, window);
