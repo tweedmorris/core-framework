@@ -97,6 +97,10 @@
 		    	
 		    	return true;
 		    },
+		    isNumber: function(value)
+		    {
+		    	return Object.prototype.toString.call(value) === '[object Number]';
+		    },
 		    isObject: function(value)
 		    {
 		    	return Object.prototype.toString.call(value) === '[object Object]';
@@ -104,7 +108,15 @@
 		    isClass: function(value)
 		    {
 		    	return (typeof(value) == "function" && typeof(value.prototype) == "object") ? true : false; 
-		    }
+		    },
+		    isFunction: function(value) 
+			{
+				return objectPrototype.toString.apply(value) === '[object Function]';
+			},
+			isBoolean: function(value) 
+			{
+				return Object.toString.apply(value) === '[object Boolean]';
+			}
 		}
 	})();
     
@@ -329,7 +341,7 @@
 						
 						scripts[script] = [];
 					};
-					
+
 					if (Core.pattern.isFilemap(namespace))
 					{
 						scripts = namespace;
@@ -533,27 +545,24 @@
     
     Core.validator = (function() /* TODO: Complete Validators */
 	{
-		var Valid = this.extend(
+		var Checker = Core.extend(
 		{
 			rules:[],
-			element:null,
-			init: function(element, rules)
+			value:null,
+			addRules: function(rules)
 			{
-				/* Set element */
-				this.element = element;
-				
-				/* Initialize rules */
-				if (rules)
+				for (var i in rules)
 				{
-					for (var i in rules)
-					{
-						this.addRule(rules[i])
-					}
+					this.addRule(rules[i])
 				}
 			},
 			addRule: function(rule) /* Add rule */
 			{
 				this.rules.push(rule);
+			},
+			setValue: function(value)
+			{
+				this.value = value;
 			},
 			valid: function()
 			{
@@ -561,23 +570,83 @@
 				
 				while(i--) /* Atomic loop */
 				{
-					if (!this.rules[i].valid) return false;
+					if (!this.rules[i].apply(this, [this.value]))
+					{
+						return false;
+					}
+					
 				}
 				
 				return true;
 			}
 		});
-		
+
+		var form, rules = [], errors = [], map = {}, check = null;
+
 		return { /* Static patterns */
-			rules:[],
-			empty: function(value) /* Check whether value is empty string */{},
-			email: function(value) /* Check whether the value is valid email */{},
-			alnum: function(value) /* Check whether value contains alphabetic or numeric characters only */ {},
-			digit: function(value) /* Check whether value contains numeric characters only */ {},
-			alpha: function(value) /* Check whether value contains alphabetic only */ {},
-			space: function(value) /* Check whether value contains space characters only */ {},
-			lower: function(value) /* Check whether value contains only lower characters */ {},
-			upper: function(value) /* Check whether value contains only upper characters */ {}
+			map: function()
+			{
+				return this;
+			},
+			use: function(list)
+			{
+				for (i = 0, l = list.length; i < l; i++)
+				{
+					rules.push(list[i]);
+				}
+				return this;
+			},
+			valid: function()
+			{
+				alert(form);
+			},
+			check: function() /* Lazy load on demand */
+			{
+				if (null === check)
+				{
+					check = new Checker();
+				}
+				return check;
+			},
+			empty: function(value) /* Check whether value is empty string */
+			{
+				return null === value ? false : (value.length == 0 ? false : true);
+			},
+			email: function(value) /* Check whether the value is valid email */
+			{
+				return false;
+			},
+			alnum: function(value) /* Check whether value contains alphabetic or numeric characters only */ 
+			{
+				return true;
+			},
+			digit: function(value) /* Check whether value contains numeric characters only */ 
+			{
+				return Core.pattern.isNumber(value);
+			},
+			alpha: function(value) /* Check whether value contains alphabetic characters only */ 
+			{
+				return false;
+			},
+			lower: function(value) /* Check whether value contains only lower characters */ 
+			{
+				return (value == value.toLowerCase()); 
+			},
+			upper: function(value) /* Check whether value contains only upper characters */ 
+			{
+				return (value == value.toUpperCase()); 
+			},
+			extend: function(proto)
+			{
+				Core.apply(this, proto);
+			},
+			reset: function()
+			{
+				rules  = [];
+				errors = [];
+				
+				return this;
+			}
 		}
 	})();
 	/* EOF Core */
