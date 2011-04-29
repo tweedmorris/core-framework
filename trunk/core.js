@@ -528,7 +528,7 @@
 		 */
 		preloader: (function()
 		{
-			var queue = [], images = [], errors = [], total = 0, config = 
+			var queue = [], images = [], total = 0, config = 
 			{
 				cache: true,
 				parallel: true
