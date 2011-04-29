@@ -2,7 +2,7 @@
 * Core.ui.forms
 * @version 1.0.0
 */
-Core.define('Core.element', Core.data.extend(
+Core.define('Core.element', Core.extend(
 {
 	element: null,
 	init: function(element, config)

@@ -82,7 +82,6 @@
 		    	{	
 		    		for (var key in value)
 		    		{
-		    			
 		    			/* Return false immediatly if key is not string */
 		    			if (!this.isString(key)) return false;
 
@@ -111,7 +110,7 @@
 		    },
 		    isFunction: function(value) 
 			{
-				return objectPrototype.toString.apply(value) === '[object Function]';
+				return Object.toString.apply(value) === '[object Function]';
 			},
 			isBoolean: function(value) 
 			{
@@ -360,7 +359,6 @@
 							}
 						}
 					}
-
 					Core.loader.addScripts(scripts).autoload(callback);
 				}
 			})
@@ -446,10 +444,6 @@
 								});
 								
 								script.callbacks.length = 0;
-							},
-							error: function(request, status, error)
-							{
-								return false;
 							}
 						});
 					}
@@ -525,6 +519,96 @@
 					
 				})('core.js')
 			}
+		})(),
+		 /**
+		 * Parallel image preloader 
+		 *
+		 * @version 1.0
+		 * @copyright Core Framework
+		 */
+		preloader: (function()
+		{
+			var queue = [], images = [], errors = [], total = 0, config = 
+			{
+				cache: false,
+				parallel: true
+			};
+			
+			var time = 
+			{
+				start: 0,
+				end: 0   
+			}
+			
+			return {
+				onComplete: function(ui)
+				{
+					alert('All images loaded in ' + ui.time + ' sec.');
+				},
+				onError: function(){},
+				onAbort: function(){},
+				queue: function(element)
+				{
+					if (Core.pattern.isString(element))
+					{
+						queue.push(element)
+					}
+					else 
+					{
+						$.each(element, function(index, element)
+						{
+							queue.push(element);
+						})
+					}
+					
+					return this;
+				},
+				finish: function()
+				{
+					/* Decrease number of finished items */
+					total--;
+					
+					/* Check if no more items to preload */
+					if (0 == total)
+					{
+						time.end = new Date().getTime();
+						
+						this.onComplete.apply(this,[
+						{
+							time: ((time.end - time.start)/1000).toPrecision(2)
+						}])
+					}
+				},
+				preload: function(callback)
+				{
+					time.start = new Date().getTime();
+					
+					/* Get queue length */
+					total = i = queue.length;
+					
+					while(i--)
+					{
+						var image = new Image();
+					
+						image.onload  = Core.delegate(this, this.finish, [image, callback]);
+						image.onerror = Core.delegate(this, this.finish,  [image, callback]);
+						image.onabort = Core.delegate(this, this.onAbort,[image, callback]);
+						
+						/* Set image source */
+						image.src = config.cache ? queue.shift() : (queue.shift() + '?u=' + (new Date().getTime()))
+						
+						/* Push image */
+						images.push(image);
+					}
+				},
+				getStylesheets: function()
+				{
+					return $('link[rel="stylesheet"]',$('head')).map(function()
+					{
+						return $(this).attr('href');
+					}).get();
+				}
+			}
 		})()
     });
     
@@ -545,6 +629,20 @@
     
     Core.validator = (function() /* TODO: Complete Validators */
 	{
+		/* Abstract */
+		var Field = Core.extend(
+		{
+			rules: 	  [],
+			value:    null,
+			element:  null,
+			required: false,
+			init: function(element)
+			{
+				/* Set element reference */
+				this.element = element;
+			}
+		});
+
 		var Checker = Core.extend(
 		{
 			rules:[],
@@ -574,18 +672,19 @@
 					{
 						return false;
 					}
-					
 				}
 				
 				return true;
 			}
 		});
 
-		var form, rules = [], errors = [], map = {}, check = null;
+		var form = null, fields = [], map = {}
 
 		return { /* Static patterns */
-			map: function()
+			map: function( object )
 			{
+				map = object;
+				
 				return this;
 			},
 			use: function(list)
@@ -598,7 +697,10 @@
 			},
 			valid: function()
 			{
-				alert(form);
+				for (var key in map)
+				{
+					
+				}
 			},
 			check: function() /* Lazy load on demand */
 			{
@@ -639,13 +741,6 @@
 			extend: function(proto)
 			{
 				Core.apply(this, proto);
-			},
-			reset: function()
-			{
-				rules  = [];
-				errors = [];
-				
-				return this;
 			}
 		}
 	})();
