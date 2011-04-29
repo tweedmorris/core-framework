@@ -530,8 +530,8 @@
 		{
 			var queue = [], images = [], total = 0, config = 
 			{
-				cache: true,
-				parallel: true
+				cache: 		true,
+				parallel: 	true
 			};
 			
 			var time = 
@@ -599,12 +599,74 @@
 						images.push(image);
 					}
 				},
-				getStylesheets: function()
+				preloadCssImages: function(callback)
 				{
-					return $('link[rel="stylesheet"]',$('head')).map(function()
+					var images = this.getCssImages();
+					
+					this.queue(images).preload(callback);
+				},
+				getCssRules: function()
+				{
+					var collection = [], data = {}
+					
+					/* Private colect method */
+					var Collect = 
 					{
-						return $(this).attr('href');
-					}).get();
+						rules: function(rules)
+						{
+							var rule = rules.length;
+						
+							while(rule--)
+							{
+								data = 
+								{
+									rule: 		   rules[rule],
+									selectorText: !rules[rule].selectorText ? null : rules[rule].selectorText,
+									declaration:  (rules[rule].cssText) ? rules[rule].cssText : rules[rule].style.cssText
+								}
+						
+								collection.push(data);
+							}
+						}
+					}
+					
+					/* Loop stylesheets */
+					var i = document.styleSheets.length;
+					
+					while(i--)
+					{
+						var sheet = 
+						{
+							rules: 	 document.styleSheets[i].rules || document.styleSheets[i].cssRules,
+							imports: document.styleSheets[i].imports || []
+						}
+						
+						/* Collect rules */
+						Collect.rules(sheet.rules);
+						
+						/* Collecte imported rules */
+						for (x = 0; x < sheet.imports; x++)
+						{
+							Collect.rules(document.styleSheets[x].imports[x].rules || document.styleSheets[i].imports[x].cssRules);
+						}
+					}
+					
+					return collection;
+				},
+				getCssImages: function()
+				{
+					var rules = this.getCssRules(), i = rules.length, images = [], regex = new RegExp('[^\(|\'\"]+\.(gif|jpg|jpeg|png)','ig');
+					
+					while(i--)
+					{
+						var img = rules[i].declaration.match(regex);
+						
+						if (img.length)
+						{
+							images.push(img);
+						}
+					}
+					return images;
 				}
 			}
 		})()
