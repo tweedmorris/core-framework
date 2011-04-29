@@ -24,8 +24,8 @@ Core.preloader.queue(
 	'../../../../explorer/22.jpg',
 	'../../../../explorer/13.jpg',
 	'../../../../explorer/14.jpg'
-]).preload(function()
+]).preload(function(ui)
 {
-	alert('All loaded');
+	alert('All loaded in ' + ui.time + ' sec.');
 })
 }}}
