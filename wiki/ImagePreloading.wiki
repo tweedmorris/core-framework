@@ -31,3 +31,17 @@ Core.preloader.queue(
 }}}
 
 In the example above Core Framework will preload an array of images passed as argument of *queue()* method and then will execute a callback function passed as argument of *preload()* method once all images are preloaded successfully.
+
+= Preloading anchor hrefs =
+Sometimes one may need to load images from anchor href attribute. In the following example there is simple implementation of how to achieve this:
+{{{
+var images = $('a').map(function()
+{
+	return $(this).attr('href');
+}).get();
+
+Core.preloader.queue(images).preload(function(ui)
+{
+	alert('All loaded in ' + ui.time + ' sec.');
+})
+}}}
