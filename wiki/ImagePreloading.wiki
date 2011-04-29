@@ -1,0 +1,31 @@
+#summary Image preloading with Core Framework
+
+= Introduction =
+
+Core Framework utilizes fast algorithm for preloading images in parallel, thus reducing the response time of an application.
+
+
+= Preloading images =
+Example of image preloading with Core Framework:
+{{{
+Core.preloader.queue(
+[
+	'../../../../explorer/1.jpg',
+	'../../../../explorer/2.jpg',
+	'../../../../explorer/3.jpg',
+	'../../../../explorer/4.jpg',
+	'../../../../explorer/5.jpg',
+	'../../../../explorer/6.jpg',
+	'../../../../explorer/7.jpg',
+	'../../../../explorer/8.jpg',
+	'../../../../explorer/9.jpg',
+	'../../../../explorer/10.jpg',
+	'../../../../explorer/11.jpg',
+	'../../../../explorer/22.jpg',
+	'../../../../explorer/13.jpg',
+	'../../../../explorer/14.jpg'
+]).preload(function()
+{
+	alert('All loaded');
+})
+}}}
