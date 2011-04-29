@@ -45,3 +45,10 @@ Core.preloader.queue(images).preload(function(ui)
 	alert('All loaded in ' + ui.time + ' sec.');
 })
 }}}
+= Preloading CSS Images =
+{{{
+Core.preloader.preloadCssImages(function(ui)
+{
+	alert('All CSS images preloaded in ' + ui.time + ' sec.');
+});
+}}}
