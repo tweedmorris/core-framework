@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Core Framework utilizes fast algorithm for preloading images in parallel, thus reducing the response time of an application.
+Core Framework utilizes fast algorithm for preloading images in parallel, thus reducing the response time of an application. Instead of sequential loading, CF's preloader loads an array of images in parallel.
 
 
 = Preloading images =
