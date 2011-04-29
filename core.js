@@ -530,7 +530,7 @@
 		{
 			var queue = [], images = [], errors = [], total = 0, config = 
 			{
-				cache: false,
+				cache: true,
 				parallel: true
 			};
 			
@@ -541,12 +541,7 @@
 			}
 			
 			return {
-				onComplete: function(ui)
-				{
-					alert('All images loaded in ' + ui.time + ' sec.');
-				},
-				onError: function(){},
-				onAbort: function(){},
+				onComplete: function(ui){ /* Override */},
 				queue: function(element)
 				{
 					if (Core.pattern.isString(element))
@@ -581,6 +576,9 @@
 				},
 				preload: function(callback)
 				{
+					/* Set callback function */
+					this.onComplete = callback || this.onComplete;
+					
 					time.start = new Date().getTime();
 					
 					/* Get queue length */
@@ -590,9 +588,9 @@
 					{
 						var image = new Image();
 					
-						image.onload  = Core.delegate(this, this.finish, [image, callback]);
-						image.onerror = Core.delegate(this, this.finish,  [image, callback]);
-						image.onabort = Core.delegate(this, this.onAbort,[image, callback]);
+						image.onload  = Core.delegate(this, this.finish, [image]);
+						image.onerror = Core.delegate(this, this.finish, [image]);
+						image.onabort = Core.delegate(this, this.finish,[image]);
 						
 						/* Set image source */
 						image.src = config.cache ? queue.shift() : (queue.shift() + '?u=' + (new Date().getTime()))
@@ -611,21 +609,6 @@
 			}
 		})()
     });
-    
-    Core.jQuery = (function()
-    {
-    	return {
-		    /**
-		    * Widget
-		    *
-		    * Uses $.widget factory to define widget
-		    */
-	    	widget: function(widget, proto)
-		    {
-		    	$.widget(widget, new Core.extend(proto).prototype);
-		    }
-    	}
-    })()
     
     Core.validator = (function() /* TODO: Complete Validators */
 	{
