@@ -29,3 +29,5 @@ Core.preloader.queue(
 	alert('All loaded in ' + ui.time + ' sec.');
 })
 }}}
+
+In the example above Core Framework will preload an array of images passed as argument of *queue()* method and then will execute a callback function passed as argument of *preload()* method once all images are preloaded successfully.
