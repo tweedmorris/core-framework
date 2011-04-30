@@ -29,4 +29,5 @@ Core Framework relies on jQuery to work. One may find it strange to use 2 framew
     * Makes preloading easy
     * Utilizes some of the fastest algorithms to provide snappy response times
   # it is optimized for best performance
+  # it is designed to provide mechanisms for page optimization
   # it is supported and extended by company (Creozon Ltd.) working in the field of UI and User Experience.
