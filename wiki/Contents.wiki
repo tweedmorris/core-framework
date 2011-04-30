@@ -2,7 +2,6 @@
 
   * [Start Getting Started]
     * [Introduction Introduction]
-    * [Creozon About Creozon]
     * [Download Download]
     * [Installation Install]
   * [Reference Reference Guide]
