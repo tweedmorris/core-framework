@@ -1,5 +1,9 @@
 #summary Creating JavaScript Class with Core Framework
 
+= Class Creation =
+
+One of the primary goals of Core Framework is to simplify class definition. We recommend using Core.define() method as more secure approach, however one may define class like this:
+
 {{{
 var MyClass = Core.extend(
 {
