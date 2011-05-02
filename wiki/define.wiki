@@ -1,0 +1,14 @@
+#summary Defining class with Core Framework
+
+= Introduction =
+
+{{{
+Core.define('my.application.MyClass',Core.extend(
+{
+	name: 'Custom class with Core Framework',
+	getName: function()
+	{
+		alert(this.name) /* Alerts: Custom class with Core Framework*/
+	}
+}));
+}}}
