@@ -2,6 +2,8 @@
 
 = Introduction =
 
+Class definition in Core Framework is done using Core.define() method:
+
 {{{
 Core.define('my.application.MyClass',Core.extend(
 {
