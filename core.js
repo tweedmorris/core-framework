@@ -210,13 +210,17 @@
 				// All construction is actually done in the init method
 				if (!Core.constructing && this.init)
 				{
+					/* Apply constructor */
 					this.init.apply(this, arguments);
+					
+					/* Apply parent constructor automatically */
+					this.init.apply(this.superclass, arguments);
 				}
 			};
 
 			/* Associate superclass */
 			proto.superclass = superclass;
-			
+
 			Core.apply(Class, 
 			{
 				prototype:   proto,
@@ -359,6 +363,7 @@
 							}
 						}
 					}
+					
 					Core.loader.addScripts(scripts).autoload(callback);
 				}
 			})
@@ -471,7 +476,6 @@
 						{
 							pushQueue(script);
 						});
-	
 						/* Queue script */
 						pushQueue(script);
 					});
@@ -671,66 +675,25 @@
 			}
 		})()
     });
-    
+
     Core.validator = (function() /* TODO: Complete Validators */
 	{
-		/* Abstract */
-		var Field = Core.extend(
-		{
-			rules: 	  [],
-			value:    null,
-			element:  null,
-			required: false,
-			init: function(element)
-			{
-				/* Set element reference */
-				this.element = element;
-			}
-		});
-
-		var Checker = Core.extend(
-		{
-			rules:[],
-			value:null,
-			addRules: function(rules)
-			{
-				for (var i in rules)
-				{
-					this.addRule(rules[i])
-				}
-			},
-			addRule: function(rule) /* Add rule */
-			{
-				this.rules.push(rule);
-			},
-			setValue: function(value)
-			{
-				this.value = value;
-			},
-			valid: function()
-			{
-				var i = this.rules.length;
-				
-				while(i--) /* Atomic loop */
-				{
-					if (!this.rules[i].apply(this, [this.value]))
-					{
-						return false;
-					}
-				}
-				
-				return true;
-			}
-		});
-
 		var form = null, fields = [], map = {}
 
 		return { /* Static patterns */
+			options:
+			{
+				element: null
+			},
 			map: function( object )
 			{
 				map = object;
 				
 				return this;
+			},
+			auto:function() /* Applies automatic element mapping based on HTML5 data- attribite(s) */
+			{
+				
 			},
 			use: function(list)
 			{
