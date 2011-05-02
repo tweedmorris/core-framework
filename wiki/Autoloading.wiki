@@ -59,7 +59,7 @@ In the example above, the library will load the scripts in the following sequenc
 
 Not that plugins/element.js is loaded only once.
 
-= Script(s) path =
+== 4. Script(s) path ==
 In order to include scripts from specific path one must specify it via setConfig method:
 {{{
 /* Config autoloader */
