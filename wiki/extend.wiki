@@ -1,0 +1,22 @@
+#summary Creating JavaScript Class with Core Framework
+
+{{{
+var MyClass = Core.extend(
+{
+	name: 'Custom class with Core Framework',
+	getName: function()
+	{
+		alert(this.name) /* Alerts: Custom class with Core Framework*/
+	}
+})
+
+/* Inherit MyClass */
+var MyChildClass = MyClass.extend(
+{
+	name:  'Custom inherited class with Core Framework'
+});
+
+var o = new MyChildClass();
+
+o.getName(); /* Alerts Custom inherited class with Core Framework */
+}}}
