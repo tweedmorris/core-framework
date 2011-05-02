@@ -58,3 +58,13 @@ In the example above, the library will load the scripts in the following sequenc
  # plugins/element.forms.js
 
 Not that plugins/element.js is loaded only once.
+
+= Script(s) path =
+In order to include scripts from specific path one must specify it via setConfig method:
+{{{
+/* Config autoloader */
+Core.loader.setConfig(
+{
+	path: '../sandbox/scripts'
+})
+}}}
