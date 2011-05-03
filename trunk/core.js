@@ -195,11 +195,11 @@
     {
 		extend: function(object)
 		{
-			this.constructing = true;
+			Core.constructing = true;
 			
 			var proto = new this(), superclass = this.prototype;
 
-			delete this.constructing;
+			delete Core.constructing;
 
 			/* Extend object prototypes */
 			Core.apply(proto, object);
@@ -768,6 +768,8 @@
 					return this.each(function() 
 					{
 						var instance = $.data(this, name);
+						
+						
 						
 						if (instance) 
 						{
