@@ -3,7 +3,7 @@
 = Widget =
 jQuery Widget example with Core Framework
 {{{
-Core.jQuery.widget('ui.observer',
+Core.jQuery.widget('ui.observer', Core.extend(
 {
 	options:
 	{
@@ -18,7 +18,7 @@ Core.jQuery.widget('ui.observer',
 		/* Bind simple click listener */
 		this.element.bind('click',this.delegate(this, this.observe))
 	}
-});
+}));
 }}}
 The example above will create simple widget *$.ui.obersver* which can be used like this:
 {{{
