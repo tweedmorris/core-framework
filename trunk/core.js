@@ -754,7 +754,7 @@
 	* jQuery Adapter(s) 
 	* 
 	* The following methods can be used for creation of jQuery plugins & widgets
-	* @version 1.0
+	* @version 1.0.0
 	*/
 	Core.jQuery = (function()
 	{	
