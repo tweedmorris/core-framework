@@ -24,34 +24,3 @@ The example above will create simple widget *$.ui.obersver* which can be used li
 {{{
 $('ul > li').observer();
 }}}
-
-= Widget mixins =
-widget() method allows one to mixin existing widgets and thus achieve multiple widget inheritance through mixins
-{{{
-/* Base widget */
-Core.jQuery.widget('ui.customWidget',
-{
-	customMethod: function()
-	{
-		this.element.fadeOut(300);
-	}
-})
-
-
-/* User defined widget that has access to base widget*/
-Core.jQuery.widget('ui.observer',
-{
-	_create: function()
-	{
-		/* Call method from Base widget */
-		this.customMethod();
-		
-		/* Another way to call methods from base widget*/
-		this.getMixin('custom').customMethod();
-	},
-	mixins:
-	{
-		custom: $.ui.customWidget
-	}
-});
-}}}
