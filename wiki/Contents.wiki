@@ -30,6 +30,7 @@
         * [File Ajax File Upload]
   * [Examples Examples]
     * [Widget jQuery Widget]
+    * [Plugin jQuery Plugin]
     * [Reusable Reusable code]
        * [CSS CSS]
          * [ResetCss CSS Reset]
