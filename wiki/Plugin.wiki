@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Create jQuery plugin with Core Framework
 
 = Introduction =
 
