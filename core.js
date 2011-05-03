@@ -212,9 +212,6 @@
 				{
 					/* Apply constructor */
 					this.init.apply(this, arguments);
-					
-					/* Apply parent constructor automatically */
-					this.init.apply(this.superclass, arguments);
 				}
 			};
 
@@ -752,5 +749,43 @@
 			}
 		}
 	})();
+	
+	/**
+	* jQuery Adapter(s) 
+	* 
+	* The following methods can be used for creation of jQuery plugins & widgets
+	* @version 1.0
+	*/
+	Core.jQuery = (function()
+	{	
+		return {
+			plugin: function(name, proto) 
+			{
+				$.fn[name] = function(options) 
+				{
+					var args = Array.prototype.slice.call(arguments, 1);
+					
+					return this.each(function() 
+					{
+						var instance = $.data(this, name);
+						
+						if (instance) 
+						{
+							instance[options].apply(instance, args);
+						} 
+						else 
+						{
+							instance = $.data(this, name, new proto(options, this));
+						}
+					});
+				};
+			},
+			widget: function(name, proto)
+			{
+				return $.widget(name, proto.prototype);
+			}
+		}
+	})()
+	
 	/* EOF Core */
 })(jQuery, window);
