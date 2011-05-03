@@ -1,9 +1,6 @@
-var Base64 = {
- 
-	// private property
+Code.define('Base64', Core.extend(
+{
 	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
- 
-	// public method for encoding
 	encode : function (input) {
 		var output = "";
 		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
@@ -31,13 +28,10 @@ var Base64 = {
 			output = output +
 			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
 			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
- 
 		}
  
 		return output;
 	},
- 
-	// public method for decoding
 	decode : function (input) {
 		var output = "";
 		var chr1, chr2, chr3;
@@ -131,4 +125,4 @@ var Base64 = {
  
 		return string;
 	}
-}
+}));
