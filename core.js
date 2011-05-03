@@ -334,16 +334,46 @@
 				autoload: function(namespace, callback)
 				{
 					var scripts = {};
+					
+					/**
+					* Transform string to secure path
+					*/
+					var toPath = function( string )
+					{
+						var params = [], regex = new RegExp('((\.\.\/)+)','i');
+						
+						/* Relative path(s) */
+						relative = regex.exec(string);
+						
+						if (relative && relative.length)
+						{
+							/* Get the relative part */
+							relative = relative.shift();
+							
+							/* Get string */
+							string = string.substring(relative.length);
+							
+							params.push(relative);
+						}
+						
+						/* Push clear path */
+						params.push(Core.Array.get(string.split('.')).invoke('toLowerCase').join('/'));
+						
+						/* Return safe path */
+						return params.join('');
+					}
 
+					/* Queue script */
 					var queue = function(namespace)
 					{
-						var script = Core.Array.get(namespace.split('.')).invoke('toLowerCase').join('/');
+						var script = toPath(namespace);
 						
 						scripts[script] = [];
 					};
 
 					if (Core.pattern.isFilemap(namespace))
 					{
+						/* Apply map directly */
 						scripts = namespace;
 					}
 					else 
@@ -361,6 +391,7 @@
 						}
 					}
 					
+
 					Core.loader.addScripts(scripts).autoload(callback);
 				}
 			})
