@@ -23,3 +23,4 @@ $('a.login').click(function()
 	})
 });
 }}}
+In the example above CF will include script on demand and allow to bind functionality with callback function. If the user never clicks login button, the code will not be included.
