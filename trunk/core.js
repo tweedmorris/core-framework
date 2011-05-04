@@ -430,7 +430,7 @@
 			{
 				path: 	 	null,
 				basePath:	null,
-				cache: 		false,
+				cache: 		true,
 				dataType: 	'script',
 				type:		'.js',
 				method: 	'GET'
