@@ -115,6 +115,12 @@
 			isBoolean: function(value) 
 			{
 				return Object.toString.apply(value) === '[object Boolean]';
+			},
+			isURI: function(value)
+			{
+				var regex =  new RegExp('(ftp|http|https)','ig');
+				
+				return value.match(regex) ? true : false;
 			}
 		}
 	})();
@@ -340,6 +346,11 @@
 					*/
 					var toPath = function( string )
 					{
+						if (Core.pattern.isURI(namespace)) /* Skip manipulation of URI(s) */
+						{
+							return namespace;
+						}
+						
 						var params = [], regex = new RegExp('((\.\.\/)+)','i');
 						
 						/* Relative path(s) */
@@ -419,7 +430,10 @@
 			{
 				path: 	 	null,
 				basePath:	null,
-				cache: 		true
+				cache: 		false,
+				dataType: 	'script',
+				type:		'.js',
+				method: 	'GET'
 			};
 
 			/** @lends core.loader */
@@ -461,11 +475,17 @@
 
 					if(script.callbacks.length == 1) 
 					{
+						var resource = [];
+						
+						resource.push(config.path);
+						resource.push(config.basePath);
+						resource.push(url + (config.type || ''));
+						
 						$.ajax(
 						{
-							type     : 'GET',
-							url      : Core.Array.get([config.path, config.basePath, url + '.js']).clean().join('/'),
-							dataType : 'script',
+							type     : config.method,
+							url      : Core.Array.get(resource).clean().join('/'),
+							dataType : config.dataType,
 							cache    : config.cache,
 							success  : function() 
 							{
