@@ -726,46 +726,7 @@
 
     Core.validator = (function() /* TODO: Complete Validators */
 	{
-		var form = null, fields = [], map = {}
-
 		return { /* Static patterns */
-			options:
-			{
-				element: null
-			},
-			map: function( object )
-			{
-				map = object;
-				
-				return this;
-			},
-			auto:function() /* Applies automatic element mapping based on HTML5 data- attribite(s) */
-			{
-				
-			},
-			use: function(list)
-			{
-				for (i = 0, l = list.length; i < l; i++)
-				{
-					rules.push(list[i]);
-				}
-				return this;
-			},
-			valid: function()
-			{
-				for (var key in map)
-				{
-					
-				}
-			},
-			check: function() /* Lazy load on demand */
-			{
-				if (null === check)
-				{
-					check = new Checker();
-				}
-				return check;
-			},
 			empty: function(value) /* Check whether value is empty string */
 			{
 				return null === value ? false : (value.length == 0 ? false : true);
