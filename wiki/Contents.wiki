@@ -29,6 +29,7 @@
       * [Forms Forms]
         * [File Ajax File Upload]
   * [Examples Examples]
+    * [reCaptcha reCaptcha with Core Framework]
     * [Widget jQuery Widget]
     * [Plugin jQuery Plugin]
     * [Reusable Reusable code]
