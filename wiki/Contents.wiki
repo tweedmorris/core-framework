@@ -28,7 +28,7 @@
         * [ImagePreloading Image preloading]
       * [Forms Forms]
         * [File Ajax File Upload]
-  * [Examples Examples]
+  * [Ex Examples]
     * [reCaptcha reCaptcha with Core Framework]
     * [Widget jQuery Widget]
     * [Plugin jQuery Plugin]
