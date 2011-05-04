@@ -4,7 +4,9 @@
 
 Core Framework provides means for dynamic script inclusion and one can make use of this to speed up an application.
 
-In a trivial situation most of the scripts are included in the *head* section. However sometimes a script may never do a task depending on the purpose of the user visit. (Example: User may look at the site, but not login to update his/her profile. Imagine that authorization is done via popup created by JavaScript function combined AJAX call, and some functions needed to properly handle the log in process). 
+In a trivial situation most of the scripts are included in the *head* section. However sometimes a script may never do a task depending on the purpose of the user visit. 
+
+(*Example:* User may look at the site, but may not log in to update his/her profile. Imagine that authorization is done via clicking button login followed by popup created by JavaScript showing username & password field, followed by AJAX call, and some functions needed to properly handle the log in process). 
 
 Usually functionality is binded in page load.
 
