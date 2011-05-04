@@ -2,11 +2,11 @@
 
 = Introduction =
 
-reCAPTCHA is a free CAPTCHA service that helps to digitize books, newspapers and old time radio shows. Check out our paper in Science about it (or read more below).
+reCAPTCHA is a free CAPTCHA service that helps to digitize books, newspapers and old time radio shows. 
 
 A CAPTCHA is a program that can tell whether its user is a human or a computer. You've probably seen them — colorful images with distorted text at the bottom of Web registration forms. CAPTCHAs are used by many websites to prevent abuse from "bots," or automated programs usually written to generate spam. No computer program can read distorted text as well as humans can, so bots cannot navigate sites protected by CAPTCHAs.
 
-If you run a website that suffers from problems with spam, you can put reCAPTCHA on your site.
+If you *run a website that suffers from problems with spam*, you can put reCAPTCHA on your site.
 
 = Install with Core Framework =
 
