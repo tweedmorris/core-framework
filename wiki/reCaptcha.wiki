@@ -26,4 +26,4 @@ Core.require('plugins.captcha', function()
 
 In the example above CF will render reCaptcha in element with ID: captcha
 
-If you have noticed so far, there is no need to include any JavaScript files in your code, they will be included automatically for you on demand.
+If you have noticed so far, there is no need to include any JavaScript files in your code, they will be included automatically for you on demand. Core Frameworks enables you to activate reCaptcha in your existing pages without any need to modify your HTML code. Also reCaptcha is included with AJAX call thus reducing start-up resources for your pages.
