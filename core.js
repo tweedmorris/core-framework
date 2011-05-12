@@ -594,6 +594,18 @@
 			
 			return {
 				onComplete: function(ui){ /* Override */},
+				images: function()
+				{
+					return images;
+				},
+				reset: function()
+				{
+					queue 	= [];
+					images 	= [];
+					total 	= 0;
+					
+					return this;
+				},
 				queue: function(element)
 				{
 					if (Core.pattern.isString(element))
@@ -610,10 +622,16 @@
 					
 					return this;
 				},
-				finish: function()
+				finish: function(event, index, image)
 				{
 					/* Decrease number of finished items */
 					total--;
+					
+					images[index].size = 
+					{
+						width: 	image.width,
+						height: image.height
+					}
 					
 					/* Check if no more items to preload */
 					if (0 == total)
@@ -640,15 +658,24 @@
 					{
 						var image = new Image();
 					
-						image.onload  = Core.delegate(this, this.finish, [image]);
-						image.onerror = Core.delegate(this, this.finish, [image]);
-						image.onabort = Core.delegate(this, this.finish,[image]);
+						image.onload  = Core.delegate(this, this.finish, [i,image]);
+						image.onerror = Core.delegate(this, this.finish, [i,image]);
+						image.onabort = Core.delegate(this, this.finish,[i,image]);
 						
 						/* Set image source */
 						image.src = config.cache ? queue.shift() : (queue.shift() + '?u=' + (new Date().getTime()))
 						
 						/* Push image */
-						images.push(image);
+						images.push(
+						{
+							index: i,
+							image: image,
+							size: 
+							{
+								width:	0,
+								height: 0
+							}
+						});
 					}
 				},
 				preloadCssImages: function(callback)
