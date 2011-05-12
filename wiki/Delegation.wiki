@@ -5,7 +5,7 @@
 
 Method delegation has become inseparable part of our daily development activities. Main objective of CF is to provide as clean code as possible thus reducing time required for debugging and support. Most of the UI interactions with jQuery involve working with events and callbacks. However callback functions have private scope, which disables access to other methods of our class(es)
 
-= Delegate =
+= JavaScript Delegate =
 
 A delegate is a type that references a method. Once a delegate is assigned a method, it behaves exactly like that method. The delegate method can be used like any other method, with parameters and a return value
 
