@@ -1,4 +1,4 @@
-#summary Method delegation
+#summary JavaScript Delegate
 #sidebar Contents
 
 = General information =
