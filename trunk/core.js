@@ -295,7 +295,21 @@
 					{
 						return null === value ? false : value.length;
 					});
+				},
+				contains: function(obj) 
+				{
+					var i = this.length;
+					
+					while (i--) 
+					{
+						if (this[i] === obj) 
+						{
+							return true;
+						}
+					}
+					return false;
 				}
+
     		};
     		
     		return {
@@ -753,14 +767,171 @@
 
     Core.validator = (function() /* TODO: Complete Validators */
 	{
+		/* Private var(s) */
+		var data = 
+		{
+			form: null,
+			map:
+			{
+				/* Override */
+			}
+		}, condition = Core.Array.get(
+			[
+				'required', 
+				'message',
+				'element',
+				'error'
+			]);
+		
 		return { /* Static patterns */
+			tooltip: function()
+			{
+				var Tip = Core.extend(
+				{
+					tooltip: null,
+					create: function()
+					{
+						this.tooltip = $('<div/>').addClass('coretip');
+						
+						return this;
+					},
+					empty: function()
+					{
+						this.tooltip.empty();
+					},
+					content: function(content)
+					{
+						this.tooltip.html(content);
+						
+						return this;
+					},
+					open: function(target)
+					{
+						var offset = target.offset();
+						
+						this.tooltip.css(
+						{
+							top: 	offset.top - 30,
+							left: 	offset.left + target.width() - 15,
+							opacity:0.95
+						}).appendTo('body').fadeIn(200);
+					},
+					close: function()
+					{
+						this.tooltip.remove()
+					}
+				})
+				
+				return new Tip().create();
+			},
+			displayErrors: function()
+			{
+				var error = false;
+				
+				$.each(data.map, function(name, options)
+				{
+					/* Create error tooltip */	
+					if (options.error)
+					{	
+						error = true; 
+						
+						options.element.addClass('invalid');
+
+						/* Open tooltip */
+						options.tooltip.content(options.message).open(options.element);
+					}
+					else 
+					{
+						options.element.removeClass('invalid');
+						
+						/* Close previously opened tooltip(s) */
+						options.tooltip.close();
+					}
+				});
+				
+				if (error)
+				{
+					/* Disable submit buttons */
+					data.form.find(':submit').parent().click(false).fadeTo(200,.5);
+				}
+				else 
+				{
+					/* Disable submit buttons */
+					data.form.find(':submit').parent().unbind('click').fadeTo(200,1);
+				}
+			},
+			map: function(form, map)
+			{
+				/* Store form */
+				data.form = $(form)
+					
+				/* Mapping */
+				$.each(map, function(element, options)
+				{
+					data.map[element] = $.extend(
+					{
+						error: 	 false,
+						message: null,
+						tooltip: Core.validator.tooltip()
+					},options)
+				})
+				
+				return this;
+			},
+			auto: function()
+			{
+				data.form.find(':input').unbind("blur").bind(
+				{
+					blur: Core.delegate(this, this.valid)
+				});
+				
+				return this;
+			},
+			valid: function()
+			{
+				/* Smart validation */
+				$.each(data.map, Core.delegate(this, this.filter));
+				
+				/* Display errors */
+				this.displayErrors();
+			},
+			filter: function(name, options)
+			{
+				var element = $(':input[name=' + name + ']');
+				
+				if (options.required)
+				{
+					$.each(options, Core.delegate(this, this.check,[name, element]))
+				}
+			},
+			check: function(fn, bool, name, element)
+			{
+				var error = false;
+
+				if (!condition.contains(fn))
+				{
+					if (bool !== this[fn].apply(this, [element.val(), element]))
+					{
+						/* Rise error */
+						error = true;
+					}
+					
+					$.extend(true, data.map[name], 
+					{
+						error: 		error,
+						element: 	element
+					})
+				}	
+			},
 			empty: function(value) /* Check whether value is empty string */
 			{
-				return null === value ? false : (value.length == 0 ? false : true);
+				return null === value ? false : (value.length == 0 ? true : false);
 			},
 			email: function(value) /* Check whether the value is valid email */
 			{
-				return false;
+				var regex = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+				
+				return regex.test(value);
 			},
 			alnum: function(value) /* Check whether value contains alphabetic or numeric characters only */ 
 			{
@@ -785,6 +956,14 @@
 			extend: function(proto)
 			{
 				Core.apply(this, proto);
+			},
+			password: function(value)
+			{
+				return true;
+			},
+			checked: function(value, element)
+			{
+				return element.is(':checked') ? true : false
 			}
 		}
 	})();
