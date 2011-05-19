@@ -4,7 +4,7 @@
 */
 Core.define('Core.tree', Core.tree.extend(
 {
-	history: new Core.history(),
+	history: new Core.tree.history(),
 	options: 
 	{
 		items: 'li',
