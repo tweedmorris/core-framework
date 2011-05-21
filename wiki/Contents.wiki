@@ -22,7 +22,7 @@
     * [Autoloading Autoloading]
     * [UI User Interface]
       * [Sortables Sortables]
-        * [NestedSortable Nested sortables]
+        * [NestedSortables Nested sortables]
       * [Preloading Preloading]
         * [ScriptAutoloader Script autoloader]
         * [ImagePreloading Image preloading]
