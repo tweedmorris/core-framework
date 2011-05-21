@@ -1,0 +1,29 @@
+#summary JQuery Nested Sortables
+
+= Introduction =
+
+Core Framework allows you to convert any ordered list into interactive sortables via drag and drop. Essential here is the ability to auto expand collapsed blocks on over, thus enabling the user to arrange even collapsed tree.
+
+= Details =
+Assume that you have the following hierarchy:
+{{{
+<ol class="sortable">
+	<li>Products</li>
+	<li>Training programs</li>
+	<li>Sports equipment
+		<ol>
+			<li>Shows</li>
+			<li>Clothes</li>
+		</ol>
+	</li>
+</ol>
+}}}
+
+To transform this into nested sortable, one can use the following code:
+{{{
+/* Create jQuery widget */
+$.widget('ui.tree', Core.widget.tree);
+			
+/* Apply widget */
+$('ol.sortable').tree();
+}}}
