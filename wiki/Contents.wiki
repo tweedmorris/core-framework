@@ -27,6 +27,7 @@
         * [ScriptAutoloader Script autoloader]
         * [ImagePreloading Image preloading]
       * [Forms Forms]
+        * [Validation Validation]
         * [File Ajax File Upload]
   * [Ex Examples]
     * [reCaptcha reCaptcha]
