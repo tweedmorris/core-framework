@@ -1030,17 +1030,18 @@
 					accept: 			'li',
 			        tolerance: 			'pointer',
 			        refreshPositions: 	true
-				}
+				},
+				folder: null
 			},
 			init: function(index, item)
 			{
 				/* Append placeholder(s) */
 				var placeholder = $('<div/>').addClass('placeholder'), item = $(item);
 				
-				placeholder.prependTo(item).animate(
+				placeholder.prependTo(item).css(
 				{
-					height:5
-				}, 300);
+					height:2
+				})
 				
 				/* Check wether item has OL children */
 				this.refresh();
@@ -1160,6 +1161,11 @@
 				this.element.find(this.options.items)
 						    .each(Core.delegate(this, this.init))
 						    .bind("click",Core.delegate(this,this.toggle))
+						    .bind(
+						    {
+						    	mouseenter: Core.delegate(this.smartControl, this.smartControl.append,[this.options]),
+						    	mouseleave: Core.delegate(this.smartControl, this.smartControl.remove)
+						    })
 						    .draggable(this.options.draggable)
 						    .end()
 						    .find('div, .placeholder')
@@ -1170,6 +1176,91 @@
 			    
 			    this.serialize.serialize(this.element);
 			},
+			smartControl: (function()
+			{
+				var Control = Core.extend(
+				{
+					options: 
+					{
+						folder:null
+					},
+					activate: function(target)
+					{
+						var id = target.attr('data-id'), smart = $('<div/>').addClass('smart fix');
+						
+						$.each(
+						[
+							$('<a/>',
+							{
+								href: this.options.folder + '/edit.php?id=' + id
+							}).addClass('edit'),
+							$('<a/>',
+							{
+								href: this.options.folder + '/delete.php?id=' + id
+							}).bind('click', function()
+							{
+								return confirm("Are you sure?");
+							}).addClass('delete'),
+						], function()
+						{
+							$(this).addClass('smart-link').bind('click', function(event)
+							{
+								event.stopPropagation();
+								
+							}).appendTo(smart);
+						})
+						
+						smart.appendTo(target);
+					},
+					deactivate: function(target)
+					{
+						target.find('.smart').remove();
+					},
+					setOptions: function(options)
+					{
+						$.extend(this.options, options);
+						
+						return this;
+					}				
+				});
+				
+				return {
+					element: null,
+					control: function()
+					{
+						if (null == this.element)
+						{
+							this.element = new Control();
+						}
+						return this.element;
+					},
+					append: function(event, options)
+					{
+						var target = this.getTarget(event);
+
+						/* Activate the smart control */
+						this.control().setOptions(options).activate(target);
+					},
+					remove: function(event)
+					{
+						var target = this.getTarget(event);
+						
+						this.control().deactivate(target);	
+					},
+					getTarget: function(event)
+					{
+						if ($(event.target).is('li'))
+						{
+							return $(event.target);
+						}
+						else 
+						{
+							return $(event.target).parents('li:first');
+						}
+					}
+					
+				}
+			})(),
 			history: (function()
 			{
 				return {
