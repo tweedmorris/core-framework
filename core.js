@@ -646,7 +646,7 @@
 						width: 	image.width,
 						height: image.height
 					}
-					
+
 					/* Check if no more items to preload */
 					if (0 == total)
 					{
@@ -672,9 +672,9 @@
 					{
 						var image = new Image();
 					
-						image.onload  = Core.delegate(this, this.finish, [i,image]);
-						image.onerror = Core.delegate(this, this.finish, [i,image]);
-						image.onabort = Core.delegate(this, this.finish,[i,image]);
+						image.onload  = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version < 8 ? [window.event, i,image] : [i,image]));
+						image.onerror = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version < 8 ? [window.event, i,image] : [i,image]));
+						image.onabort = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version < 8 ? [window.event, i,image] : [i,image]));
 						
 						/* Set image source */
 						image.src = config.cache ? queue.shift() : (queue.shift() + '?u=' + (new Date().getTime()))
@@ -1200,7 +1200,7 @@
 							}).bind('click', function()
 							{
 								return confirm("Are you sure?");
-							}).addClass('delete'),
+							}).addClass('delete')
 						], function()
 						{
 							$(this).addClass('smart-link').bind('click', function(event)
