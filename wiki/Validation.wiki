@@ -58,7 +58,7 @@ $.each(maps, function(key, map)
 })
 }}}
 
-Validators:
+= Validators =
  # *empty*:  Check whether value is empty string
  # *email*:  Check whether the value is valid email
  # *alnum*:  Check whether value contains alphabetic or numeric characters only 
@@ -68,3 +68,5 @@ Validators:
  # *upper*:  Check whether value contains only upper characters 
  # *password*: Check whether value contains secure password
  # *checked*: Check whether value is checked
+
+The library allows you to combine multiple validators in the map.
