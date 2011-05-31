@@ -59,12 +59,12 @@ $.each(maps, function(key, map)
 }}}
 
 Validators:
-empty:  Check whether value is empty string
-email:  Check whether the value is valid email
-alnum:  Check whether value contains alphabetic or numeric characters only 
-digit:  Check whether value contains numeric characters only 
-alpha:  Check whether value contains alphabetic characters only 
-lower:  Check whether value contains only lower characters 
-upper:  Check whether value contains only upper characters 
-password: Check whether value contains secure password
-checked: Check whether value is checked
+ # *empty*:  Check whether value is empty string
+ # *email*:  Check whether the value is valid email
+ # *alnum*:  Check whether value contains alphabetic or numeric characters only 
+ # *digit*:  Check whether value contains numeric characters only 
+ # *alpha*:  Check whether value contains alphabetic characters only 
+ # *lower*:  Check whether value contains only lower characters 
+ # *upper*:  Check whether value contains only upper characters 
+ # *password*: Check whether value contains secure password
+ # *checked*: Check whether value is checked
