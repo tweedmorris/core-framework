@@ -672,9 +672,9 @@
 					{
 						var image = new Image();
 					
-						image.onload  = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version < 8 ? [window.event, i,image] : [i,image]));
-						image.onerror = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version < 8 ? [window.event, i,image] : [i,image]));
-						image.onabort = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version < 8 ? [window.event, i,image] : [i,image]));
+						image.onload  = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version <= 8 ? [window.event, i,image] : [i,image]));
+						image.onerror = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version <= 8 ? [window.event, i,image] : [i,image]));
+						image.onabort = Core.delegate(this, this.finish, ($.browser.msie && $.browser.version <= 8 ? [window.event, i,image] : [i,image]));
 						
 						/* Set image source */
 						image.src = config.cache ? queue.shift() : (queue.shift() + '?u=' + (new Date().getTime()))
