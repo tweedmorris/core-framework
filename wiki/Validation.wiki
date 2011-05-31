@@ -22,3 +22,22 @@ var maps = /* Validation map(s) */
 	}
 }
 }}}
+
+Mapping is a simple process of creating a JSON map with the fields that need to be validated. One can validate multiple forms with single map. 
+
+= Map format =
+
+{{{
+<form id>: {
+	<field>:
+	{
+		required: <true>|<false>,
+		message: <error message>,
+		<validator>: <result>,
+		<validator>: <result>
+		...
+		...
+		...
+	}
+}
+}}}
