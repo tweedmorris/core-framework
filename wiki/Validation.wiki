@@ -41,3 +41,19 @@ Mapping is a simple process of creating a JSON map with the fields that need to 
 	}
 }
 }}}
+
+In the example above <validator> is one of the valdiators provided by Core Framework. <result> is boolean value.
+
+= Example =
+{{{
+$.each(maps, function(key, map)
+{
+	var form = $('form[id=' + key + ']');
+	
+
+	form.find(':submit').click(function()
+	{
+		return Core.validator.map(form,map).auto().valid();
+	})
+})
+}}}
