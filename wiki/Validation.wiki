@@ -1,0 +1,24 @@
+#summary Form validation with Core Framework
+
+= Form validation =
+
+Most of the user interaction is done via web forms. Core Framework provides robust mechanism for form validation that can be applied to every form in every project (even existing forms)
+
+= Details =
+
+Form validation is done through a process called mapping:
+
+{{{
+var maps = /* Validation map(s) */
+{
+	login: 
+	{
+		username: 
+		{
+			required: true, 
+			email: 	  true,
+			message:  "Username must be valid email address"
+		}
+	}
+}
+}}}
