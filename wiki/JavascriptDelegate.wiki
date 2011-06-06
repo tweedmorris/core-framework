@@ -1,6 +1,6 @@
 #summary JavaScript Delegate
 
-= Delegate =
+= Javascript Delegate =
 
 Most of the user interaction involves events and event manipulation. Usually events in JavaScript are handled by closures with their own private scope. We found this unpractical in object oriented environment. 
 
