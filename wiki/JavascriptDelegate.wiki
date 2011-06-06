@@ -30,6 +30,8 @@ function delegate(target, method, args)
 }
 }}}
 
+In Core Framework you can use Core.delegate() to achieve the same functionality.
+
 = Examples =
 Some application of the delegation described above
 == 1. setInterval() & setTimeout() ==
