@@ -110,11 +110,11 @@
 		    },
 		    isFunction: function(value) 
 			{
-				return Object.toString.apply(value) === '[object Function]';
+				return Object.prototype.toString.apply(value) === '[object Function]';
 			},
 			isBoolean: function(value) 
 			{
-				return Object.toString.apply(value) === '[object Boolean]';
+				return Object.prototype.toString.apply(value) === '[object Boolean]';
 			},
 			isURI: function(value)
 			{
@@ -910,6 +910,11 @@
 
 				if (!condition.contains(fn))
 				{
+					if (Core.pattern.isFunction(bool))
+					{
+						bool = bool.apply(this);
+					}
+					
 					if (bool !== this[fn].apply(this, [element.val(), element]))
 					{
 						/* Rise error */
@@ -976,6 +981,10 @@
 			zero: function(value)
 			{
 				return parseInt(value) === 0 ? true : false
+			},
+			equalTo: function(value)
+			{
+				return value;
 			}
 		}
 	})();
