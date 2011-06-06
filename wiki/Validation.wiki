@@ -70,3 +70,18 @@ $.each(maps, function(key, map)
  # *checked*: Check whether value is checked
 
 The library allows you to combine multiple validators in the map.
+
+= Advanced mapping =
+Validation allows for advanced maps where one can specify closures:
+{{{
+account_confirm_email: 
+{
+	required: 	true,
+	email: 		true,
+	message: 	"You must confirm your email address",
+	equalTo: 	function()
+	{
+		return $(":text[name=account_email]").val();
+	}
+},
+}}}
