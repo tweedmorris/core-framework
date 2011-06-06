@@ -108,8 +108,7 @@ var MyClass = (function()
 	            type: 'POST',
 	            url: url,
 	            data: data,
-	            success: this.delegate(this, this.handle),
-	            dataType: dataType
+	            success: this.delegate(this, this.handle)
               });
        }
 })();
