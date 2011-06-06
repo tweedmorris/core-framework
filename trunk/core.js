@@ -968,6 +968,14 @@
 			positive: function(value)
 			{
 				return parseInt(value) > 0 ? true : false
+			},
+			negative: function(value)
+			{
+				return parseInt(value) < 0 ? true : false
+			},
+			zero: function(value)
+			{
+				return parseInt(value) === 0 ? true : false
 			}
 		}
 	})();
