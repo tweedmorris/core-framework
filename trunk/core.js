@@ -964,6 +964,10 @@
 			checked: function(value, element)
 			{
 				return element.is(':checked') ? true : false
+			},
+			positive: function(value)
+			{
+				return parseInt(value) > 0 ? true : false
 			}
 		}
 	})();
