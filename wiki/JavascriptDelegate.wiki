@@ -113,7 +113,4 @@ var MyClass = (function()
               });
        }
 })();
-
-
-MyClass.notify(); /* Will call method MyClass.send() after 1000 ms timeout */
 }}}
