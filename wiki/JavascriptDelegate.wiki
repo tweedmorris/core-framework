@@ -30,7 +30,7 @@ function delegate(target, method, args)
 }
 }}}
 
-In Core Framework you can use *Core.delegate()* method to achieve the same functionality.
+In Core Framework you can use *Core.delegate()* method to achieve the same functionality. Every class defined with *Core.define()* or *Core.extend()* method will inherit *delegate()* method as well.
 
 = Examples =
 Some application of the delegation described above
