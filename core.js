@@ -811,8 +811,8 @@
 						
 						this.tooltip.css(
 						{
-							top: 	offset.top - 30,
-							left: 	offset.left + target.width() - 15,
+							top: 	offset.top,
+							left: 	offset.left + target.width() + 15,
 							opacity:0.95
 						}).appendTo('body').fadeIn(200);
 					},
@@ -827,6 +827,9 @@
 			displayErrors: function()
 			{
 				var error = false;
+				
+				/* Remove all error tips */
+				$('div.coretip').remove();
 				
 				$.each(data.map, function(name, options)
 				{
@@ -912,7 +915,7 @@
 				{
 					if (Core.pattern.isFunction(bool))
 					{
-						bool = bool.apply(this);
+						bool = bool.apply(this,[element.val()]);
 					}
 					
 					if (bool !== this[fn].apply(this, [element.val(), element]))
@@ -984,7 +987,11 @@
 			},
 			equalTo: function(value)
 			{
-				return value;
+				return true;
+			},
+			strcmp: function(str1, str2)
+			{
+				return ( ( str1 == str2 ) ? 0 : ( ( str1 > str2 ) ? 1 : -1 ) );
 			}
 		}
 	})();
