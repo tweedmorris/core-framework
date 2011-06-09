@@ -73,7 +73,7 @@ The library allows you to combine multiple validators in the map.
 
 = Adding validator(s) =
 
-Usually bespoke projects need more advanced and complex validation. Core Framework allows you to extend the default validators and add you own:
+Usually bespoke projects need more advanced and complex validation. Core Framework allows you to extend the default validators and add your own:
 {{{
 Core.validator.extend(
 {
