@@ -70,3 +70,16 @@ $.each(maps, function(key, map)
  # *checked*: Check whether value is checked
 
 The library allows you to combine multiple validators in the map.
+
+= Adding validator(s) =
+
+Usually bespoke projects need more advanced and complex validation. Core Framework allows you to extend the default validators and add you own:
+{{{
+Core.validator.extend(
+{
+	sexyWoman: function(value) /* Returns true if the value is sexy woman */
+	{ 
+		return true;
+	}
+})
+}}}
