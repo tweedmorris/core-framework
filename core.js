@@ -781,8 +781,8 @@
 				'message',
 				'element',
 				'error'
-			]);
-		
+			]), queue = [];
+			
 		return { /* Static patterns */
 			tooltip: function()
 			{
@@ -824,7 +824,7 @@
 				
 				return new Tip().create();
 			},
-			displayErrors: function()
+			display: function()
 			{
 				var error = false;
 				
@@ -896,7 +896,7 @@
 				$.each(data.map, Core.delegate(this, this.filter));
 				
 				/* Display errors */
-				this.displayErrors();
+				this.display();
 			},
 			filter: function(name, options)
 			{
@@ -904,7 +904,7 @@
 				
 				if (options.required)
 				{
-					$.each(options, Core.delegate(this, this.check,[name, element]))
+					$.each(options, Core.delegate(this, this.check,[name, element]));
 				}
 			},
 			check: function(fn, bool, name, element)
@@ -964,6 +964,8 @@
 			extend: function(proto)
 			{
 				Core.apply(this, proto);
+				
+				return this;
 			},
 			password: function(value)
 			{
@@ -1034,7 +1036,6 @@
 			}
 		}
 	})()
-	
 	
 	/* Core UI */
 	Core.widget =
