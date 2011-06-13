@@ -41,4 +41,3 @@
          * [JavaScriptSingleton Singleton Pattern]
     * [Articles Callback delegation]
     * [Articles Multiple inheritance]
-  * [Comments User Comments]
