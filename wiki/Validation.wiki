@@ -68,6 +68,7 @@ $.each(maps, function(key, map)
  # *upper*:  Check whether value contains only upper characters 
  # *password*: Check whether value contains secure password
  # *checked*: Check whether value is checked
+ # *ukpostcode*: Check whether value contains valid UK postcode
 
 The library allows you to combine multiple validators in the map.
 
