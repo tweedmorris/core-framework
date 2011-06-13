@@ -768,22 +768,17 @@
     Core.validator = (function() /* TODO: Complete Validators */
 	{
 		/* Private var(s) */
-		var data = 
-		{
-			form: null,
-			map:
-			{
-				/* Override */
-			}
-		}, condition = Core.Array.get(
-			[
-				'required', 
-				'message',
-				'element',
-				'error'
-			]), queue = [];
+		var data = {}, condition = Core.Array.get(
+		[
+			'required', 
+			'message',
+			'element',
+			'tooltip',
+			'error'
+		]);
 			
 		return { /* Static patterns */
+			errors: false,
 			tooltip: function()
 			{
 				var Tip = Core.extend(
@@ -824,14 +819,14 @@
 				
 				return new Tip().create();
 			},
-			display: function()
+			display: function(map)
 			{
 				var error = false;
 				
 				/* Remove all error tips */
 				$('div.coretip').remove();
 				
-				$.each(data.map, function(name, options)
+				$.each(map, function(name, options)
 				{
 					/* Create error tooltip */	
 					if (options.error)
@@ -851,66 +846,90 @@
 						options.tooltip.close();
 					}
 				});
-				
-				if (error)
-				{
-					/* Disable submit buttons */
-					data.form.find(':submit').parent().click(false).fadeTo(200,.5);
-				}
-				else 
-				{
-					/* Disable submit buttons */
-					data.form.find(':submit').parent().unbind('click').fadeTo(200,1);
-				}
 			},
-			map: function(form, map)
+			map: function(id, map)
 			{
-				/* Store form */
-				data.form = $(form)
-					
-				/* Mapping */
-				$.each(map, function(element, options)
-				{
-					data.map[element] = $.extend(
-					{
-						error: 	 false,
-						message: null,
-						tooltip: Core.validator.tooltip()
-					},options)
-				})
+				/* Locate form */
+				var form = $('form[id=' + id + ']');
 				
+				/* Map form */
+				data[id] =
+				{
+					form: form.length > 0 ? form : null,
+					map: 
+					{
+						/* Override */
+					}
+				}
+				
+				if (data[id].form)
+				{
+					/* Mapping */
+					$.each(map, function(element, options)
+					{
+						data[id].map[element] = $.extend(
+						{
+							error: 	 false,
+							message: null,
+							tooltip: Core.validator.tooltip()
+						},options)
+					});
+				}
+
 				return this;
 			},
 			auto: function()
 			{
-				data.form.find(':input').unbind("blur").bind(
-				{
-					blur: Core.delegate(this, this.valid)
-				});
-				
+				$.each(data, Core.delegate(this, this.bind));
+			
 				return this;
+			},
+			bind: function(index, form)
+			{
+				if (form.form)
+				{
+					form.form.find(':submit').unbind('click').bind('click', Core.delegate(this, this.validate,[form]));
+				}
+			},
+			validate: function(event, form)
+			{
+				/* Bind self */
+				form.form.find(':input').unbind("blur").bind(
+				{
+					blur: Core.delegate(this, this.validate,[form])
+				}).end()
+					
+				/* No errors by default */
+				this.errors = false;
+				
+				/* Smart validation */
+				$.each(form.map, Core.delegate(this, this.filter, [form]));
+	
+				if (!this.valid())
+				{
+					this.display(form.map);
+				}
+				
+				/* Return validation result */
+				return this.valid();
 			},
 			valid: function()
 			{
-				/* Smart validation */
-				$.each(data.map, Core.delegate(this, this.filter));
-				
-				/* Display errors */
-				this.display();
+				return this.errors ? false : true;
 			},
-			filter: function(name, options)
+			filter: function(name, options, form)
 			{
-				var element = $(':input[name=' + name + ']');
+				var element = form.form.find(':input[name=' + name + ']');
 				
 				if (options.required)
 				{
-					$.each(options, Core.delegate(this, this.check,[name, element]));
+					$.each(options, Core.delegate(this, this.check,[name, element, form]));
 				}
 			},
-			check: function(fn, bool, name, element)
+			check: function(fn, bool, name, element, form)
 			{
 				var error = false;
-
+				
 				if (!condition.contains(fn))
 				{
 					if (Core.pattern.isFunction(bool))
@@ -922,14 +941,17 @@
 					{
 						/* Rise error */
 						error = true;
+						
+						/* Save error state */
+						this.errors = true;
 					}
-					
-					$.extend(true, data.map[name], 
+
+					$.extend(true, form.map[name], 
 					{
 						error: 		error,
 						element: 	element
 					})
-				}	
+				}
 			},
 			empty: function(value) /* Check whether value is empty string */
 			{
