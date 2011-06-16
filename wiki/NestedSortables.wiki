@@ -32,3 +32,17 @@ Core.require('plugins.tree', function()
 	});
 })
 }}}
+
+Required CSS:
+{{{
+.ui-placeholder-wrapper { display:block; }
+.ui-parent-collapsed > div a {  }
+.ui-parent-collapsed > div a:hover {  }
+.ui-parent-expanded > div a {  }
+.ui-parent-expanded > div a:hover {  }
+.ui-droppable-active a {  }
+.placeholder { height:1px; line-height:1px; font-size:0px; visibility:hidden; }
+.placeholder-active { visibility:visible; border:1px dashed #000; }
+.ui-state-disabled { opacity:.4; }
+
+}}}
