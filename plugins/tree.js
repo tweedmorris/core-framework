@@ -1,4 +1,5 @@
-Core.define('Core.tree', Core.extend({
+Core.define('Core.tree', Core.extend(
+{
 	options: 
 	{
 		items: 'li',
