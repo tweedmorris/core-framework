@@ -4,7 +4,6 @@ var Captcha = (function()
 	{
 		key: 	'',
 		widget: 'recaptcha-widget'
-		
 	}
 	
 	var reCaptcha = Core.extend(
@@ -27,6 +26,10 @@ var Captcha = (function()
 			
 			/* Extend options */
 			this.options = $.extend(this.options, options);
+			
+			/* Recaptcha options */
+			window.RecaptchaOptions = this.options;
+
 			
 			return this;
 		},
@@ -141,14 +144,14 @@ var Captcha = (function()
 			var element =  $('[id=' + this.element + ']'), widget = $('<div/>',
 			{
 				id: config.widget
-			}).appendTo(element);
+			}).appendTo(element).hide();
 			
 			
 			/* Mapping */
 			$.each(map, function(index, node)
 			{
-				var e = $('<' + node.element + '/>').attr(node.attr).appendTo(widget);
-				
+				var e = $(document.createElement(node.element)).attr(node.attr).appendTo(widget).html(node.label);
+
 				/* Append items */
 				if ("items" in node)
 				{
@@ -160,9 +163,21 @@ var Captcha = (function()
 					})
 				}
 			});	
+			
+			var write = document.write;
+			
+			/* Mofify the write function */
+			document.write = function(content)
+			{
+				$(content).insertAfter(widget);
+			}
+			
+			$.getScript('http://www.google.com/recaptcha/api/challenge?k=' + config.key, function()
+			{
+				
+			})
 		}
 	});
-	
 	
 	return {
 		config: function(conf)
@@ -173,7 +188,7 @@ var Captcha = (function()
 		},
 		create: function(element, options)
 		{
-			return new reCaptcha().init(element, options).create();
+			return new reCaptcha().init(element, options).custom();
 		}
 	}
 })();
