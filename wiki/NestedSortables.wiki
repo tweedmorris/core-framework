@@ -21,9 +21,14 @@ Assume that you have the following hierarchy:
 
 To transform this into nested sortable, one can use the following code:
 {{{
-/* Create jQuery widget */
-$.widget('ui.tree', Core.widget.tree);
-			
-/* Apply widget */
-$('ol.sortable').tree();
+Core.require('plugins.tree', function()
+{
+	$.widget('ui.tree', Tree);
+
+	/* Apply widget */
+	$('ol.sortable').tree(
+	{
+		folder: 'categories'
+	});
+})
 }}}
