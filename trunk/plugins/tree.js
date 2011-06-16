@@ -131,7 +131,7 @@ Core.define('Core.tree', Core.extend(
 		/* Extend draggable options */
 		this.options.draggable = $.extend({}, this.options.draggable,
 		{
-			start: Core.delegate(this, this.log),
+			start: this.delegate(this, this.log),
 			delay: 200
 		});
 		
@@ -139,19 +139,19 @@ Core.define('Core.tree', Core.extend(
 		/* Extend droppable options */
 		this.options.droppable = $.extend({}, this.options.droppable, 
 		{
-	        drop: 				Core.delegate(this, this.drop),
-	        over: 				Core.delegate(this, this.over),
-	        out: 				Core.delegate(this, this.out)
+	        drop: 				this.delegate(this, this.drop),
+	        over: 				this.delegate(this, this.over),
+	        out: 				this.delegate(this, this.out)
 		})
 		
 		/* Init */
 		this.element.find(this.options.items)
-				    .each(Core.delegate(this, this.init))
-				    .bind("click",Core.delegate(this,this.toggle))
+				    .each(this.delegate(this, this.init))
+				    .bind("click",this.delegate(this,this.toggle))
 				    .bind(
 				    {
-				    	mouseenter: Core.delegate(this.smartControl, this.smartControl.append,[this.options]),
-				    	mouseleave: Core.delegate(this.smartControl, this.smartControl.remove)
+				    	mouseenter: this.delegate(this.smartControl, this.smartControl.append,[this.options]),
+				    	mouseleave: this.delegate(this.smartControl, this.smartControl.remove)
 				    })
 				    .draggable(this.options.draggable)
 				    .end()
@@ -159,7 +159,7 @@ Core.define('Core.tree', Core.extend(
 				    .droppable(this.options.droppable)
 				    .disableSelection();
 				    
-	    $(document).bind('keypress', Core.delegate(this, this.undo));
+	    $(document).bind('keypress', this.delegate(this, this.undo));
 	    
 	    this.serialize.serialize(this.element);
 	},
@@ -298,7 +298,7 @@ Core.define('Core.tree', Core.extend(
 				this.sequence = 2;
 				
 				/* Process tree */
-				tree.children().each(Core.delegate(this,this.boundaries,[this.level]));
+				tree.children().each(this.delegate(this,this.boundaries,[this.level]));
 			},
 			boundaries: function(index, element, level )
 			{
@@ -311,7 +311,7 @@ Core.define('Core.tree', Core.extend(
 					parent:     $(element).parents('li:first[id]').attr('id')
 				}
 				
-				item.element.children('ol').children(':not(.ui-draggable-helper)').each(Core.delegate(this,this.boundaries,[level]));
+				item.element.children('ol').children(':not(.ui-draggable-helper)').each(this.delegate(this,this.boundaries,[level]));
 				
 				item.right = this.sequence++;
 				
