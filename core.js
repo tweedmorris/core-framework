@@ -362,10 +362,16 @@
 					{
 						if (Core.pattern.isURI(namespace)) /* Skip manipulation of URI(s) */
 						{
+							/* Do not take path into consideration */
+							Core.loader.setConfig(
+							{
+								path: ''
+							});
+							
 							return namespace;
 						}
 						
-						var params = [], regex = new RegExp('((\.\.\/)+)','i');
+						var params = [], regex = new RegExp('((\\.\\.\\/)+)','i');
 						
 						/* Relative path(s) */
 						relative = regex.exec(string);
@@ -380,7 +386,7 @@
 							
 							params.push(relative);
 						}
-						
+
 						/* Push clear path */
 						params.push(Core.Array.get(string.split('.')).invoke('toLowerCase').join('/'));
 						
@@ -405,6 +411,7 @@
 					{			
 						if (Core.pattern.isString(namespace))
 						{
+
 							queue(namespace);
 						}
 						else 
