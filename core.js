@@ -1052,8 +1052,6 @@
 					{
 						var instance = $.data(this, name);
 						
-						
-						
 						if (instance) 
 						{
 							instance[options].apply(instance, args);
