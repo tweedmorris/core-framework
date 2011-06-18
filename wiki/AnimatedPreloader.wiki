@@ -1,0 +1,20 @@
+#summary SVG/VML Animated Preloader
+
+= Introduction =
+
+Core Framework provides handy cross-browser animated preloader. 
+
+= How to use? =
+
+
+{{{
+Core.draw.init().loader(
+{
+	size: 		20,
+	radius: 	30,
+	opacity: 	1,
+	speed: 		2,
+	points: 	7,
+	renderTo: 	'.canvas'
+});
+}}}
