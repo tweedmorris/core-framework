@@ -23,7 +23,7 @@ Core.draw = (function()
 			opacity: 	0,
 			radius: 	0,
 			speed: 		0.05,
-			color: 		'#ffffff'
+			color: 		'#000000'
 		},
 		init: function(id, options)
 		{
