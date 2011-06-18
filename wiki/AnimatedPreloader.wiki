@@ -4,6 +4,9 @@
 
 Core Framework provides handy cross-browser animated preloader. It can be placed inside any container: div, span etc. 
 
+= Why use it ? = 
+Usually developers use animated *.gif* files. However *.gif* has poor transparency support and when placed over gradients or images, the quality is very low.
+
 = How to use? =
 
 {{{
