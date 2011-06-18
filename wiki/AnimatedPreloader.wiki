@@ -4,11 +4,12 @@
 
 Core Framework provides handy cross-browser animated preloader. It can be placed inside any container: div, span etc. 
 
-= Why use it ? = 
+= The problem = 
 Usually one uses animated *.gif* files for preloading indication. However *.gif* format has poor transparency support and when placed over gradients or images, the quality is very low.
 
 Also, sometimes preloaders need to be flexible, bigger, customizable etc.
 
+= The solution =
 Imagine to have all these features without image at all. Core Framework provides SVG/VML base preloader, with full transparency support, fully customizable and platform independent.
 
 = Features =
