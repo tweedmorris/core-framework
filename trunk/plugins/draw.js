@@ -1,19 +1,22 @@
+/* Define shape */
 var Shape = Core.extend(
 {
 	shape: null,
 	options: 
 	{
 		/* Override */
+	},
+	init: function(shape, options)
+	{
+		this.shape  = shape;
+		this.options = options;
 	}
 });
 
+/* Define oval */
 var Oval = Shape.extend(
 {
-	init: function(shape, options)
-	{
-		this.shape 	 = shape;
-		this.options = options;
-	}
+	
 })
 
 
@@ -49,18 +52,23 @@ var Draw = (function()
 		},
 		addCircle: function(string)
 		{
+			alert(1);
 			
 			//var group = '<v:group id="secondsPointer" style="width:100px; height:100px; position: absolute; top: 0px; left: 0px;"></v:group>';
 			var circle = new Oval();
-			
-			
+
 			var loader = $('<v:oval></v:oval>').attr(
 			{
 				style: 'width:45px;height:45px; display:block; border:none;',
 				fillcolor: 'black'
 			})
 			
-			$('body').append(1);
+			$('.canvas').css(
+			{
+				width:100,
+				height:100,
+				border: '1px solid #000'
+			}).append(loader);
 		}
 	}
 })();
