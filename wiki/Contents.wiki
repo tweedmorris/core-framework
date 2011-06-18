@@ -25,7 +25,7 @@
     * [Preloading Preloading]
       * [ScriptAutoloader Script autoloader]
       * [ImagePreloading Image preloading]
-      * [AnimatedPreloader Animated SVG/VML Preloader]
+      * [AnimatedPreloader Animated Preloader]
     * [Forms Forms]
       * [Validation Validation]
       * [File Ajax File Upload]
