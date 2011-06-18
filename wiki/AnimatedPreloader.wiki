@@ -2,19 +2,18 @@
 
 = Introduction =
 
-Core Framework provides handy cross-browser animated preloader. 
+Core Framework provides handy cross-browser animated preloader. It can be placed inside any container: div, span etc. 
 
 = How to use? =
-
 
 {{{
 Core.draw.init().loader(
 {
-	size: 		20,
-	radius: 	30,
-	opacity: 	1,
-	speed: 		2,
-	points: 	7,
-	renderTo: 	'.canvas'
+	size: 		20, /* Radius of dots */
+	radius: 	30, /* Radius of preloader */
+	opacity: 	1, /* Opacity of preloader */
+	speed: 		2, /* Animation speed */
+	points: 	7, /* Number of points in preloader */
+	renderTo: 	'.canvas' /* Element where preloader will be rendered */
 });
 }}}
