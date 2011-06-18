@@ -1257,7 +1257,8 @@
 						left: 	 points[point].x,
 						radius:  options.size,
 						opacity: (opacity += x),
-						speed:   options.speed/100
+						speed:   options.speed/100,
+						color: 	 options.color
 					});
 					
 					if ($.browser.msie)
