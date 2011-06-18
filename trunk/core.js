@@ -1345,6 +1345,18 @@
 			},
 			loader: function(options)
 			{
+				/* Default options */
+				options = $.extend(
+				{
+					size: 		20,
+					radius: 	20,
+					opacity:	1,
+					points: 	7,
+					speed: 		2,
+					shape: 		'circle',
+					color: 		'#000000'
+				},options);
+				
 				/* Calculate loader offset */
 				var offset = 20 + options.radius + options.size/2;
 				
