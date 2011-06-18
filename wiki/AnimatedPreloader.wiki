@@ -35,3 +35,10 @@ Core.draw.init().loader(
 	renderTo: 	'.canvas' /* Element where preloader will be rendered */
 });
 }}}
+
+Browse support
+1) Internet Explorer 6.0+
+2) Firefox 3+
+3) Opera 9+
+4) Chrome
+5) Safari
