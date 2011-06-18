@@ -36,9 +36,9 @@ Core.draw.init().loader(
 });
 }}}
 
-Browse support
-1) Internet Explorer 6.0+
-2) Firefox 3+
-3) Opera 9+
-4) Chrome
-5) Safari
+*Browser support*
+ * Internet Explorer 6.0+
+ * Firefox 3+
+ * Opera 9+
+ * Chrome
+ * Safari
