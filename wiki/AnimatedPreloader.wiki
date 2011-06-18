@@ -24,8 +24,11 @@ Imagine to have all these features without image at all. Core Framework provides
 
 = How to use? =
 
+
 {{{
 <script src="http://core-framework.googlecode.com/svn/trunk/core.js" type="text/javascript"></script>
+}}}
+{{{
 Core.draw.init().loader(
 {
 	size: 		20, /* Radius of dots */
