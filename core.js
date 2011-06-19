@@ -1117,7 +1117,7 @@
 					this.element = document.createElement('v:oval');
 					
 					this.element.style.left 	= this.options.left;
-					this.element.style.top 	= this.options.top;
+					this.element.style.top 		= this.options.top;
 					this.element.style.width 	= this.options.radius;
 					this.element.style.height 	= this.options.radius;
 					
@@ -1348,10 +1348,10 @@
 				/* Default options */
 				options = $.extend(
 				{
-					size: 		20,
-					radius: 	20,
+					size: 		8,
+					radius: 	15,
 					opacity:	1,
-					points: 	7,
+					points: 	8,
 					speed: 		2,
 					shape: 		'circle',
 					color: 		'#000000'
