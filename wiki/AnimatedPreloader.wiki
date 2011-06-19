@@ -47,3 +47,6 @@ Core.draw.init().loader(
  * Opera 9+
  * Chrome
  * Safari
+
+= Demo =
+<script type="text/javascript" src="http://core-framework.googlecode.com/svn/trunk/core.js"></script
