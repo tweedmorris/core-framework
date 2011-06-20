@@ -31,16 +31,16 @@ Imagine to have all these features without image at all. Core Framework provides
 Invoke loader:
 {{{
 var loader = Core.draw.setup().loader(
-	{
-		size: 		10,
-		radius: 	20,
-		opacity:	1,
-		points: 	10,
-		speed: 		2,
-		shape: 		'circle',
-		color: 		'#000000',
-		renderTo: 	'.canvas'
-	});
+{
+	size: 		10,
+	radius: 	20,
+	opacity:	1,
+	points: 	10,
+	speed: 		2,
+	shape: 		'circle',
+	color: 		'#000000',
+	renderTo: 	'.canvas'
+});
 }}}
 
 *Browser support*
