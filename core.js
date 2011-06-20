@@ -1110,42 +1110,68 @@
 				/* Calculate radius */
 				this.options.width = this.options.height = options.radius;
 			},
+			config: function(element, styles, attributes)
+			{
+				styles 	   = styles || {};
+				attributes = attributes || {};
+				
+				/* Config element */
+				$(element).css(styles);
+				
+				/* Set attributes */
+				$.each(attributes,  function(attribute, value)
+				{
+					element.setAttribute(attribute, value);
+				})
+			},
 			output: function()
 			{
 				if ($.browser.msie) /* Use VML */
 				{
+					/* Create element */
 					this.element = document.createElement('v:oval');
 					
-					this.element.style.left 	= this.options.left;
-					this.element.style.top 		= this.options.top;
-					this.element.style.width 	= this.options.radius;
-					this.element.style.height 	= this.options.radius;
+					this.config(this.element, 
+					{
+						left:		this.options.left,
+						top:		this.options.top,
+						width:		this.options.radius,
+						height:		this.options.radius
+					}, {
+						stroked: false
+					});
 					
-					this.element.stroked 		= false;
-					
+					/* Create fill */
 					this.fill = document.createElement('v:fill');
 			
+					this.config(this.fill, null, 
+					{
+						type:		'solid',
+						color: 		this.options.color,
+						opacity: 	this.options.opacity
+					})
 					/* Full type */
-					this.fill.type 		= 'solid';
 					
-					/* Fill color */
-					this.fill.color 	= this.options.color;
-					this.fill.opacity 	= this.options.opacity;
-			
+					/* Append fill */
 					this.element.appendChild(this.fill);
 					
 					return this.element;
 				}
 				else /* Use canvas */ 
 				{
+					
 					this.element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 					
-					this.element.setAttribute("cx", 		this.options.left);
-					this.element.setAttribute("cy", 		this.options.top);
-					this.element.setAttribute("r", 			this.options.radius/2);
-					this.element.setAttribute("opacity", 	this.options.opacity);
-					this.element.setAttribute("fill", 		this.options.color);
+					this.config(this.element, null, 
+					{
+						cx: 		this.options.left,
+						cy: 		this.options.top,
+						r: 			this.options.radius/2,
+						opacity: 	this.options.opacity,
+						fill: 		this.options.color
+					});
 					
+				
 					return this.element;
 				}
 			},
@@ -1189,110 +1215,6 @@
 			}
 		});
 		
-		/* Rectangle shape */
-		var Rectangle = Shape.extend(
-		{
-			output: function() /* Override only output */
-			{
-				if ($.browser.msie) /* Use VML */
-				{
-					this.element = document.createElement('v:roundrect');
-					
-					this.element.style.left     = this.options.left;
-					this.element.style.top 	    = this.options.top;
-					this.element.style.width 	= this.options.radius;
-					this.element.style.height 	= this.options.radius/2;
-					this.element.style.rotation = this.options.angle;
-					
-					this.element.arcsize		= 2;			
-					this.element.stroked 		= false;
-		
-					
-					this.fill = document.createElement('v:fill');
-			
-					/* Full type */
-					this.fill.type 		= 'solid';
-					
-					/* Fill color */
-					this.fill.color 	= this.options.color;
-					this.fill.opacity 	= this.options.opacity;
-			
-					this.element.appendChild(this.fill);
-					
-					return this.element;
-				}
-				else /* Use canvas */ 
-				{
-					this.element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-
-					this.element.setAttribute("rx", 		5);
-					this.element.setAttribute("x", 			this.options.left);
-					this.element.setAttribute("y", 			this.options.top);
-					this.element.setAttribute("width", 		this.options.radius);
-					this.element.setAttribute("height", 	this.options.radius/2);
-					this.element.setAttribute("opacity", 	this.options.opacity);
-					this.element.setAttribute("fill", 		this.options.color);
-					this.element.setAttribute("transform", "rotate(" + this.options.angle + " " + (this.options.left+4) + " " + (this.options.top+4) + ")");
-					
-					return this.element;
-				}
-			}
-		});
-		
-		var Polyline = Shape.extend(
-		{
-			output: function() /* Override only output */
-			{
-				var polyline = [];
-					
-				polyline.push([this.options.left, this.options.top].join(" "));
-				polyline.push([this.options.left, this.options.top - 5].join(" "));
-				polyline.push([this.options.left + this.options.size, this.options.top].join(" "));
-				polyline.push([this.options.left, this.options.top + 5].join(" "));
-
-				/* Join paths */
-				polyline = polyline.join(',')
-					
-				if ($.browser.msie) /* Use VML */
-				{
-					this.element = document.createElement('v:polyline');
-					
-					this.element.style.left     = this.options.left;
-					this.element.style.top 	    = this.options.top;
-					this.element.style.rotation = this.options.angle;
-					this.element.points			= polyline;	
-					this.element.stroked 		= false;
-		
-					this.fill = document.createElement('v:fill');
-			
-					/* Full type */
-					this.fill.type 		= 'solid';
-					
-					/* Fill color */
-					this.fill.color 	= this.options.color;
-					this.fill.opacity 	= this.options.opacity;
-			
-					this.element.appendChild(this.fill);
-					
-					return this.element;
-				}
-				else /* Use canvas */ 
-				{
-					this.element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-					
-					this.element.setAttribute("points", 	polyline);
-					this.element.setAttribute("x", 			this.options.left);
-					this.element.setAttribute("y", 			this.options.top);
-					this.element.setAttribute("opacity", 	this.options.opacity);
-					this.element.setAttribute("fill", 		this.options.color);
-					this.element.setAttribute("transform", "rotate(" + this.options.angle + " " + (this.options.left) + " " + (this.options.top) + ")");
-					
-					return this.element;
-				}
-			}
-		})
-	
-	
 		/* Start transformations */
 		if ($.browser.msie)
 		{
