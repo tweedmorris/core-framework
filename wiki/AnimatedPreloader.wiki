@@ -30,15 +30,17 @@ Imagine to have all these features without image at all. Core Framework provides
 }}}
 Invoke loader:
 {{{
-Core.draw.init().loader(
-{
-	size: 		20, /* Radius of dots */
-	radius: 	30, /* Radius of preloader */
-	opacity: 	1, /* Opacity of preloader */
-	speed: 		2, /* Animation speed */
-	points: 	7, /* Number of points in preloader */
-	renderTo: 	'.canvas' /* Element where preloader will be rendered */
-});
+var loader = Core.draw.setup().loader(
+	{
+		size: 		10,
+		radius: 	20,
+		opacity:	1,
+		points: 	10,
+		speed: 		2,
+		shape: 		'circle',
+		color: 		'#000000',
+		renderTo: 	'.canvas'
+	});
 }}}
 
 *Browser support*
