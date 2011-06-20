@@ -1084,9 +1084,11 @@
 		*/
 		var Shape = Core.extend(
 		{
-			id: null,
-			element: null,
-			fill: null,
+			id: 		null,
+			element: 	null,
+			fill: 		null,
+			stopped:  	false,
+			timeout: 	null,
 			options:
 			{
 				top:		0,
@@ -1177,98 +1179,78 @@
 			},
 			animate: function(timeout)
 			{
-				setTimeout(this.delegate(this, $.browser.msie ? this.fade : this.fadeSVG), timeout);
+				this.timeout = this.timeout || timeout;
+				
+				setTimeout(this.delegate(this, $.browser.msie ? this.fade : this.fadeSVG), this.timeout);
 			},
 			fade: function()
 			{
-				if (this.fill.opacity >= this.options.speed)
+				if (!this.stopped)
 				{
-					this.fill.opacity -= this.options.speed;
-					
-					setTimeout(this.delegate(this, this.fade), 10);
-				}
-				else 
-				{
-					this.fill.opacity = 1;
-					
-					/* Continue fading */
-					this.fade();
+					if (this.fill.opacity >= this.options.speed)
+					{
+						this.fill.opacity -= this.options.speed;
+						
+						setTimeout(this.delegate(this, this.fade), 10);
+					}
+					else 
+					{
+						this.fill.opacity = 1;
+						
+						/* Continue fading */
+						this.fade();
+					}
 				}
 			},
 			fadeSVG: function()
 			{
-				var opacity = this.element.getAttribute("opacity");
+				if (!this.stopped)
+				{
+					var opacity = this.element.getAttribute("opacity");
+					
+					if (opacity >= this.options.speed)
+					{
+						this.element.setAttribute("opacity", opacity - this.options.speed);
+						
+						setTimeout(this.delegate(this, this.fadeSVG), 10);
+					}
+					else 
+					{
+						this.element.setAttribute("opacity",1);
+						
+						/* Continue fading */
+						this.fadeSVG();
+					}
+				}
+			},
+			stop: function()
+			{
+				this.stopped = true;
 				
-				if (opacity >= this.options.speed)
-				{
-					this.element.setAttribute("opacity", opacity - this.options.speed);
-					
-					setTimeout(this.delegate(this, this.fadeSVG), 10);
-				}
-				else 
-				{
-					this.element.setAttribute("opacity",1);
-					
-					/* Continue fading */
-					this.fadeSVG();
-				}
+				return this;
+			},
+			resume: function()
+			{
+				this.stopped = false;
+				
+				this.animate(this.timeout);
+				
+				return this;
 			}
 		});
 		
-		/* Start transformations */
-		if ($.browser.msie)
+		
+		var Loader = Core.extend(
 		{
-			document.namespaces.add("v", "urn:schemas-microsoft-com:vml");
-			
-			/* Create dynamic stylesheet */
-			var style = document.createStyleSheet();
-		}
-		
-		var shapes = 
-		[
-			'shape',
-			'rect', 
-			'oval', 
-			'circ', 
-			'fill', 
-			'stroke', 
-			'imagedata', 
-			'group',
-			'textbox',
-			'polyline',
-			'arc',
-			'roundrect'
-		];
-		
-		return {
-			shapes:[],
-			queue:[],
-			svg:null,
-			canvas:null,
-			init: function()
-			{
-				if ($.browser.msie) /* Change behaviour */
-				{
-					$.each(shapes,function() 
-					{
-						style.addRule('v\\:' + this,"position:absolute; display:block; behavior: url(#default#VML); antialias:true;");
-					});
-				}
-				else /* Create SVG */
-				{
-					this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-					this.svg.setAttribute("width", 100 + '%');
-					this.svg.setAttribute("height",100 + '%');
-					this.svg.setAttribute("version", "1.2");
-					this.svg.setAttribute("baseProfile", "tiny");
-				}
-		
-				return this;
-			},
-			loader: function(options)
+			options: 	null,
+			shapes:		[],
+			queue:		[],
+			svg:		null,
+			canvas:		null,
+			init: function(options)
 			{
 				/* Default options */
-				options = $.extend(
+				this.options = $.extend(
 				{
 					size: 		8,
 					radius: 	15,
@@ -1279,13 +1261,38 @@
 					color: 		'#000000'
 				},options);
 				
-				/* Calculate loader offset */
-				var offset = 20 + options.radius + options.size/2;
+				
+				if ($.browser.msie) /* Change behaviour */
+				{
+					$.each(shapes,function() 
+					{
+						style.addRule('v\\:' + this,"position:absolute; display:block; behavior: url(#default#VML); antialias:true;");
+					});
+				}
+				else /* Create SVG */
+				{
+					this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+					
+					this.svg.setAttribute("width", 100 + '%');
+					this.svg.setAttribute("height",100 + '%');
+					this.svg.setAttribute("version", "1.2");
+					this.svg.setAttribute("baseProfile", "tiny");
+				}
+		
+				return this;
+			},
+			create: function()
+			{
+					/* Calculate loader offset */
+				var offset = 20 + this.options.radius + this.options.size/2;
 				
 				/* Calculate points */
-				var points = this.points(offset,offset,options.radius,options.radius,0,options.points), shapes = [], canvas = $(options.renderTo);
+				var points = this.points(offset,offset,this.options.radius,this.options.radius,0,this.options.points), shapes = [];
 				
-				var x = options.opacity/options.points, opacity = 0;
+				/* Get canvas element */
+				this.canvas = $(this.options.renderTo);
+				
+				var x = this.options.opacity/this.options.points, opacity = 0;
 				
 				for (var point in points)
 				{
@@ -1294,14 +1301,14 @@
 						top: 	 points[point].y,
 						left: 	 points[point].x,
 						angle: 	 points[point].angle,
-						radius:  options.size,
+						radius:  this.options.size,
 						opacity: (opacity += x),
-						speed:   options.speed/100,
-						color: 	 options.color,
-						size: 	 options.size
+						speed:   this.options.speed/100,
+						color: 	 this.options.color,
+						size: 	 this.options.size
 					}
 					
-					switch(options.shape.toLowerCase())
+					switch(this.options.shape.toLowerCase())
 					{
 						case 'polyline': /* Use polyline */
 							var shape = new Polyline(point, pointOptions);
@@ -1317,7 +1324,7 @@
 					
 					if ($.browser.msie)
 					{
-						canvas.append(shape.output());
+						this.canvas.append(shape.output());
 					}
 					else 
 					{
@@ -1329,18 +1336,41 @@
 					this.shapes.push(shape);
 				}
 				
-				canvas.append(this.svg);
+				this.canvas.append(this.svg);
 				
 				/* Calculate speeds */
-				this.play((1/(options.speed/100))/options.points);
+				this.play((1/(this.options.speed/100))/this.options.points);
 				
+				return this;
 			},
 			play: function(speed)
 			{
-				while(this.shapes.length)
+				for (var i in this.shapes)
 				{
-					this.shapes.pop().animate(speed * (this.shapes.length - 1));
+					this.shapes[i].animate(speed * (this.shapes.length - 1));
 				}
+			},
+			pause: function()
+			{
+				for (var i in this.shapes)
+				{
+					this.shapes[i].stop();
+				}
+			},
+			resume: function()
+			{
+				for (var i in this.shapes)
+				{
+					this.shapes[i].resume();
+				}
+			},
+			show: function()
+			{
+				
+			},
+			hide: function()
+			{
+				this.canvas.add(this.svg).empty();
 			},
 			points: function(x, y, a, b, angle, steps) 
 			{
@@ -1372,6 +1402,51 @@
 				}
 				
 				return points;
+			}
+		})
+		
+		/* Start transformations */
+		if ($.browser.msie)
+		{
+			document.namespaces.add("v", "urn:schemas-microsoft-com:vml");
+			
+			/* Create dynamic stylesheet */
+			var style = document.createStyleSheet();
+		}
+		
+		var shapes = 
+		[
+			'shape',
+			'rect', 
+			'oval', 
+			'circ', 
+			'fill', 
+			'stroke', 
+			'imagedata', 
+			'group',
+			'textbox',
+			'polyline',
+			'arc',
+			'roundrect'
+		];
+		
+		return {
+			
+			setup: function()
+			{
+				if ($.browser.msie) /* VML, Change behaviour */
+				{
+					$.each(shapes,function() 
+					{
+						style.addRule('v\\:' + this,"position:absolute; display:block; behavior: url(#default#VML); antialias:true;");
+					});
+				}
+				
+				return this;
+			},
+			loader: function(options)
+			{
+				return new Loader(options).create();
 			}
 		}
 	})();
