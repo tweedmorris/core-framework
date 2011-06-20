@@ -1239,7 +1239,6 @@
 			}
 		});
 		
-		
 		var Loader = Core.extend(
 		{
 			options: 	null,
@@ -1261,15 +1260,7 @@
 					color: 		'#000000'
 				},options);
 				
-				
-				if ($.browser.msie) /* Change behaviour */
-				{
-					$.each(shapes,function() 
-					{
-						style.addRule('v\\:' + this,"position:absolute; display:block; behavior: url(#default#VML); antialias:true;");
-					});
-				}
-				else /* Create SVG */
+				if (!$.browser.msie) /* Change behaviour */
 				{
 					this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 					
@@ -1278,7 +1269,7 @@
 					this.svg.setAttribute("version", "1.2");
 					this.svg.setAttribute("baseProfile", "tiny");
 				}
-		
+				
 				return this;
 			},
 			create: function()
@@ -1337,7 +1328,7 @@
 				}
 				
 				this.canvas.append(this.svg);
-				
+
 				/* Calculate speeds */
 				this.play((1/(this.options.speed/100))/this.options.points);
 				
@@ -1363,10 +1354,6 @@
 				{
 					this.shapes[i].resume();
 				}
-			},
-			show: function()
-			{
-				
 			},
 			hide: function()
 			{
