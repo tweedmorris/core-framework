@@ -166,13 +166,14 @@ Core.define('Core.element.select', Core.element.extend(
 		/* Close previously opened dropdowns */
 		this.closeAll();
 				
+		
 		var dropdown = $('<div/>').addClass('ui-form-select-dropdown').addClass(this.options.theme.classes.dropdown).css(
 		$.extend(
 		{
 			position:	'absolute',
 			top: 		this.placeholder.offset().top + this.placeholder.height(),
 			left: 		this.placeholder.offset().left,
-			width: 		500
+			width: 		this.placeholder.outerWidth() - 4
 		}, this.options.theme.css)).appendTo(document.body);
 		
 		if ($('option',this.element).length > this.options.theme.options.limit)
