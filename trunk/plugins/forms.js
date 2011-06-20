@@ -172,7 +172,7 @@ Core.define('Core.element.select', Core.element.extend(
 			position:	'absolute',
 			top: 		this.placeholder.offset().top + this.placeholder.height(),
 			left: 		this.placeholder.offset().left,
-			width: 		200
+			width: 		500
 		}, this.options.theme.css)).appendTo(document.body);
 		
 		if ($('option',this.element).length > this.options.theme.options.limit)
