@@ -196,7 +196,7 @@
 			return this.mixinPrototypes || {};
 		}
     };
-    
+ 
     Core.apply(Core.Class,
     {
 		extend: function(object)
@@ -242,42 +242,6 @@
 		},
 		mixin: Core.mixin
     });
-    
- 
-    /** 
-    * Inhertance 
-    * @version 2.0 - (Advanced Inheritance Model)
-    */
-    Core.Class.inherit = function(constructor) 
-	{
-		/* Allow empty constructor */
-		constructor = constructor || function(){}
-		
-		var parent = this;
-		
-		F = function() 
-		{
-			this.parent = parent;
-			
-			var pubs = constructor.apply(this, arguments), self = this;
-			
-			for (key in pubs) (function(fn, sfn) 
-			{
-				self[key] = typeof fn != "function" || typeof sfn != "function" ? fn : function() 
-				{ 
-					this.parent = sfn; 
-					
-					return fn.apply(this, arguments); 
-				};
-			})(pubs[key], self[key]);
-		}; 
-		
-		F.prototype 			= new this;
-		F.prototype.constructor = F;
-		F.inherit 				= arguments.callee;
-
-		return F;
-	};
     
     Core.apply(Core, 
     {
@@ -467,10 +431,6 @@
 		extend: function(object)
 		{
 			return Core.Class.extend(object);
-		},
-		inherit: function(object)
-		{
-			return Core.Class.inherit(object);
 		},
 		override: function(origclass, overrides)
 		{
