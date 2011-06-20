@@ -47,3 +47,5 @@ Core.draw.init().loader(
  * Opera 9+
  * Chrome
  * Safari
+
+Demo: [http://core-framework.googlecode.com/svn/examples/loader.html Animated SVG Loader]
