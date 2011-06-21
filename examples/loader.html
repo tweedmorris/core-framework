@@ -27,16 +27,16 @@
 			<script type="text/javascript">
 			$(function() 
 			{
-				Core.draw.init().loader(
+				var loader = Core.draw.setup().loader(
 				{
-					size: 		15,
-					radius: 	33,
-					opacity:	1,
-					points: 	10,
-					speed: 		2,
-					shape: 		'circle',
-					color: 		'#000000',
-					renderTo: 	'.canvas'
+				        size:           10,
+				        radius:         20,
+				        opacity:        1,
+				        points:         10,
+				        speed:          2,
+				        shape:          'circle',
+				        color:          '#000000',
+				        renderTo:       '.canvas'
 				});
 			});
 			</script>
