@@ -199,7 +199,7 @@
     
     Core.apply(Core.Class,
     {
-		extend2: function(object)
+		extend: function(object)
 		{
 			Core.constructing = true;
 			
@@ -240,7 +240,7 @@
 			
 			return Class;
 		},
-		extend: function(proto)
+		extend2: function(proto)
 		{
 			Core.constructing = true;
 			
@@ -309,6 +309,7 @@
 		F.prototype 			= new this;
 		F.prototype.constructor = F;
 		F.inherit 				= arguments.callee;
+		F.extend				= Core.extend;
 
 		return F;
 	};
