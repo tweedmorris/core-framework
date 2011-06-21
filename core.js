@@ -199,7 +199,7 @@
     
     Core.apply(Core.Class,
     {
-		extend: function(object)
+		extend2: function(object)
 		{
 			Core.constructing = true;
 			
@@ -239,6 +239,40 @@
 			}
 			
 			return Class;
+		},
+		extend: function(proto)
+		{
+			Core.constructing = true;
+			
+			var F = function() 
+			{ 
+				// All construction is actually done in the init method
+				if (!Core.constructing && this.init)
+				{
+					/* Apply constructor */
+					this.init.apply(this, arguments);
+				}
+			};
+			
+			F.prototype = new this(); // use our private method as magic cookie
+			
+			delete Core.constructing;
+			
+			for (key in proto) (function(fn, sfn)
+			{ 
+				// create a closure
+				F.prototype[key] = !Core.pattern.isFunction(fn) || !Core.pattern.isFunction(sfn) ? fn : // add _super method
+				function() 
+				{ 
+					this._super = sfn; return fn.apply(this, arguments); 
+				};
+			})(proto[key], F.prototype[key]);
+			
+			F.prototype.constructor = F;
+			F.extend 				= this.extend;
+			F.mixin					= this.mixin
+			
+			return F;
 		},
 		mixin: Core.mixin
     });
@@ -1279,7 +1313,7 @@
 			}
 		});
 		
-		var Loader = Core.extend(
+		var AnimatedLoader = Core.extend(
 		{
 			options: 	null,
 			shapes:		[],
@@ -1288,6 +1322,8 @@
 			canvas:		null,
 			init: function(options)
 			{
+				this.shapes = [];
+				
 				/* Default options */
 				this.options = $.extend(
 				{
@@ -1318,11 +1354,11 @@
 				var offset = 20 + this.options.radius + this.options.size/2;
 				
 				/* Calculate points */
-				var points = this.points(offset,offset,this.options.radius,this.options.radius,0,this.options.points), shapes = [];
+				var points = this.points(offset,offset,this.options.radius,this.options.radius,0,this.options.points);
 				
 				/* Get canvas element */
 				this.canvas = $(this.options.renderTo);
-				
+
 				var x = this.options.opacity/this.options.points, opacity = 0;
 				
 				for (var point in points)
@@ -1430,7 +1466,7 @@
 				
 				return points;
 			}
-		})
+		});
 		
 		/* Start transformations */
 		if ($.browser.msie)
@@ -1473,7 +1509,7 @@
 			},
 			loader: function(options)
 			{
-				return new Loader(options).create();
+				return (new AnimatedLoader(options)).create();
 			}
 		}
 	})();
