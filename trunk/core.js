@@ -240,7 +240,7 @@
 			
 			return Class;
 		},
-		extend2: function(proto)
+		extendPro: function(proto)
 		{
 			Core.constructing = true;
 			
@@ -309,7 +309,6 @@
 		F.prototype 			= new this;
 		F.prototype.constructor = F;
 		F.inherit 				= arguments.callee;
-		F.extend				= Core.extend;
 
 		return F;
 	};
@@ -1212,8 +1211,8 @@
 					{
 						left:		this.options.left,
 						top:		this.options.top,
-						width:		this.options.radius,
-						height:		this.options.radius
+						width:		this.options.size,
+						height:		this.options.size
 					}, {
 						stroked: false
 					});
@@ -1243,7 +1242,7 @@
 					{
 						cx: 		this.options.left,
 						cy: 		this.options.top,
-						r: 			this.options.radius/2,
+						r: 			this.options.size/2,
 						opacity: 	this.options.opacity,
 						fill: 		this.options.color
 					});
@@ -1314,6 +1313,113 @@
 			}
 		});
 		
+		var Polygon = Shape.extend(
+		{
+			output: function()
+			{
+				
+				var points = [], coords = [];
+				
+				points.push([0,0]);
+				points.push([20,20]);
+				points.push([20,40]);
+				points.push([0,20]);
+				
+				for (var i in points)
+				{
+					coords.push([points[i][0], points[i][1]].join(" "));
+				}
+				
+				var path = "M31.708,10.767c-1.081,0.186-2.648-0.006-3.479-0.352c1.726-0.143,2.895-0.928,3.344-1.992c-0.621,0.383-2.553,0.8-3.619,0.403c-0.053-0.251-0.11-0.49-0.17-0.705c-0.811-2.987-3.594-5.394-6.508-5.102c0.235-0.096,0.474-0.185,0.714-0.265c0.319-0.115,2.202-0.423,1.906-1.086c-0.251-0.586-2.551,0.44-2.985,0.576C21.484,2.028,22.43,1.659,22.532,1c-0.876,0.12-1.735,0.535-2.4,1.138c0.24-0.259,0.422-0.573,0.46-0.913C18.255,2.72,16.89,5.73,15.786,8.654c-0.867-0.842-1.637-1.504-2.326-1.874C11.526,5.744,9.212,4.66,5.581,3.31C5.47,4.513,6.175,6.112,8.207,7.175c-0.44-0.059-1.245,0.074-1.888,0.227c0.262,1.379,1.119,2.514,3.438,3.062c-1.06,0.07-1.608,0.313-2.104,0.833c0.483,0.958,1.663,2.085,3.781,1.854c-2.358,1.018-0.961,2.901,0.957,2.619C9.119,19.152,3.962,18.901,1,16.074c7.732,10.547,24.54,6.236,27.044-3.922C29.922,12.167,31.024,11.502,31.708,10.767z";
+	
+				if ($.browser.msie) /* Use VML */
+				{
+					/* Create element */
+					this.element = document.createElement('v:shape');
+					
+					path = this.transform(path);
+					
+
+					this.config(this.element, 
+					{
+						top: 		this.options.top, 
+						left: 		this.options.left,
+						width:		1, 
+						height: 	1,
+						rotation: 	this.options.angle
+					}, {
+						coordorigin: "0 0",
+						coordsize: "1 1",
+						path: path,
+						stroked: false
+					});
+					
+					/* Create fill */
+					this.fill = document.createElement('v:fill');
+			
+					this.config(this.fill, null, 
+					{
+						type:		'solid',
+						color: 		this.options.color,
+						opacity: 	this.options.opacity
+					})
+					/* Full type */
+					
+					/* Append fill */
+					this.element.appendChild(this.fill);
+					
+					return this.element;
+				}
+				else /* Use canvas */ 
+				{
+					/* Twitter demo */
+					this.element = document.createElementNS("http://www.w3.org/2000/svg", "path");
+					
+					var coords = [];
+					
+					this.config(this.element, null, 
+					{	
+						d: path,
+						opacity: 	this.options.opacity,
+						fill: 		this.options.color,
+						transform:  "scale(" + this.options.scale + "  " + this.options.scale + ") translate(" + this.options.left + "," + this.options.top + ") rotate(" + this.options.angle + " 0 0)"
+					});
+					 	
+					return this.element;
+				}
+				
+			},
+			transform: function(path)
+			{
+				var regex = /([-+]?[0-9]*\.?[0-9]+)/gi, params = path.split(',');
+				
+				for (var i in params)
+				{
+					var data = params[i].match(regex);
+					
+					if (data)
+					{
+						for (x = 0; x < data.length; x++)
+						{							
+							var num = Math.round(data[x]);
+
+							params[i] = params[i].replace(data[x]," " + num)
+												 .replace(/c/,'v')
+												 .replace(/z/,'xe')
+												 .replace(/M/,'m');
+						}
+					}
+				}
+
+				return params.join(',');
+			},
+			map: 
+			{
+				M: "m", L: "l", C: "c", Z: "x", m: "t", l: "r", c: "v", z: "x"
+			}
+		});
+		
+		
 		var AnimatedLoader = Core.extend(
 		{
 			options: 	null,
@@ -1333,18 +1439,22 @@
 					opacity:	1,
 					points: 	8,
 					speed: 		2,
+					scale: 		1,
 					shape: 		'circle',
 					color: 		'#000000'
 				},options);
 				
+
 				if (!$.browser.msie) /* Change behaviour */
 				{
 					this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 					
 					this.svg.setAttribute("width", 100 + '%');
-					this.svg.setAttribute("height",100 + '%');
+					this.svg.setAttribute("height", 100 + '%');
 					this.svg.setAttribute("version", "1.2");
-					this.svg.setAttribute("baseProfile", "tiny");
+					this.svg.setAttribute("shape-rendering","geometricPrecision");
+					this.svg.setAttribute("text-rendering","geometricPrecision")
+					this.svg.setAttribute("image-rendering","optimizeQuality")
 				}
 				
 				return this;
@@ -1369,22 +1479,23 @@
 						top: 	 points[point].y,
 						left: 	 points[point].x,
 						angle: 	 points[point].angle,
-						radius:  this.options.size,
+						radius:  this.options.radius,
 						opacity: (opacity += x),
 						speed:   this.options.speed/100,
 						color: 	 this.options.color,
-						size: 	 this.options.size
+						size: 	 this.options.size,
+						scale: 	 this.options.scale
 					}
 					
 					switch(this.options.shape.toLowerCase())
 					{
-						case 'polyline': /* Use polyline */
-							var shape = new Polyline(point, pointOptions);
+						case 'path': /* Use polyline */
+							var shape = new Path(point, pointOptions);
 							break;
+						case 'polygon':
+							var shape = new Polygon(points, pointOptions);
 							break;
-						case 'rectangle': /* Use rectangle */
-							var shape = new Rectangle(point, pointOptions);
-							break;
+							
 						default: /* Default top circle */
 							var shape = new Shape(point, pointOptions);
 							break;
@@ -1491,6 +1602,7 @@
 			'textbox',
 			'polyline',
 			'arc',
+			'path',
 			'roundrect'
 		];
 		
