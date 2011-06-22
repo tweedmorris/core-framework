@@ -16,7 +16,8 @@ ul.nav li.active a { border:1px solid #6b90da; border-bottom:none; background:#f
 
 
 #demo { position:relative; padding:10px; height:400px; }
-.canvas { position:absolute; top:50px; left:50px; width:200px; height:200px; }
+
+.canvas { position:absolute; top:50px; left:50px; width:600px; height:600px; border:1px solid #ffff; }
 
 /* Crossbrowser float clear */
 .fix { position:relative; display:inline-block; }
