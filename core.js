@@ -1313,7 +1313,7 @@
 			}
 		});
 		
-		var Polygon = Shape.extend(
+		var Path = Shape.extend(
 		{
 			output: function()
 			{
@@ -1492,13 +1492,8 @@
 						case 'path': /* Use polyline */
 							var shape = new Path(point, pointOptions);
 							break;
-						case 'polygon':
-							var shape = new Polygon(points, pointOptions);
-							break;
-							
 						default: /* Default top circle */
 							var shape = new Shape(point, pointOptions);
-							break;
 					}
 					
 					if ($.browser.msie)
