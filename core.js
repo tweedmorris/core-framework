@@ -1317,6 +1317,7 @@
 		{
 			output: function()
 			{
+				var path, path1, path2;
 				
 				var points = [], coords = [];
 				
@@ -1330,16 +1331,18 @@
 					coords.push([points[i][0], points[i][1]].join(" "));
 				}
 				
-				var path = "M31.708,10.767c-1.081,0.186-2.648-0.006-3.479-0.352c1.726-0.143,2.895-0.928,3.344-1.992c-0.621,0.383-2.553,0.8-3.619,0.403c-0.053-0.251-0.11-0.49-0.17-0.705c-0.811-2.987-3.594-5.394-6.508-5.102c0.235-0.096,0.474-0.185,0.714-0.265c0.319-0.115,2.202-0.423,1.906-1.086c-0.251-0.586-2.551,0.44-2.985,0.576C21.484,2.028,22.43,1.659,22.532,1c-0.876,0.12-1.735,0.535-2.4,1.138c0.24-0.259,0.422-0.573,0.46-0.913C18.255,2.72,16.89,5.73,15.786,8.654c-0.867-0.842-1.637-1.504-2.326-1.874C11.526,5.744,9.212,4.66,5.581,3.31C5.47,4.513,6.175,6.112,8.207,7.175c-0.44-0.059-1.245,0.074-1.888,0.227c0.262,1.379,1.119,2.514,3.438,3.062c-1.06,0.07-1.608,0.313-2.104,0.833c0.483,0.958,1.663,2.085,3.781,1.854c-2.358,1.018-0.961,2.901,0.957,2.619C9.119,19.152,3.962,18.901,1,16.074c7.732,10.547,24.54,6.236,27.044-3.922C29.922,12.167,31.024,11.502,31.708,10.767z";
-	
+				/* Twitter Path */
 				if ($.browser.msie) /* Use VML */
 				{
 					/* Create element */
 					this.element = document.createElement('v:shape');
 					
-					path = this.transform(path);
+					//var path = path1 = this.convert(this.options.path);
 					
+					//path2 = this.transform(this.options.path);
 
+					path = this.convert(this.options.path);
+					
 					this.config(this.element, 
 					{
 						top: 		this.options.top, 
@@ -1379,7 +1382,7 @@
 					
 					this.config(this.element, null, 
 					{	
-						d: path,
+						d: this.options.path,
 						opacity: 	this.options.opacity,
 						fill: 		this.options.color,
 						transform:  "scale(" + this.options.scale + "  " + this.options.scale + ") translate(" + this.options.left + "," + this.options.top + ") rotate(" + this.options.angle + " 0 0)"
@@ -1406,16 +1409,202 @@
 							params[i] = params[i].replace(data[x]," " + num)
 												 .replace(/c/,'v')
 												 .replace(/z/,'xe')
-												 .replace(/M/,'m');
+												 .replace(/M/,'m')
 						}
 					}
 				}
 
 				return params.join(',');
 			},
-			map: 
+			convert: function(value)
 			{
-				M: "m", L: "l", C: "c", Z: "x", m: "t", l: "r", c: "v", z: "x"
+                var cursorX = 0;
+                var cursorY = 0;
+        
+                var regex = /([-+]?[0-9]*\.?[0-9]+)/gi;
+
+                /* Replace exponent parts */
+                value = value.replace(/(\d*)((\.*\d*)(e ?-?\d*))/g,"$1");
+                
+                var pathCommands = value.match( /([MLHVCSQTAZ].*?)(?=[MLHVCSQTAZ]|$)/gi );
+                
+                var newPath = "";
+
+                for( var i=0; i < pathCommands.length; i++ ) 
+                {
+                        var command = pathCommands[i].substring(0,1);
+                        
+                        var params = pathCommands[i].substring(1,pathCommands[i].length);
+                        
+                        /* Extract numbers */
+						var data = params.match(regex);
+						
+						if (params.indexOf('21.') != -1)
+						{
+							var b = true;
+						}
+						else var b = false;
+						
+
+						if (data)
+						{
+							for (x = 0; x < data.length; x++)
+							{							
+								var num = Math.round(data[x]);
+								
+								data[x] = " " + num;
+							}
+							
+							params = data.join();
+						}
+
+                        switch( command ) 
+                        {
+                                case "M": // moveTo absolute
+                                        var command="m";
+                                        var coords = params.split(/[, ]/);
+                                        
+                                        cursorX = parseInt(coords[0]);
+                                        cursorY = parseInt(coords[1]);
+                                        
+                                        break;
+                                case "m": // moveTo relative
+                                        var command = "t"
+                                        var coords = params.split(/[, ]/);
+                                        
+                                        coords[0] = parseInt(coords[0]) + parseInt(cursorX); 
+                                        coords[1] = parseInt(coords[1]) + parseInt(cursorY);
+                                        
+                                        cursorX = parseInt(coords[0]);
+                                        cursorY = parseInt(coords[1]);
+
+                                        break;
+                                case "A": // arc absolute:
+                                        var command = "ae";
+                                        var args = params.split(/[, ]+/);
+                                        
+                                        args[0] = parseInt(args[0]); 
+                                        args[1] = parseInt(args[1]);
+
+                                        args[2] = parseInt(args[2]); 
+                                        args[3] = parseInt(args[3]);
+
+                                        args[4] = parseInt(args[4]); 
+                                        args[5] = parseInt(args[5]);
+                                        
+                                        params = args[4] + " " + args[5] + " " + args[2]*2 + " " + args[3]*2 + " 0 360";
+
+                                        break;
+                                case "L": // lineTo absolute
+                                        var command = "l";
+                                        
+                                        var coords = params.split(/[, ]+/);
+                                        
+                                        cursorX = parseInt(coords[0]);
+                                        cursorY = parseInt(coords[0]);
+                                        
+                                        break;
+                                case "l": // lineTo relative
+                                        var command = "r";
+                                        var coords = params.split(/[, ]+/);
+     
+                                        coords[0] = parseInt(coords[0]) + parseInt(cursorX); 
+                                        coords[1] = parseInt(coords[1]) + parseInt(cursorY);
+                                        
+                                        cursorX = parseInt(coords[0]);
+                                        cursorY = parseInt(coords[1]);
+                                     
+                                        break;
+                                	break;
+                               	case "V": /* Absolute vertical line */
+                               		  	var command = "l", coords = params.split(/[, ]+/);
+                               		  	
+                               		  	params = [cursorX,coords[0]].join(',');
+                               		  	
+                                        cursorY = parseInt(coords[0]);
+                               		  	
+                                        break;
+                                case "H": /* Absolute horizontal line*/
+                                		var command = "l", coords = params.split(/[, ]+/);
+                                		
+                               		  	params = [coords[0],cursorY].join(',');
+                               		  	
+                               		  	/* Set current cursor */
+                               		  	cursorX = parseInt(coords[0]);
+                                		break;
+                                case "v":
+                                		var command = "r", coords = params.split(/[, ]+/);
+                                        break;
+                               	case "h": /* Relative line to */
+                               			var command = "r", coords = params.split(/[, ]+/);
+                               			
+                               		  	params = [coords[0],0].join(',');
+                               		  	
+                               		  	cursorX = parseInt(cursorX) + parseInt(coords[0]);
+                               		  
+                               		  	/* Update cursors X */
+                                        break;
+                                case "C":
+                                		var command = "c";
+                                		
+                                		var args = params.split(/[, ]+/);
+                                		
+										args[0] = parseInt(args[0]); 
+										args[1] = parseInt(args[1]);
+										args[2] = parseInt(args[2]); 
+										args[3] = parseInt(args[3]);
+										args[4] = parseInt(args[4]);
+										args[5] = parseInt(args[5]);
+										
+										cursorX = args[4];
+										cursorY = args[5];
+										
+                                	break;
+                                case "c":
+                                        var command = "v";
+                                        
+                                        var args = params.split(/[, ]+/);
+										
+										args[0] = parseInt(args[0]); 
+										args[1] = parseInt(args[1]);
+										args[2] = parseInt(args[2]); 
+										args[3] = parseInt(args[3]);
+										args[4] = parseInt(args[4]);
+										args[5] = parseInt(args[5]);
+										
+										cursorX = cursorX + args[4];
+										cursorY = cursorY + args[5];
+										
+                                        break;
+                                case "S":
+                                		var command = "c";
+                                		 
+										var args = params.split(/[, ]+/);
+										
+										args[0] = parseInt(args[0]); 
+										args[1] = parseInt(args[1]);
+										args[2] = parseInt(args[2]); 
+										args[3] = parseInt(args[3]);
+										
+										params = args.join(',');
+										
+                                        break;
+                                case "s":
+                                		 var command = "v hf";
+                                         break;
+                                	break;
+                                case "z":
+                                        var command = "xe";
+                                        var params = "";
+
+                                default:
+                               	 	command = command.toLowerCase();
+                        }
+                        newPath += command + params;                                    
+                }
+
+                return newPath;
+
 			}
 		});
 		
@@ -1453,7 +1642,7 @@
 					this.svg.setAttribute("height", 100 + '%');
 					this.svg.setAttribute("version", "1.2");
 					this.svg.setAttribute("shape-rendering","geometricPrecision");
-					this.svg.setAttribute("text-rendering","geometricPrecision")
+					this.svg.setAttribute("text-rendering",	"geometricPrecision")
 					this.svg.setAttribute("image-rendering","optimizeQuality")
 				}
 				
@@ -1484,7 +1673,8 @@
 						speed:   this.options.speed/100,
 						color: 	 this.options.color,
 						size: 	 this.options.size,
-						scale: 	 this.options.scale
+						scale: 	 this.options.scale,
+						path: 	 this.options.path
 					}
 					
 					switch(this.options.shape.toLowerCase())
@@ -1513,7 +1703,7 @@
 				this.canvas.append(this.svg);
 
 				/* Calculate speeds */
-				this.play((1/(this.options.speed/100))/this.options.points);
+				//this.play((1/(this.options.speed/100))/this.options.points);
 				
 				return this;
 			},
