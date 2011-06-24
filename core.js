@@ -1310,6 +1310,15 @@
 				this.animate(this.timeout);
 				
 				return this;
+			},
+			cast: function(arg) /* Cast array parameters to integer */
+			{
+				for ( var i=0, j = arg.length; i < j; ++i ) 
+			    {
+			        arg[i] = Math.round(arg[i]);
+			    }
+			    
+			    return arg;
 			}
 		});
 		
@@ -1358,8 +1367,7 @@
 						color: 		this.options.color,
 						opacity: 	this.options.opacity
 					})
-					/* Full type */
-					
+
 					/* Append fill */
 					this.element.appendChild(this.fill);
 					
@@ -1367,10 +1375,7 @@
 				}
 				else /* Use canvas */ 
 				{
-					/* Twitter demo */
 					this.element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-					
-					var coords = [];
 					
 					this.config(this.element, null, 
 					{	
@@ -1386,6 +1391,7 @@
 			},
 			convert: function(value)
 			{
+				/* Tracing */
                 var cursorX = 0;
                 var cursorY = 0;
         
@@ -1407,13 +1413,6 @@
                         /* Extract numbers */
 						var data = params.match(regex);
 						
-						if (params.indexOf('21.') != -1)
-						{
-							var b = true;
-						}
-						else var b = false;
-						
-
 						if (data)
 						{
 							for (x = 0; x < data.length; x++)
@@ -1451,14 +1450,7 @@
                                         var command = "ae";
                                         var args = params.split(/[, ]+/);
                                         
-                                        args[0] = parseInt(args[0]); 
-                                        args[1] = parseInt(args[1]);
-
-                                        args[2] = parseInt(args[2]); 
-                                        args[3] = parseInt(args[3]);
-
-                                        args[4] = parseInt(args[4]); 
-                                        args[5] = parseInt(args[5]);
+                                        args = this.cast(args);
                                         
                                         params = args[4] + " " + args[5] + " " + args[2]*2 + " " + args[3]*2 + " 0 360";
 
@@ -1517,12 +1509,7 @@
                                 		
                                 		var args = params.split(/[, ]+/);
                                 		
-										args[0] = parseInt(args[0]); 
-										args[1] = parseInt(args[1]);
-										args[2] = parseInt(args[2]); 
-										args[3] = parseInt(args[3]);
-										args[4] = parseInt(args[4]);
-										args[5] = parseInt(args[5]);
+										args = this.cast(args);
 										
 										cursorX = args[4];
 										cursorY = args[5];
@@ -1533,12 +1520,7 @@
                                         
                                         var args = params.split(/[, ]+/);
 										
-										args[0] = parseInt(args[0]); 
-										args[1] = parseInt(args[1]);
-										args[2] = parseInt(args[2]); 
-										args[3] = parseInt(args[3]);
-										args[4] = parseInt(args[4]);
-										args[5] = parseInt(args[5]);
+										args = this.cast(args);
 										
 										cursorX = cursorX + args[4];
 										cursorY = cursorY + args[5];
@@ -1549,10 +1531,7 @@
                                 		 
 										var args = params.split(/[, ]+/);
 										
-										args[0] = parseInt(args[0]); 
-										args[1] = parseInt(args[1]);
-										args[2] = parseInt(args[2]); 
-										args[3] = parseInt(args[3]);
+										args = this.cast(args)
 										
 										params = args.join(',');
 										
