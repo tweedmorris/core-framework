@@ -1703,7 +1703,7 @@
 				this.canvas.append(this.svg);
 
 				/* Calculate speeds */
-				//this.play((1/(this.options.speed/100))/this.options.points);
+				this.play((1/(this.options.speed/100))/this.options.points);
 				
 				return this;
 			},
