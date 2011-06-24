@@ -50,4 +50,4 @@ var loader = Core.draw.setup().loader(
  * Chrome
  * Safari
 
-Demo: [http://core-framework.googlecode.com/svn/examples/loader.html Animated SVG Loader]
+Demo: [http://core-framework.googlecode.com/svn/examples/loader.html Animated Twitter SVG Loader]
