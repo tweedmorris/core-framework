@@ -1317,9 +1317,7 @@
 		{
 			output: function()
 			{
-				var path, path1, path2;
-				
-				var points = [], coords = [];
+				var path = null, points = [], coords = [];
 				
 				points.push([0,0]);
 				points.push([20,20]);
@@ -1336,13 +1334,7 @@
 				{
 					/* Create element */
 					this.element = document.createElement('v:shape');
-					
-					//var path = path1 = this.convert(this.options.path);
-					
-					//path2 = this.transform(this.options.path);
 
-					path = this.convert(this.options.path);
-					
 					this.config(this.element, 
 					{
 						top: 		this.options.top, 
@@ -1353,7 +1345,7 @@
 					}, {
 						coordorigin: "0 0",
 						coordsize: "1 1",
-						path: path,
+						path: this.convert(this.options.path),
 						stroked: false
 					});
 					
@@ -1382,7 +1374,7 @@
 					
 					this.config(this.element, null, 
 					{	
-						d: this.options.path,
+						d: 			this.options.path,
 						opacity: 	this.options.opacity,
 						fill: 		this.options.color,
 						transform:  "scale(" + this.options.scale + "  " + this.options.scale + ") translate(" + this.options.left + "," + this.options.top + ") rotate(" + this.options.angle + " 0 0)"
@@ -1391,30 +1383,6 @@
 					return this.element;
 				}
 				
-			},
-			transform: function(path)
-			{
-				var regex = /([-+]?[0-9]*\.?[0-9]+)/gi, params = path.split(',');
-				
-				for (var i in params)
-				{
-					var data = params[i].match(regex);
-					
-					if (data)
-					{
-						for (x = 0; x < data.length; x++)
-						{							
-							var num = Math.round(data[x]);
-
-							params[i] = params[i].replace(data[x]," " + num)
-												 .replace(/c/,'v')
-												 .replace(/z/,'xe')
-												 .replace(/M/,'m')
-						}
-					}
-				}
-
-				return params.join(',');
 			},
 			convert: function(value)
 			{
