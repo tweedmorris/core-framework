@@ -17,4 +17,9 @@ Probably (path) is the most complex shape, that doesn't translate well into VML.
  # VML Path uses different commands compared to SVG
  # VML doesn't support elliptical arcs
 
-= The solution =
+== SVG to VML conversion with Core Framework ==
+CF provides a handy method which can convert SVG path into VML path.
+Ex.:
+{{{
+var vmlPath = Core.SVG.path(svgPath);
+}}}
