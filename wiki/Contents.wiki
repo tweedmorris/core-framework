@@ -29,6 +29,7 @@
     * [Forms Forms]
       * [Validation Validation]
       * [File Ajax File Upload]
+  * [SVG/VML SVG/VML]
   * [Ex Examples]
     * [reCaptcha reCaptcha]
     * [Widget jQuery Widget]
