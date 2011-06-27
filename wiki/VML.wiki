@@ -23,3 +23,8 @@ Ex.:
 {{{
 var vmlPath = Core.SVG.path(svgPath);
 }}}
+
+* How it works *
+ # The path coordinates are rounded to whole numbers
+ # Quadratic curves translate to cubic curves of Bezier
+ # Elliptical arcs translate to cubic curvers of Bezier
