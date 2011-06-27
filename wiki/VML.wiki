@@ -28,3 +28,4 @@ var vmlPath = Core.SVG.path(svgPath);
  # The path coordinates are rounded to whole numbers
  # Quadratic curves translate to cubic curves of Bezier
  # Elliptical arcs translate to cubic curvers of Bezier
+ # SVG commands are mapped to VML commands
