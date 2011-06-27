@@ -1344,7 +1344,7 @@
 			{
 				for ( var i=0, j = arg.length; i < j; ++i ) 
 			    {
-			        arg[i] = Math.round(arg[i]);
+			        arg[i] = 1 * Math.round(1 * Math.round(arg[i]));
 			    }
 			    
 			    return arg;
@@ -1370,7 +1370,7 @@
 						{
 							for (x = 0; x < data.length; x++)
 							{							
-								var num = Math.round(data[x]);
+								var num = Math.round(10 * data[x]);
 								
 								data[x] = " " + num;
 							}
@@ -1448,7 +1448,7 @@
 				for (var j = 0, tli = path.length; j < tli; ++j) 
 				{
 					var ti = path[j], ts = ti.pathSegType, dii = ti.pathSegTypeAsLetter;
-					
+
 					if (ts ===  0) 
 					{
 						/*SVGPathSeg.PATHSEG_UNKNOWN*/
@@ -1518,7 +1518,7 @@
 						} 
 						else if (dii === "c") 
 						{
-							vml.push(ti);
+							vml.push(this.createSVGPathSegCurvetoCubicAbs(cx, cy, ti.x1+rx, ti.y1+ry, ti.x2+rx, ti.y2+ry));
 						} 
 						else if (dii.toLowerCase() === "z") 
 						{
@@ -2124,7 +2124,7 @@
 						rotation: 	this.options.angle
 					}, {
 						coordorigin: "0 0",
-						coordsize: "1 1",
+						coordsize: "10 10",
 						path: Core.SVG.path(this.options.path),
 						stroked: false
 					});
@@ -2153,7 +2153,7 @@
 						d: 			this.options.path,
 						opacity: 	this.options.opacity,
 						fill: 		this.options.color,
-						transform:  "scale(" + this.options.scale + "  " + this.options.scale + ") translate(" + this.options.left + "," + this.options.top + ") rotate(" + this.options.angle + " 0 0)"
+						transform:  "scale(" + this.options.scale + "  " + this.options.scale + ") translate(" + (this.options.left) + "," + (this.options.top) + ") rotate(" + this.options.angle + " 0 0)"
 					});
 					 	
 					return this.element;
@@ -2182,6 +2182,7 @@
 					points: 	8,
 					speed: 		2,
 					scale: 		1,
+					angle: 		0,
 					shape: 		'circle',
 					color: 		'#000000'
 				},options);
@@ -2207,7 +2208,7 @@
 				var offset = 20 + this.options.radius + this.options.size/2;
 				
 				/* Calculate points */
-				var points = this.points(offset,offset,this.options.radius,this.options.radius,0,this.options.points);
+				var points = this.points(offset,offset,this.options.radius,this.options.radius,this.options.angle,this.options.points);
 				
 				/* Get canvas element */
 				this.canvas = $(this.options.renderTo);
