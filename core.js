@@ -1156,6 +1156,10 @@
 			vml: function()
 			{
 				return this.pathSegTypeAsLetter;
+			},
+			curve: function()
+			{
+				/* Override */
 			}
 		});
 		
@@ -1182,11 +1186,15 @@
 		
 		var SVGPathSegClosePath = SVGPathSeg.extend(
 		{
-			pathSegType: 		SVGPathSeg.PATHSEG_CLOSEPATH,
+			pathSegType: SVGPathSeg.PATHSEG_CLOSEPATH,
 			pathSegTypeAsLetter: "z", 
 			vml: function()
 			{
 				return "xe";
+			},
+			curve: function()
+			{
+				return this.vml();
 			}
 		});
 		
@@ -1197,6 +1205,10 @@
 			vml: function()
 			{
 				return "m" + [this.x, this.y].join(',');
+			},
+			curve: function()
+			{
+				return this.vml();
 			}
 		});
 		
@@ -1214,6 +1226,20 @@
 			vml: function()
 			{
 				return "l" + [this.x, this.y].join(',');
+			},
+			curve: function()
+			{
+				var curve = new SVGPathSegCurvetoCubicAbs();
+				
+				curve.x = this.x;
+				curve.y = this.y;
+				
+				curve.x1 = this.x;
+				curve.y1 = this.y;
+				curve.x2 = this.x;
+				curve.y2 = this.y;
+				
+				return curve.vml();
 			}
 		});
 		
@@ -1224,6 +1250,10 @@
 			vml: function()
 			{
 				return this.pathSegTypeAsLetter + [this.x, this.y].join(',');
+			},
+			curve: function()
+			{
+				return "l" + [this.x, this.y].join(',');
 			}
 		});
 		
@@ -1238,6 +1268,10 @@
 			vml: function()
 			{
 				return "c" + [this.x1,this.y1,this.x2,this.y2, this.x, this.y].join(', ');
+			},
+			curve: function()
+			{
+				return this.vml();
 			}
 		});
 		
@@ -1252,17 +1286,25 @@
 			vml: function()
 			{
 				return "v" + [this.x1,this.y1,this.x2,this.y2, this.x, this.y].join(',');
+			},
+			curve: function()
+			{
+				return this.vml();
 			}
 		});
 		
 		var SVGPathSegCurvetoQuadraticAbs = SVGPathSeg.extend(
 		{ 
+			x1: null,
+			y1: null,
 			pathSegType: SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS,
 			pathSegTypeAsLetter: "Q"
 		});
 		
 		var SVGPathSegCurvetoQuadraticRel = SVGPathSeg.extend(
 		{ 
+			x1: null,
+			y1: null,
 			pathSegType: SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL,
 			pathSegTypeAsLetter: "q"
 		});
@@ -1302,11 +1344,7 @@
 		var SVGPathSegLinetoVerticalAbs = SVGPathSeg.extend( 
 		{ 
 			pathSegType:SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS,
-			pathSegTypeAsLetter:"V",
-			vml: function()
-			{
-				return "l" + [this.x,this.y].join(',');
-			}
+			pathSegTypeAsLetter:"V"
 		});
 		
 		var SVGPathSegLinetoVerticalRel = SVGPathSeg.extend( 
@@ -1351,7 +1389,15 @@
 			},
 			path: function(value) /* Converts SVG path to VML path */
 			{
-	            var path = [], regex = /([-+]?[0-9]*\.?[0-9]+)/gi;
+	            /* Transfrom SVG to VML */
+	            var path = this.vml(value);
+
+	            /* Return path */
+	            return this.concat(path);
+			},
+			parse: function(value)
+			{
+				var path = [], regex = /([-+]?[0-9]*\.?[0-9]+)/gi;
 	
 	            /* Replace exponent parts */
 	            value = value.replace(/(\d*)((\.*\d*)(e ?-?\d*))/g,"$1");
@@ -1360,89 +1406,110 @@
 	            
 	            for( var i=0; i < pathCommands.length; i++ ) 
 	            {
-	                    var command = pathCommands[i].substring(0,1), params = pathCommands[i].substring(1,pathCommands[i].length);
-	                    
-	                    /* Extract numbers */
-						var data = params.match(regex);
-						
-						/* Normalize */
-						if (data)
-						{
-							for (x = 0; x < data.length; x++)
-							{							
-								var num = Math.round(10 * data[x]);
-								
-								data[x] = " " + num;
-							}
+                    var command = pathCommands[i].substring(0,1), params = pathCommands[i].substring(1,pathCommands[i].length);
+                    
+                    /* Extract numbers */
+					var data = params.match(regex);
+					
+					/* Normalize */
+					if (data)
+					{
+						for (x = 0; x < data.length; x++)
+						{							
+							var num = Math.round(10 * data[x]);
 							
-							params = data.join();
+							data[x] = " " + num;
 						}
 						
-						/* Get coordinates */
-						args = params.split(/[,]+/);
-						
-						/* Cast all arguments to integers */
-						args = this.cast(args);
-	
-	                    switch(command) 
-	                    {
-	                        case "M": // moveTo absolute
-	                                element = this.createSVGPathSegMovetoAbs(args[0], args[1]);
-	                                break;
-	                        case "m": // moveTo relative
-	                                element = this.createSVGPathSegMovetoRel(args[0], args[1]);
-	                                break;
-	                        case "A": // arc absolute:
-	                                element = this.createSVGPathSegArcAbs(args[5], args[6], args[j], args[1], args[2], args[3], args[4]);
-	                                break;
-	                        case "a":
-	                        		element = this.createSVGPathSegArcRel(args[5], args[6], args[j], args[1], args[2], args[3], args[4]);
-	                        		break;
-	                        case "L": // lineTo absolute
-	                               	element = this.createSVGPathSegLinetoAbs(args[0], args[1]);
-	                                break;
-	                        case "l": // lineTo relative
-	                               	element = this.createSVGPathSegLinetoRel(args[0], args[1]);
-	                                break;
-	                        	break;
-	                       	case "V": /* Absolute vertical line */
-	                       		  	element = this.createSVGPathSegLinetoVerticalAbs(args[0]);
-	                                break;
-	                        case "H": /* Absolute horizontal line*/
-	                        		element = this.createSVGPathSegLinetoHorizontalAbs(args[0]);
-	                        		break;
-	                        case "v":
-	                        		element = this.createSVGPathSegLinetoVerticalRel(args[0]);
-	                                break;
-	                       	case "h": /* Relative line to */
-	                       			element = this.createSVGPathSegLinetoHorizontalRel(args[0]);
-	                                break;
-	                        case "C":
-	                        		element = this.createSVGPathSegCurvetoCubicAbs(args[4], args[5], args[0], args[1],args[2], args[3]);
-	                        		break;
-	                        case "c":
-	                               	element = this.createSVGPathSegCurvetoCubicRel(args[4], args[5], args[0], args[1], args[2], args[3]);
-	                                break;
-	                        case "S":
-	                        		element = this.createSVGPathSegCurvetoCubicSmoothAbs(args[2], args[3], args[0], args[1]);
-	                                break;
-	                        case "s":
-	                        		element = this.createSVGPathSegCurvetoCubicSmoothRel(args[2], args[3], args[0], args[1]);
-	                        		break;
-	                        case "z":
-	                        		element = this.createSVGPathSegClosePath();
-	                              	break;
-	                        default:
-	                           	  	element = new SVGPathSeg();
-	                    }
-	
-	                    path.push(element);                   
+						params = data.join();
+					}
+					
+					/* Get coordinates */
+					args = params.split(/[,]+/);
+					
+					/* Cast all arguments to integers */
+					args = this.cast(args);
+
+                    switch(command) 
+                    {
+                        case "M": // moveTo absolute
+                                element = this.createSVGPathSegMovetoAbs(args[0], args[1]);
+                                break;
+                        case "m": // moveTo relative
+                                element = this.createSVGPathSegMovetoRel(args[0], args[1]);
+                                break;
+                        case "A": // arc absolute:
+                                element = this.createSVGPathSegArcAbs(args[5], args[6], args[j], args[1], args[2], args[3], args[4]);
+                                break;
+                        case "a":
+                        		element = this.createSVGPathSegArcRel(args[5], args[6], args[j], args[1], args[2], args[3], args[4]);
+                        		break;
+                        case "L": // lineTo absolute
+                               	element = this.createSVGPathSegLinetoAbs(args[0], args[1]);
+                                break;
+                        case "l": // lineTo relative
+                               	element = this.createSVGPathSegLinetoRel(args[0], args[1]);
+                                break;
+                        	break;
+                       	case "V": /* Absolute vertical line */
+                       		  	element = this.createSVGPathSegLinetoVerticalAbs(args[0]);
+                                break;
+                       
+                        case "v":
+                        		element = this.createSVGPathSegLinetoVerticalRel(args[0]);
+                                break;
+                        case "H": /* Absolute horizontal line*/
+                        		element = this.createSVGPathSegLinetoHorizontalAbs(args[0]);
+                        		break;
+                       	case "h": /* Relative line to */
+                       			element = this.createSVGPathSegLinetoHorizontalRel(args[0]);
+                                break;
+                        case "C":
+                        		element = this.createSVGPathSegCurvetoCubicAbs(args[4], args[5], args[0], args[1],args[2], args[3]);
+                        		break;
+                        case "c":
+                               	element = this.createSVGPathSegCurvetoCubicRel(args[4], args[5], args[0], args[1], args[2], args[3]);
+                                break;
+                        case "Q":
+                        		element = this.createSVGPathSegCurvetoQuadraticAbs(args[2], args[3], args[0], args[1]);
+                        		break;
+                        case "q":
+                               	element = this.createSVGPathSegCurvetoQuadraticRel(args[2], args[3], args[0], args[1]);
+                                break;
+                        case "S":
+                        		element = this.createSVGPathSegCurvetoCubicSmoothAbs(args[2], args[3], args[0], args[1]);
+                                break;
+                        case "s":
+                        		element = this.createSVGPathSegCurvetoCubicSmoothRel(args[2], args[3], args[0], args[1]);
+                        		break;
+                        case "z":
+                        		element = this.createSVGPathSegClosePath();
+                              	break;
+                        default:
+                           	  	element = new SVGPathSeg();
+                    }
+
+                    path.push(element);                   
 	            }
 	            
-	            return this.vml(path);
+	            return path;
+			},
+			concat: function(vml)
+			{
+				var string = [];
+				
+				for (var i = 0, c = vml.length; i < c; i++)
+				{
+					string.push(vml[i].vml());
+				}
+				
+				return string.join('');
 			},
 			vml: function(path)
 			{	
+				/* Parse path */
+				path = this.parse(path);
+				
 				var vml = [], cx = 0, cy = 0, xn = 0, yn = 0,startx = 0, starty = 0; //M,m Z,z
 				
 				for (var j = 0, tli = path.length; j < tli; ++j) 
@@ -1451,7 +1518,7 @@
 
 					if (ts ===  0) 
 					{
-						/*SVGPathSeg.PATHSEG_UNKNOWN*/
+						/* SVGPathSeg.PATHSEG_UNKNOWN */
 					} 
 					else 
 					{
@@ -1529,10 +1596,10 @@
 						} 
 						else if (dii === "Q") 
 						{
-							xn = 2*cx - ti.x1;
-							yn = 2*cy - ti.y1;
+							xn = 2 * cx - ti.x1;
+							yn = 2 * cy - ti.y1;
 							
-							vml.push(this.createSVGPathSegCurvetoCubicAbs(cx, cy, (rx + 2*ti.x1) / 3, (ry + 2*ti.y1) / 3, (2*ti.x1 + cx) / 3, (2*ti.y1 + cy) / 3));
+							vml.push(this.createSVGPathSegCurvetoCubicAbs(cx, cy, Math.round((rx + 2*ti.x1) / 3), Math.round((ry + 2*ti.y1) / 3), Math.round((2*ti.x1 + cx) / 3), Math.round((2*ti.y1 + cy) / 3)));
 							
 						} 
 						else if (dii === "q") 
@@ -1555,20 +1622,7 @@
 									return;
 								}
 								
-								var fS = ti.sweepFlag,
-								psai = ti.angle,
-								r1 = Math.abs(ti.r1),
-								r2 = Math.abs(ti.r2),
-								ctx = (rx - cx) / 2,  cty = (ry - cy) / 2,
-								cpsi = Math.cos(psai*Math.PI/180),
-								spsi = Math.sin(psai*Math.PI/180),
-								rxd = cpsi*ctx + spsi*cty,
-								ryd = -1*spsi*ctx + cpsi*cty,
-								rxdd = rxd * rxd, rydd = ryd * ryd,
-								r1x = r1 * r1,
-								r2y = r2 * r2,
-								lamda = rxdd/r1x + rydd/r2y,
-								sds;
+								var fS = ti.sweepFlag, psai = ti.angle, r1 = Math.abs(ti.r1),r2 = Math.abs(ti.r2),ctx = (rx - cx) / 2,  cty = (ry - cy) / 2,cpsi = Math.cos(psai*Math.PI/180),spsi = Math.sin(psai*Math.PI/180),rxd = cpsi*ctx + spsi*cty,ryd = -1*spsi*ctx + cpsi*cty,rxdd = rxd * rxd, rydd = ryd * ryd,r1x = r1 * r1,r2y = r2 * r2,lamda = rxdd/r1x + rydd/r2y,sds;
 								
 								if (lamda > 1) 
 								{
@@ -1586,14 +1640,7 @@
 									sds = seif * Math.sqrt((r1x*r2y - r1x*rydd - r2y*rxdd) / (r1x*rydd + r2y*rxdd));
 								}
 								
-								var txd = sds*r1*ryd / r2,
-								tyd = -1 * sds*r2*rxd / r1,
-								tx = cpsi*txd - spsi*tyd + (rx+cx)/2,
-								ty = spsi*txd + cpsi*tyd + (ry+cy)/2,
-								rad = Math.atan2((ryd-tyd)/r2, (rxd-txd)/r1) - Math.atan2(0, 1),
-								s1 = (rad >= 0) ? rad : 2 * Math.PI + rad,
-								rad = Math.atan2((-ryd-tyd)/r2, (-rxd-txd)/r1) - Math.atan2((ryd-tyd)/r2, (rxd-txd)/r1),
-								dr = (rad >= 0) ? rad : 2 * Math.PI + rad;
+								var txd = sds*r1*ryd / r2,tyd = -1 * sds*r2*rxd / r1,tx = cpsi*txd - spsi*tyd + (rx+cx)/2,ty = spsi*txd + cpsi*tyd + (ry+cy)/2,rad = Math.atan2((ryd-tyd)/r2, (rxd-txd)/r1) - Math.atan2(0, 1),s1 = (rad >= 0) ? rad : 2 * Math.PI + rad,rad = Math.atan2((-ryd-tyd)/r2, (-rxd-txd)/r1) - Math.atan2((ryd-tyd)/r2, (rxd-txd)/r1),dr = (rad >= 0) ? rad : 2 * Math.PI + rad;
 								
 								if (!fS  &&  dr > 0) 
 								{
@@ -1603,16 +1650,7 @@
 									dr += 2*Math.PI;
 								}
 								
-								var sse = dr * 2 / Math.PI,
-								seg = Math.ceil(sse<0 ? -1*sse  :  sse),
-								segr = dr / seg,
-								t = 8/3 * Math.sin(segr/4) * Math.sin(segr/4) / Math.sin(segr/2),
-								cpsir1 = cpsi * r1, cpsir2 = cpsi * r2,
-								spsir1 = spsi * r1, spsir2 = spsi * r2,
-								mc = Math.cos(s1),
-								ms = Math.sin(s1),
-								x2 = rx - t * (cpsir1*ms + spsir2*mc),
-								y2 = ry - t * (spsir1*ms - cpsir2*mc);
+								var sse = dr * 2 / Math.PI,seg = Math.ceil(sse<0 ? -1*sse  :  sse),segr = dr / seg,t = 8/3 * Math.sin(segr/4) * Math.sin(segr/4) / Math.sin(segr/2),cpsir1 = cpsi * r1, cpsir2 = cpsi * r2,spsir1 = spsi * r1, spsir2 = spsi * r2,mc = Math.cos(s1),ms = Math.sin(s1),x2 = rx - t * (cpsir1*ms + spsir2*mc),y2 = ry - t * (spsir1*ms - cpsir2*mc);
 								
 								for (var n = 0; n < seg; ++n) 
 								{
@@ -1620,10 +1658,7 @@
 									mc = Math.cos(s1);
 									ms = Math.sin(s1);
 									
-									var x3 = cpsir1*mc - spsir2*ms + tx,
-									y3 = spsir1*mc + cpsir2*ms + ty,
-									dx = -t * (cpsir1*ms + spsir2*mc),
-									dy = -t * (spsir1*ms - cpsir2*mc);
+									var x3 = cpsir1*mc - spsir2*ms + tx,y3 = spsir1*mc + cpsir2*ms + ty,dx = -t * (cpsir1*ms + spsir2*mc),dy = -t * (spsir1*ms - cpsir2*mc);
 									
 									vml.push(this.createSVGPathSegCurvetoCubicAbs(x3, y3, x2, y2, x3-dx, y3-dy));
 									
@@ -1667,19 +1702,16 @@
 								
 								if (tg.pathSegTypeAsLetter === "C") 
 								{
-									var x1 = 2*tg.x - tg.x2,
-									y1 = 2*tg.y - tg.y2;
+									var x1 = 2*tg.x - tg.x2, y1 = 2*tg.y - tg.y2;
 								} 
 								else 
 								{
-									var x1 = rx,
-									y1 = ry;
+									var x1 = rx, y1 = ry;
 								}
 							} 
 							else 
 							{
-								var x1 = rx,
-								y1 = ry;
+								var x1 = rx,y1 = ry;
 							}
 							
 							vml.push(this.createSVGPathSegCurvetoCubicAbs(cx, cy, x1, y1, ti.x2+rx, ti.y2+ry));
@@ -1725,14 +1757,7 @@
 					}
 				}
 				
-				var string = [];
-				
-				for (var i in vml)
-				{
-					string.push(vml[i].vml());
-				}
-				
-				return string.join('');
+				return vml;
 			},
 			createSVGPathSegClosePath: function() 
 			{
@@ -1791,6 +1816,7 @@
 				s.y1 = y1;
 				s.x2 = x2;
 				s.y2 = y2;
+				
 				return s;
 			},
 			createSVGPathSegCurvetoQuadraticAbs: function(/*float*/ x, /*float*/ y, /*float*/ x1, /*float*/ y1 ) 
@@ -1941,10 +1967,12 @@
 				width:  	0,
 				height:	 	0,
 				opacity: 	0,
+				endOpacity: 1,
 				radius: 	0,
 				speed: 		0.05,
 				color: 		'#ffffff',
-				angle: 		0
+				angle: 		0,
+				scale: 		1
 			},
 			init: function(id, options)
 			{
@@ -2006,7 +2034,6 @@
 				}
 				else /* Use canvas */ 
 				{
-					
 					this.element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 					
 					this.config(this.element, null, 
@@ -2015,7 +2042,8 @@
 						cy: 		this.options.top,
 						r: 			this.options.size/2,
 						opacity: 	this.options.opacity,
-						fill: 		this.options.color
+						fill: 		this.options.color,
+						transform:  "translate(" + (this.options.size/2) + " " +  (this.options.size/2) + ")"
 					});
 					
 				
@@ -2030,43 +2058,50 @@
 			},
 			fade: function()
 			{
-				if (!this.stopped)
+				if (this.fill.opacity >= this.options.speed)
 				{
-					if (this.fill.opacity >= this.options.speed)
+					this.fill.opacity -= this.options.speed;
+				}
+				else 
+				{
+					if (!this.stopped)
 					{
-						this.fill.opacity -= this.options.speed;
-						
-						setTimeout(this.delegate(this, this.fade), 10);
+						this.fill.opacity = this.options.endOpacity;
 					}
 					else 
 					{
-						this.fill.opacity = 1;
+						this.fill.opacity = 0;
 						
-						/* Continue fading */
-						this.fade();
+						return;
 					}
 				}
+				
+				setTimeout(this.delegate(this, this.fade), 10);
 			},
 			fadeSVG: function()
 			{
-				if (!this.stopped)
+				var opacity = this.element.getAttribute("opacity");
+				
+				if (opacity >= this.options.speed)
 				{
-					var opacity = this.element.getAttribute("opacity");
-					
-					if (opacity >= this.options.speed)
+					this.element.setAttribute("opacity", opacity - this.options.speed);
+				}
+				else 
+				{
+					if (!this.stopped)
 					{
-						this.element.setAttribute("opacity", opacity - this.options.speed);
-						
-						setTimeout(this.delegate(this, this.fadeSVG), 10);
+						this.element.setAttribute("opacity",this.options.endOpacity);
 					}
-					else 
+					else
 					{
-						this.element.setAttribute("opacity",1);
+						 this.element.setAttribute("opacity",0);
 						
-						/* Continue fading */
-						this.fadeSVG();
+						 return;
 					}
 				}
+				
+				setTimeout(this.delegate(this, this.fadeSVG), 10);
+				
 			},
 			stop: function()
 			{
@@ -2074,13 +2109,9 @@
 				
 				return this;
 			},
-			resume: function()
+			hide: function()
 			{
-				this.stopped = false;
-				
-				this.animate(this.timeout);
-				
-				return this;
+				return this;	
 			},
 			cast: function(arg) /* Cast array parameters to integer */
 			{
@@ -2109,6 +2140,8 @@
 					coords.push([points[i][0], points[i][1]].join(" "));
 				}
 				
+				
+				
 				/* Twitter Path */
 				if ($.browser.msie) /* Use VML */
 				{
@@ -2119,8 +2152,8 @@
 					{
 						top: 		this.options.top, 
 						left: 		this.options.left,
-						width:		1, 
-						height: 	1,
+						width:		this.options.scale, 
+						height: 	this.options.scale,
 						rotation: 	this.options.angle
 					}, {
 						coordorigin: "0 0",
@@ -2141,7 +2174,7 @@
 
 					/* Append fill */
 					this.element.appendChild(this.fill);
-					
+
 					return this.element;
 				}
 				else /* Use canvas */ 
@@ -2158,6 +2191,13 @@
 					 	
 					return this.element;
 				}
+			},
+			update: function(options)
+			{
+				this.config(this.element, null,
+				{
+					d: options.path
+				})
 			}
 		});
 		
@@ -2166,9 +2206,6 @@
 		{
 			options: 	null,
 			shapes:		[],
-			queue:		[],
-			svg:		null,
-			canvas:		null,
 			init: function(options)
 			{
 				this.shapes = [];
@@ -2176,6 +2213,11 @@
 				/* Default options */
 				this.options = $.extend(
 				{
+					offset: 
+					{
+						top:0,
+						left:0
+					},
 					size: 		8,
 					radius: 	15,
 					opacity:	1,
@@ -2183,52 +2225,36 @@
 					speed: 		2,
 					scale: 		1,
 					angle: 		0,
+					clockwise:  true,
 					shape: 		'circle',
+					scale: 		1,
 					color: 		'#000000'
 				},options);
-				
 
-				if (!$.browser.msie) /* Change behaviour */
-				{
-					this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-					
-					this.svg.setAttribute("width", 100 + '%');
-					this.svg.setAttribute("height", 100 + '%');
-					this.svg.setAttribute("version", "1.2");
-					this.svg.setAttribute("shape-rendering","geometricPrecision");
-					this.svg.setAttribute("text-rendering",	"geometricPrecision")
-					this.svg.setAttribute("image-rendering","optimizeQuality")
-				}
-				
 				return this;
 			},
-			create: function()
+			create: function(canvas)
 			{
-					/* Calculate loader offset */
-				var offset = 20 + this.options.radius + this.options.size/2;
-				
 				/* Calculate points */
-				var points = this.points(offset,offset,this.options.radius,this.options.radius,this.options.angle,this.options.points);
+				var points = this.points(this.options.offset.left,this.options.offset.top,this.options.radius,this.options.radius,this.options.angle,this.options.points);
 				
-				/* Get canvas element */
-				this.canvas = $(this.options.renderTo);
-
 				var x = this.options.opacity/this.options.points, opacity = 0;
 				
 				for (var point in points)
 				{
 					var pointOptions = 
 					{
-						top: 	 points[point].y,
-						left: 	 points[point].x,
-						angle: 	 points[point].angle,
-						radius:  this.options.radius,
-						opacity: (opacity += x),
-						speed:   this.options.speed/100,
-						color: 	 this.options.color,
-						size: 	 this.options.size,
-						scale: 	 this.options.scale,
-						path: 	 this.options.path
+						top: 	 	points[point].y,
+						left: 	 	points[point].x,
+						angle: 		points[point].angle,
+						radius:  	this.options.radius,
+						opacity: 	(opacity += x),
+						endOpacity: this.options.opacity,
+						speed:   	this.options.speed/100,
+						color: 	 	this.options.color,
+						size: 	 	this.options.size,
+						scale: 	 	this.options.scale,
+						path: 	 	this.options.path
 					}
 					
 					switch(this.options.shape.toLowerCase())
@@ -2240,52 +2266,15 @@
 							var shape = new Shape(point, pointOptions);
 					}
 					
-					if ($.browser.msie)
-					{
-						this.canvas.append(shape.output());
-					}
-					else 
-					{
-						this.svg.appendChild(shape.output());
-					}
-					
+					canvas.append(shape.output());
 					
 					/* Queue shape */
 					this.shapes.push(shape);
 				}
-				
-				this.canvas.append(this.svg);
 
-				/* Calculate speeds */
-				
 				this.play((1/(this.options.speed/100))/this.options.points);
 				
 				return this;
-			},
-			play: function(speed)
-			{
-				for (var i in this.shapes)
-				{
-					this.shapes[i].animate(speed * (this.shapes.length - 1));
-				}
-			},
-			pause: function()
-			{
-				for (var i in this.shapes)
-				{
-					this.shapes[i].stop();
-				}
-			},
-			resume: function()
-			{
-				for (var i in this.shapes)
-				{
-					this.shapes[i].resume();
-				}
-			},
-			hide: function()
-			{
-				this.canvas.add(this.svg).empty();
 			},
 			points: function(x, y, a, b, angle, steps) 
 			{
@@ -2298,7 +2287,7 @@
 				var sinbeta = Math.sin(beta);
 				var cosbeta = Math.cos(beta);
 				
-				for (var i = 0; i < 360; i += 360 / steps) 
+				for (var i = 0, c = i + 360; i < c; i += 360 / steps) 
 				{
 					var alpha 	 = i * (Math.PI / 180) ;
 					var sinalpha = Math.sin(alpha);
@@ -2317,52 +2306,151 @@
 				}
 				
 				return points;
+			},
+			play: function(speed)
+			{
+				for (i = 0, c = this.shapes.length; i < c; i++)
+				{
+					this.shapes[i].animate(speed * (this.shapes.length - 1));
+				}
+			},
+			stop: function()
+			{
+				for (i = 0, c = this.shapes.length; i < c; i++)
+				{
+					this.shapes[i].stop().hide()
+				}
 			}
 		});
 		
-		/* Start transformations */
-		if ($.browser.msie)
-		{
-			document.namespaces.add("v", "urn:schemas-microsoft-com:vml");
-			
-			/* Create dynamic stylesheet */
-			var style = document.createStyleSheet();
-		}
 		
-		var shapes = 
-		[
-			'shape',
-			'rect', 
-			'oval', 
-			'circ', 
-			'fill', 
-			'stroke', 
-			'imagedata', 
-			'group',
-			'textbox',
-			'polyline',
-			'arc',
-			'path',
-			'roundrect'
-		];
+		/* Special inherit method */
+		var Coredraw = Core.inherit(function(options)
+		{
+			var vml = 
+			[
+				'shape',
+				'rect', 
+				'oval', 
+				'circ', 
+				'fill', 
+				'stroke', 
+				'imagedata', 
+				'group',
+				'textbox',
+				'polyline',
+				'arc',
+				'path',
+				'roundrect'
+			];
+
+			var shapes = {}, canvas = null, options = $.extend(
+			{
+				width:	200,
+				height:	200
+			}, options);
+			
+			
+			/* Start transformations */
+			if ($.browser.msie)
+			{
+				document.namespaces.add("v", "urn:schemas-microsoft-com:vml");
+				
+				/* Create dynamic stylesheet */
+				var style = document.createStyleSheet();
+				
+				/* Add behaviour */
+				$.each(vml,function() 
+				{
+					style.addRule('v\\:' + this,"position:absolute; display:block; behavior: url(#default#VML); antialias:true;");
+				});
+			}
+			
+			return {
+				getCanvas: function()
+				{
+					if (null == canvas)
+					{
+						canvas = this.createCanvas();
+					}
+					return canvas;
+				},
+				createCanvas: function()
+				{
+					if (!$.browser.msie) /* Change behaviour */
+					{
+						var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+						
+						svg.setAttribute("width", options.width);
+						svg.setAttribute("height", options.height);
+						
+						/* Private options */
+						svg.setAttribute("version", "1.2");
+						svg.setAttribute("shape-rendering",	"geometricPrecision");
+						svg.setAttribute("text-rendering",	"geometricPrecision")
+						svg.setAttribute("image-rendering",	"optimizeQuality");
+						
+						svg.append = function(element)
+						{
+							this.appendChild(element);
+						}
+						
+						svg.appendTo = function(element)
+						{
+							$(element).append(this);
+						}
+						
+						return svg;
+					}
+					else /* Create empty canvas element for IE & initialise shapes */
+					{
+						/* Add shape behaviour for IE */
+						return $('<div/>').css(
+						{
+							width: options.width,
+							height: options.height
+						});
+					}
+				},
+				clear: function()
+				{
+					/* Remove all canvas elements */
+					$(this.getCanvas()).empty();
+					
+					return this;
+				},
+				appendTo: function(element)
+				{
+					/* Append canvas to element */
+					this.getCanvas().appendTo(element);
+					
+					return this;
+				},
+				loader: function(name, options)
+				{
+					var canvas = this.getCanvas();
+					
+					return (new AnimatedLoader(options)).create(canvas);
+				},
+				path: function(name, options)
+				{
+					var path = new Path(name, options);
+					
+					this.getCanvas().append(path.output());
+					
+					return path;
+				}
+			}
+		});
 		
 		return {
-			
 			setup: function()
 			{
-				if ($.browser.msie) /* VML, Change behaviour */
-				{
-					$.each(shapes,function() 
-					{
-						style.addRule('v\\:' + this,"position:absolute; display:block; behavior: url(#default#VML); antialias:true;");
-					});
-				}
-				
 				return this;
 			},
-			loader: function(options)
+			canvas: function(options)
 			{
-				return (new AnimatedLoader(options)).create();
+				return (new Coredraw(options));
 			}
 		}
 	})();
