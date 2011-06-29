@@ -34,3 +34,5 @@ var o = new Me("Core Framework");
 
 alert(o.who());
 }}}
+
+*Important*: This type of inheritance is still a beta version. Use with caution.
