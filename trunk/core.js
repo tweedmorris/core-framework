@@ -284,6 +284,8 @@
     */
     Core.Class.inherit = function(constructor) 
 	{
+		Core.constructing = true;
+		
 		/* Allow empty constructor */
 		constructor = constructor || function(){}
 		
@@ -293,23 +295,33 @@
 		{
 			this.parent = parent;
 			
-			var pubs = constructor.apply(this, arguments), self = this;
-			
-			for (key in pubs) (function(fn, sfn) 
+			if (!Core.constructing)
 			{
-				self[key] = typeof fn != "function" || typeof sfn != "function" ? fn : function() 
-				{ 
-					this.parent = sfn; 
-					
-					return fn.apply(this, arguments); 
-				};
-			})(pubs[key], self[key]);
+				var pubs = constructor.apply(this, arguments), self = this;
+				
+				for (key in pubs) (function(fn, sfn) 
+				{
+					self[key] = typeof fn != "function" || typeof sfn != "function" ? fn : function() 
+					{ 
+						this.parent = sfn; 
+						
+						return fn.apply(this, arguments); 
+					};
+				})(pubs[key], self[key]);
+			}
 		}; 
 		
-		F.prototype 			= new this;
+		F.prototype = new this;
+		
+		/* Stop construction */
+		delete Core.constructing;
+		
+		/* Set constructor */
 		F.prototype.constructor = F;
-		F.inherit 				= arguments.callee;
-
+		
+		/* Chainable inheritance */
+		F.inherit = arguments.callee;
+		
 		return F;
 	};
     

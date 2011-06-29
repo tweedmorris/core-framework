@@ -6,257 +6,248 @@
 */
 Core.draw = (function()
 {
-	/**
-	* Shape Class
-	*/
-	var Shape = Core.extend(
+	var Shape = Core.inherit(function(options)
 	{
-		id: 		null,
-		element: 	null,
-		fill: 		null,
-		stopped:  	false,
-		timeout: 	null,
-		options:
+		/* Private members */
+		var options = $.extend(
 		{
 			top:		0,
 			left: 		0,
 			width:  	0,
 			height:	 	0,
-			opacity: 	0,
-			endOpacity: 1,
-			radius: 	0,
-			speed: 		0.05,
-			color: 		'#ffffff',
-			angle: 		0,
-			scale: 		1
-		},
-		init: function(id, options)
-		{
-			/* Set shape id */
-			this.id = id;
-			
-			/* Extend shape options */
-			$.extend(this.options, options);
-			
-			/* Calculate radius */
-			this.options.width = this.options.height = options.radius;
-		},
-		config: function(element, styles, attributes)
-		{
-			styles 	   = styles || {};
-			attributes = attributes || {};
-			
-			/* Config element */
-			$(element).css(styles);
-			
-			/* Set attributes */
-			$.each(attributes,  function(attribute, value)
-			{
-				element.setAttribute(attribute, value);
-			})
-		},
-		output: function()
-		{
-			if ($.browser.msie) /* Use VML */
-			{
-				/* Create element */
-				this.element = document.createElement('v:oval');
-				
-				this.config(this.element, 
-				{
-					left:		this.options.left,
-					top:		this.options.top,
-					width:		this.options.size,
-					height:		this.options.size
-				}, {
-					stroked: false
-				});
-				
-				/* Create fill */
-				this.fill = document.createElement('v:fill');
+			opacity: 	1,
+			scale: 		1,
+			angle: 		0
+		}, options) /* Override default options */
 		
-				this.config(this.fill, null, 
+		return {
+			element: null,
+			getOptions: function()
+			{
+				return options;
+			},
+			config: function(element, styles, attributes)
+			{
+				styles 	   = styles || {};
+				attributes = attributes || {};
+				
+				/* Config element */
+				$(element).css(styles);
+				
+				/* Set attributes */
+				$.each(attributes,  function(attribute, value)
 				{
-					type:		'solid',
-					color: 		this.options.color,
-					opacity: 	this.options.opacity
+					element.setAttribute(attribute, value);
 				})
-				/* Full type */
-				
-				/* Append fill */
-				this.element.appendChild(this.fill);
-				
-				return this.element;
-			}
-			else /* Use canvas */ 
+			},
+			cast: function(arg) /* Cast array parameters to integer */
 			{
-				this.element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+				for ( var i=0, j = arg.length; i < j; ++i ) 
+			    {
+			        arg[i] = Math.round(arg[i]);
+			    }
+			    
+			    return arg;
+			}
+		}
+	});
+	
+	var Animatable = Shape.inherit(function(options)
+	{
+		/* Call parent constructor */
+		this.parent(options);
+		
+		return {
+			timeout: 100,
+			animate: function(timeout)
+			{
+				this.timeout = this.timeout || timeout;
 				
-				this.config(this.element, null, 
+				setTimeout(this.delegate(this, $.browser.msie ? this.fade : this.fadeSVG), this.timeout);
+			},
+			fade: function()
+			{
+				if (this.fill.opacity >= this.getOptions().speed)
 				{
-					cx: 		this.options.left,
-					cy: 		this.options.top,
-					r: 			this.options.size/2,
-					opacity: 	this.options.opacity,
-					fill: 		this.options.color,
-					transform:  "translate(" + (this.options.size/2) + " " +  (this.options.size/2) + ")"
-				});
-				
-			
-				return this.element;
-			}
-		},
-		animate: function(timeout)
-		{
-			this.timeout = this.timeout || timeout;
-			
-			setTimeout(this.delegate(this, $.browser.msie ? this.fade : this.fadeSVG), this.timeout);
-		},
-		fade: function()
-		{
-			if (this.fill.opacity >= this.options.speed)
-			{
-				this.fill.opacity -= this.options.speed;
-			}
-			else 
-			{
-				if (!this.stopped)
-				{
-					this.fill.opacity = this.options.endOpacity;
+					this.fill.opacity -= this.getOptions().speed;
 				}
 				else 
 				{
-					this.fill.opacity = 0;
-					
-					return;
+					if (!this.stopped)
+					{
+						this.fill.opacity = this.getOptions().endOpacity;
+					}
+					else 
+					{
+						this.fill.opacity = 0;
+						
+						return;
+					}
 				}
-			}
-			
-			setTimeout(this.delegate(this, this.fade), 10);
-		},
-		fadeSVG: function()
-		{
-			var opacity = this.element.getAttribute("opacity");
-			
-			if (opacity >= this.options.speed)
+				
+				setTimeout(this.delegate(this, this.fade), 10);
+			},
+			fadeSVG: function()
 			{
-				this.element.setAttribute("opacity", opacity - this.options.speed);
-			}
-			else 
+				var opacity = this.element.getAttribute("opacity");
+				
+				if (opacity >= this.getOptions().speed)
+				{
+					this.element.setAttribute("opacity", opacity - this.getOptions().speed);
+				}
+				else 
+				{
+					if (!this.stopped)
+					{
+						this.element.setAttribute("opacity",this.getOptions().endOpacity);
+					}
+					else
+					{
+						 this.element.setAttribute("opacity",0);
+						
+						 return;
+					}
+				}
+				
+				setTimeout(this.delegate(this, this.fadeSVG), 10);
+				
+			},
+			stop: function()
 			{
-				if (!this.stopped)
-				{
-					this.element.setAttribute("opacity",this.options.endOpacity);
-				}
-				else
-				{
-					 this.element.setAttribute("opacity",0);
-					
-					 return;
-				}
+				this.stopped = true;
+				
+				return this;
+			},
+			hide: function()
+			{
+				return this;	
 			}
-			
-			setTimeout(this.delegate(this, this.fadeSVG), 10);
-			
-		},
-		stop: function()
-		{
-			this.stopped = true;
-			
-			return this;
-		},
-		hide: function()
-		{
-			return this;	
-		},
-		cast: function(arg) /* Cast array parameters to integer */
-		{
-			for ( var i=0, j = arg.length; i < j; ++i ) 
-		    {
-		        arg[i] = Math.round(arg[i]);
-		    }
-		    
-		    return arg;
 		}
 	});
 	
-	var Path = Shape.extend(
+	/**
+	* Circle 
+	* @version 1.0
+	*/
+	var Circle = Animatable.inherit(function(id, options)
 	{
-		output: function()
-		{
-			var path = null, points = [], coords = [];
-			
-			points.push([0,0]);
-			points.push([20,20]);
-			points.push([20,40]);
-			points.push([0,20]);
-			
-			for (var i in points)
-			{
-				coords.push([points[i][0], points[i][1]].join(" "));
-			}
-			
-			
-			
-			/* Twitter Path */
-			if ($.browser.msie) /* Use VML */
-			{
-				/* Create element */
-				this.element = document.createElement('v:shape');
-
-				this.config(this.element, 
-				{
-					top: 		this.options.top, 
-					left: 		this.options.left,
-					width:		this.options.scale, 
-					height: 	this.options.scale,
-					rotation: 	this.options.angle
-				}, {
-					coordorigin: "0 0",
-					coordsize: "10 10",
-					path: Core.SVG.path(this.options.path),
-					stroked: false
-				});
-				
-				/* Create fill */
-				this.fill = document.createElement('v:fill');
+		/* Call parent constructor */
+		this.parent(options);
 		
-				this.config(this.fill, null, 
+		return {
+			output: function()
+			{
+				if ($.browser.msie) /* Use VML */
 				{
-					type:		'solid',
-					color: 		this.options.color,
-					opacity: 	this.options.opacity
-				})
-
-				/* Append fill */
-				this.element.appendChild(this.fill);
-
-				return this.element;
+					/* Create element */
+					this.element = document.createElement('v:oval');
+					
+					this.config(this.element, 
+					{
+						left:		this.getOptions().left,
+						top:		this.getOptions().top,
+						width:		this.getOptions().size,
+						height:		this.getOptions().size
+					}, {
+						stroked: false
+					});
+					
+					/* Create fill */
+					this.fill = document.createElement('v:fill');
+			
+					this.config(this.fill, null, 
+					{
+						type:		'solid',
+						color: 		this.getOptions().color,
+						opacity: 	this.getOptions().opacity
+					})
+					/* Full type */
+					
+					/* Append fill */
+					this.element.appendChild(this.fill);
+					
+					return this.element;
+				}
+				else /* Use canvas */ 
+				{
+					this.element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+					
+					this.config(this.element, null, 
+					{
+						cx: 		this.getOptions().left,
+						cy: 		this.getOptions().top,
+						r: 			this.getOptions().size/2,
+						opacity: 	this.getOptions().opacity,
+						fill: 		this.getOptions().color,
+						transform:  "translate(" + (this.getOptions().size/2) + " " +  (this.getOptions().size/2) + ")"
+					});
+	
+					return this.element;
+				}
 			}
-			else /* Use canvas */ 
-			{
-				this.element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-				
-				this.config(this.element, null, 
-				{	
-					d: 			this.options.path,
-					opacity: 	this.options.opacity,
-					fill: 		this.options.color,
-					transform:  "scale(" + this.options.scale + "  " + this.options.scale + ") translate(" + (this.options.left) + "," + (this.options.top) + ") rotate(" + this.options.angle + " 0 0)"
-				});
-				 	
-				return this.element;
-			}
-		},
-		update: function(options)
-		{
-			this.config(this.element, null,
-			{
-				d: options.path
-			})
 		}
 	});
 	
+	var Path = Animatable.inherit(function(options)
+	{
+		/* Call parent constructor*/
+		this.parent(options);
+
+		return {
+			output: function()
+			{
+				/* Twitter Path */
+				if ($.browser.msie) /* Use VML */
+				{
+					/* Create element */
+					this.element = document.createElement('v:shape');
+		
+					this.config(this.element, 
+					{
+						top: 		this.getOptions().top, 
+						left: 		this.getOptions().left,
+						width:		this.getOptions().scale, 
+						height: 	this.getOptions().scale,
+						rotation: 	this.getOptions().angle
+					}, {
+						coordorigin: "0 0",
+						coordsize: "10 10",
+						path: Core.SVG.path(this.getOptions().path),
+						stroked: false
+					});
+					
+					/* Create fill */
+					this.fill = document.createElement('v:fill');
+			
+					this.config(this.fill, null, 
+					{
+						type:		'solid',
+						color: 		this.getOptions().color,
+						opacity: 	this.getOptions().opacity
+					})
+		
+					/* Append fill */
+					this.element.appendChild(this.fill);
+		
+					return this.element;
+				}
+				else /* Use canvas */ 
+				{
+					this.element = document.createElementNS("http://www.w3.org/2000/svg", "path");
+					
+					this.config(this.element, null, 
+					{	
+						d: 			this.getOptions().path,
+						opacity: 	this.getOptions().opacity,
+						fill: 		this.getOptions().color,
+						transform:  "translate(" + (this.getOptions().left) + "," + (this.getOptions().top) + ") scale(" + this.getOptions().scale + ") rotate(" + this.getOptions().angle + " 0 0)"
+					});
+					 	
+					return this.element;
+				}
+			}
+		}
+	});
 	
 	var AnimatedLoader = Core.extend(
 	{
@@ -316,10 +307,10 @@ Core.draw = (function()
 				switch(this.options.shape.toLowerCase())
 				{
 					case 'path': /* Use polyline */
-						var shape = new Path(point, pointOptions);
+						var shape = new Path(pointOptions);
 						break;
 					default: /* Default top circle */
-						var shape = new Shape(point, pointOptions);
+						var shape = new Circle(pointOptions);
 				}
 				
 				canvas.append(shape.output());
@@ -488,9 +479,9 @@ Core.draw = (function()
 				
 				return (new AnimatedLoader(options)).create(canvas);
 			},
-			path: function(name, options)
+			path: function(options)
 			{
-				var path = new Path(name, options);
+				var path = new Path(options);
 				
 				this.getCanvas().append(path.output());
 				
