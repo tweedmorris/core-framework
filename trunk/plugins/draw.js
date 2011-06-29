@@ -473,7 +473,7 @@ Core.draw = (function()
 				
 				return this;
 			},
-			loader: function(name, options)
+			loader: function(options)
 			{
 				var canvas = this.getCanvas();
 				
