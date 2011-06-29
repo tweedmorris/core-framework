@@ -1,0 +1,36 @@
+#summary Private inheritance with Core Framework
+
+= Introduction =
+
+Core Framework allows you to achieve class inheritance and have private data in the same time
+
+{{{
+var Person = Core.inherit(function(name)
+{
+	/* Private name */
+	var name = name;
+	
+	return {
+		getName: function()
+		{
+			return name;
+		}
+	}
+});
+
+var Me = Person.inherit(function(name)
+{
+	this.parent(name);
+	
+	return {
+		who: function()
+		{
+			return "I am " + this.getName();
+		}
+	}
+});
+
+var o = new Me("Core Framework");
+
+alert(o.who());
+}}}
