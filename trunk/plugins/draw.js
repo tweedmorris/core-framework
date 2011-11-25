@@ -63,6 +63,17 @@ Core.draw = (function()
 			{
 				this.timeout = this.timeout || timeout;
 				
+				/* Set initial opacity */
+				
+				if ($.browser.msie)
+				{
+					this.fill.opacity = this.getOptions().opacity
+				}
+				else 
+				{
+					this.element.setAttribute("opacity", this.getOptions().opacity);
+				}
+
 				setTimeout(this.delegate(this, $.browser.msie ? this.fade : this.fadeSVG), this.timeout);
 			},
 			fade: function()
@@ -103,7 +114,7 @@ Core.draw = (function()
 					}
 					else
 					{
-						 this.element.setAttribute("opacity",0);
+						 this.element.setAttribute("opacity", 0);
 						
 						 return;
 					}
@@ -118,6 +129,12 @@ Core.draw = (function()
 				
 				return this;
 			},
+			play: function()
+			{
+				this.stopped = false;
+				
+				return this;
+			},
 			hide: function()
 			{
 				return this;	
@@ -129,7 +146,7 @@ Core.draw = (function()
 	* Circle 
 	* @version 1.0
 	*/
-	var Circle = Animatable.inherit(function(id, options)
+	var Circle = Animatable.inherit(function(options)
 	{
 		/* Call parent constructor */
 		this.parent(options);
@@ -141,6 +158,7 @@ Core.draw = (function()
 				{
 					/* Create element */
 					this.element = document.createElement('v:oval');
+					
 					
 					this.config(this.element, 
 					{
@@ -171,13 +189,13 @@ Core.draw = (function()
 				else /* Use canvas */ 
 				{
 					this.element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-					
+
 					this.config(this.element, null, 
 					{
 						cx: 		this.getOptions().left,
 						cy: 		this.getOptions().top,
 						r: 			this.getOptions().size/2,
-						opacity: 	this.getOptions().opacity,
+						opacity: 	0,
 						fill: 		this.getOptions().color,
 						transform:  "translate(" + (this.getOptions().size/2) + " " +  (this.getOptions().size/2) + ")"
 					});
@@ -187,6 +205,29 @@ Core.draw = (function()
 			}
 		}
 	});
+	
+	var Text = Shape.inherit(function(options)
+	{
+		this.parent(options);
+	
+		return {
+			output: function()
+			{
+				this.element = document.createElementNS("http://www.w3.org/2000/svg", "text");
+					
+				this.config(this.element, null, 
+				{
+					x: 		20,
+					y: 		20
+				});
+				
+				/* Append the text */
+				this.element.innerHTML = options.text;
+
+				return this.element;
+			}
+		}
+	})
 	
 	var Path = Animatable.inherit(function(options)
 	{
@@ -275,7 +316,8 @@ Core.draw = (function()
 				clockwise:  true,
 				shape: 		'circle',
 				scale: 		1,
-				color: 		'#000000'
+				color: 		'#000000',
+				autoplay: 	true
 			},options);
 
 			return this;
@@ -284,7 +326,7 @@ Core.draw = (function()
 		{
 			/* Calculate points */
 			var points = this.points(this.options.offset.left,this.options.offset.top,this.options.radius,this.options.radius,this.options.angle,this.options.points);
-			
+
 			var x = this.options.opacity/this.options.points, opacity = 0;
 			
 			for (var point in points)
@@ -319,7 +361,10 @@ Core.draw = (function()
 				this.shapes.push(shape);
 			}
 
-			this.play((1/(this.options.speed/100))/this.options.points);
+			if (this.options.autoplay)
+			{
+				this.play((1/(this.options.speed/100))/this.options.points);
+			}
 			
 			return this;
 		},
@@ -393,8 +438,8 @@ Core.draw = (function()
 
 		var shapes = {}, canvas = null, options = $.extend(
 		{
-			width:	200,
-			height:	200
+			width:	20,
+			height:	20
 		}, options);
 		
 		
@@ -486,6 +531,10 @@ Core.draw = (function()
 				this.getCanvas().append(path.output());
 				
 				return path;
+			},
+			text: function(options)
+			{
+				this.getCanvas().append(new Text(options).output());
 			}
 		}
 	});

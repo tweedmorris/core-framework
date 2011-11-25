@@ -455,6 +455,8 @@
 						
 						var params = [], regex = new RegExp('((\\.\\.\\/)+)','i');
 						
+						/* Remove any file extensions */
+						
 						/* Relative path(s) */
 						relative = regex.exec(string);
 						
@@ -465,13 +467,13 @@
 							
 							/* Get string */
 							string = string.substring(relative.length);
-							
+
 							params.push(relative);
 						}
 
 						/* Push clear path */
-						params.push(Core.Array.get(string.split('.')).invoke('toLowerCase').join('/'));
-						
+						params.push(string);
+
 						/* Return safe path */
 						return params.join('');
 					}
@@ -484,6 +486,7 @@
 						scripts[script] = [];
 					};
 
+					/* Smart queue */
 					if (Core.pattern.isFilemap(namespace))
 					{
 						/* Apply map directly */
@@ -493,7 +496,6 @@
 					{			
 						if (Core.pattern.isString(namespace))
 						{
-
 							queue(namespace);
 						}
 						else 
@@ -504,7 +506,6 @@
 							}
 						}
 					}
-					
 
 					Core.loader.addScripts(scripts).autoload(callback);
 				}
@@ -526,9 +527,9 @@
 		{
 			return this.namespace.register(namespace, window, object);
 		},
-		require: function(namespace, callback)
+		require: function(script, callback)
 		{
-			this.namespace.autoload(namespace, callback);
+			this.namespace.autoload(script, callback);
 		},
 		loader: (function()
 		{
@@ -558,7 +559,7 @@
 				addScripts: function( collection )
 				{
 					scripts = $.extend(true, {}, scripts, collection);
-
+	
 					return this;
 				},
 				loadScript: function(url, callback, context) 
@@ -579,6 +580,7 @@
 						fn      : callback,
 						context : context
 					});
+
 
 					if(script.callbacks.length == 1) 
 					{
@@ -604,7 +606,11 @@
 								});
 								
 								script.callbacks.length = 0;
-							}
+							},
+							error:function (xhr, ajaxOptions, thrownError)
+							{
+			                    throw 'Failed to load script with status ' + xhr.status + ' . Error: ' + thrownError;
+			                }    
 						});
 					}
 				},
