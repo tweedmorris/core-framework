@@ -1,6 +1,9 @@
 #summary Download Core Framework
 
 = Download Core Framework =
+
+Grab the latest version of CF 
+
 Current release: _1.0.3_
 {{{
 http://core-framework.googlecode.com/svn/trunk/core-1.0.3.min.js
