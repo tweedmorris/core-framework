@@ -753,7 +753,8 @@
 						
 						this.onComplete.apply(this,[
 						{
-							time: ((time.end - time.start)/1000).toPrecision(2)
+							time: 	((time.end - time.start)/1000).toPrecision(2),
+							images: images
 						}])
 					}
 				},
@@ -807,7 +808,7 @@
 						rules: function(rules)
 						{
 							var rule = rules.length;
-						
+							
 							while(rule--)
 							{
 								data = 
@@ -818,6 +819,13 @@
 								}
 						
 								collection.push(data);
+								
+								var symlink = rules[rule].styleSheet || null;
+								
+								if (symlink) /* Gecko */
+								{
+									Collect.rules(symlink.cssRules);
+								}
 							}
 						}
 					}
@@ -835,11 +843,11 @@
 						
 						/* Collect rules */
 						Collect.rules(sheet.rules);
-						
+		
 						/* Collecte imported rules */
-						for (x = 0; x < sheet.imports; x++)
+						for (x = 0; x < sheet.imports.length; x++)
 						{
-							Collect.rules(document.styleSheets[x].imports[x].rules || document.styleSheets[i].imports[x].cssRules);
+							Collect.rules(sheet.imports[x].rules || sheet.imports[x].cssRules);
 						}
 					}
 					
@@ -848,12 +856,12 @@
 				getCssImages: function()
 				{
 					var rules = this.getCssRules(), i = rules.length, images = [], regex = new RegExp('[^\(|\'\"]+\.(gif|jpg|jpeg|png)','ig');
-					
+
 					while(i--)
 					{
 						var img = rules[i].declaration.match(regex);
 						
-						if (img.length)
+						if (img && img.length)
 						{
 							images.push(img);
 						}
