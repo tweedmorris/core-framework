@@ -820,6 +820,7 @@
 						
 								collection.push(data);
 								
+								/* Collect also rules imported via @import */
 								var symlink = rules[rule].styleSheet || null;
 								
 								if (symlink) /* Gecko */
