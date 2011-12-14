@@ -26,6 +26,7 @@
     * [Preloading Preloading]
       * [ScriptAutoloader Script autoloader]
       * [ImagePreloading Image preloading]
+        * [PreloadCSSImages Preload CSS images]
       * [AnimatedPreloader Animated Preloader]
     * [Forms Forms]
       * [Validation Validation]
