@@ -1098,15 +1098,15 @@
 			},
 			positive: function(value)
 			{
-				return parseInt(value) > 0 ? true : false
+				return parseInt(value,10) > 0 ? true : false
 			},
 			negative: function(value)
 			{
-				return parseInt(value) < 0 ? true : false
+				return parseInt(value,10) < 0 ? true : false
 			},
 			zero: function(value)
 			{
-				return parseInt(value) === 0 ? true : false
+				return parseInt(value,10) === 0 ? true : false
 			},
 			equalTo: function(value)
 			{
