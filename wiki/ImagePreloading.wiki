@@ -45,7 +45,7 @@ Core.preloader.queue(images).preload(function(ui)
 	alert('All loaded in ' + ui.time + ' sec.');
 })
 }}}
-= Preloading CSS Images =
+= Preload CSS Images =
 
 One may need to preload CSS images. Core Framework finds images used in available CSS sheets and preloads them on demand. Example:
 {{{
