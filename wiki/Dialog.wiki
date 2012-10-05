@@ -1,0 +1,10 @@
+#summary X/Y Resizable dialog with shadow
+
+= Introduction =
+
+X/Y Resizable dialog with shadow.
+
+
+= Details =
+
+Download at 
