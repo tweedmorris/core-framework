@@ -10,11 +10,9 @@
 
 }
 
-body { font-family:OpenSansCondensedLight, Arial, sans-serif; background:#b2b2b2; }
-
 /* Dialog */
 
-.dialog { position:absolute; top:50%; left:50%; z-index:9999; color:#555; }
+.dialog { position:absolute; top:50%; left:50%; z-index:9999; color:#555;  font-family:OpenSansCondensedLight, Arial, sans-serif; }
 .dialog div { position:relative; }
 .dialog .corner { position:absolute; top:0px; width:13px; height:13px; }
 .dialog .top { height:13px; margin:0px 17px 0px 13px; background:url(images/top.png) 0px 1px repeat-x; }
