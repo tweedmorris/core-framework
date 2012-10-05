@@ -43,3 +43,4 @@
          * [JavaScriptSingleton Singleton Pattern]
     * [Articles Callback delegation]
     * [Articles Multiple inheritance]
+  * [Tools Tools]
