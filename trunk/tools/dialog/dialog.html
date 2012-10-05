@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+	<head>
+		<title>Core Framework Dialog</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="dialog.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="../jquery/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="../../core-1.0.4.js"></script>
+		<script type="text/javascript" src="dialog.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			/**
+			* Dialog example(s)
+			*/
+			Dialog.open(800,300, function()
+			{
+				Dialog.getDialog().content('This is the content of the dialog');
+			})
+		</script>
+	</body>
+</html>

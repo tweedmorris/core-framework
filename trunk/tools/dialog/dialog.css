@@ -1,0 +1,39 @@
+@font-face {
+    font-family: 'OpenSansCondensedLight';
+    src: url('font/OpenSans-CondLight-webfont.eot');
+    src: url('font/OpenSans-CondLight-webfont.eot?#iefix') format('embedded-opentype'),
+         url('font/OpenSans-CondLight-webfont.woff') format('woff'),
+         url('font/OpenSans-CondLight-webfont.ttf') format('truetype'),
+         url('font/OpenSans-CondLight-webfont.svg#OpenSansCondensedLight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body { font-family:OpenSansCondensedLight, Arial, sans-serif; background:#b2b2b2; }
+
+/* Dialog */
+
+.dialog { position:absolute; top:50%; left:50%; z-index:9999; color:#555; }
+.dialog div { position:relative; }
+.dialog .corner { position:absolute; top:0px; width:13px; height:13px; }
+.dialog .top { height:13px; margin:0px 17px 0px 13px; background:url(images/top.png) 0px 1px repeat-x; }
+.dialog .mid { background:url(images/left.png) 0px 0 repeat-y; }
+.dialog .mid > div { background:url(images/right.png) top right repeat-y; }
+.dialog .mid > div > div { background:url(images/pixel.png); margin:0px 17px 0px 13px; padding:0px; color:#fff; overflow:hidden; font-size:16px; }
+.dialog .mid > div > div h2 { display:block; font-size:32px; margin-bottom:10px; }
+.dialog .mid > div > div p { display:block; font-size:16px; margin-bottom:5px; line-height:18px; }
+.dialog .bot { height:17px; margin:0px 17px 0px 13px; background:url(images/bottom.png) 0px 0px repeat-x;  }
+.dialog .bot .blc { left:0px; background:url(images/blc.png) 0px 0px no-repeat; margin-left:-13px; width:13px; height:17px;  }
+.dialog .bot .brc { left:100%; background:url(images/brc.png) 0px 0px no-repeat; margin-right:-17px; width:17px; height:17px; }
+.dialog .top .tlc { left:0px; background:url(images/tlc.png) 0px 1px no-repeat; margin-left:-13px;  }
+.dialog .top .trc { left:100%; background:url(images/trc.png) 0px 1px no-repeat; margin-right:-17px; width:17px; }
+
+.dialog .preloader { position:absolute; top:50%px; left:50%; margin:-16px 0px 0px -16px;  width:32px; height:32px; background:url(images/dialog.gif) center center no-repeat; }
+
+.dialog .wrap { padding:10px; color:#555; }
+.dialog .wrap h2 { color:#555; font-size:18px; background:url(images/hdash.white2.png) bottom left repeat-x; padding-bottom:15px; margin-bottom:15px; text-shadow:#ffffff 1px 1px; }
+.dialog .confirm { padding:15px 40px 15px 45px; text-align:left; color:#555; line-height:18px; text-shadow:#ffffff 1px 1px; background:url(images/info.png) 0 5px no-repeat; }
+.dialog .wrap form label { color:#555; text-shadow:#ffffff 1px 1px; }
+
+.dialog .dialog-close { display:block; position:absolute; top:3px; right:-10px;  width:30px; height:30px; background:#000 url(images/dialog.close.png) center center no-repeat; z-index:9999; cursor:pointer; }
