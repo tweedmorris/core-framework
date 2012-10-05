@@ -2,7 +2,7 @@
 * Core Framework
 * http://code.google.com/p/core-framework/
 * 
-* @version 1.0.0
+* @version 1.0.3
 * @copyright Creozon
 * @author Angel Kostadinov
 */
