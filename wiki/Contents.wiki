@@ -44,3 +44,4 @@
     * [Articles Callback delegation]
     * [Articles Multiple inheritance]
   * [Tools Tools]
+    * [Dialog X/Y Resizable dialog/popup with shadow]
