@@ -14,7 +14,7 @@ var Dialog = (function()
 						{
 							width: 600,
 							height:400,
-							speed: 350
+							speed: 850
 						},
 						state: 
 						{
