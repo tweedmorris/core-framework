@@ -1,6 +1,6 @@
 body { padding:0px; margin:0px; padding-top:24px; font-family:Arial, sans-serif; color:#666; font-size:12px; }
 
-#header { position:relative; height:80px; padding-left:80px; border-top:1px solid #c9d7f1; }
+#header { position:relative; height:80px; padding-left:70px; border-top:1px solid #c9d7f1; }
 #header img { position:absolute; top:10px; left:8px; }
 #header h1,
 #header h2 { font-size:40px; display:block; padding:0; margin:0; font-family:Arial, sans-serif; color:#666; font-weight:normal; }
