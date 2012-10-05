@@ -8,10 +8,5 @@ Current release: _1.0.3_
 
 Development (*_~26 KB_*, Uncompressed code)
 {{{
-http://core-framework.googlecode.com/svn/trunk/core-1.0.3.js
-}}}
-
-Production (*_~3.5 KB_*, Minified and Gzipped)
-{{{
-http://core-framework.googlecode.com/svn/trunk/core-1.0.3.min.js
+http://core-framework.googlecode.com/svn/trunk/core-1.0.4.js
 }}}
