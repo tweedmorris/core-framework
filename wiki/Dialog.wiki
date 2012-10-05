@@ -11,3 +11,6 @@ We'll appreciate comments/suggestions/bug reports etc.
 = Details =
 
 Available at Source -> trunk/tools/dialog
+
+Demo available at:
+http://core-framework.googlecode.com/svn/examples/dialog.html
