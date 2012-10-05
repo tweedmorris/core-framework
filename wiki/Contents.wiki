@@ -34,8 +34,6 @@
     * [svg SVG/VML]
   * [Ex Examples]
     * [reCaptcha reCaptcha]
-    * [Widget jQuery Widget]
-    * [Plugin jQuery Plugin]
     * [Speed Speeding up your application]
     * [Reusable Reusable code]
        * [CSS CSS]
