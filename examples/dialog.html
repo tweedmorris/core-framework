@@ -7,6 +7,7 @@
 		<script type="text/javascript" src="../trunk/core-1.0.4.js"></script>
 		<script type="text/javascript" src="../trunk/tools/dialog/dialog.js"></script>
 		<link type="text/css" rel="stylesheet" href="styles/demo.css" />
+		<link type="text/css" rel="stylesheet" href="highlight/styles/default.css" />
 		<link type="text/css" rel="stylesheet" href="../trunk/tools/dialog/dialog.css" />
 	</head>
 	<body>
@@ -34,6 +35,26 @@
 				{
 					Dialog.getDialog().content('This is the content of the dialog');
 				})
+			</script>
+			<pre>
+<code>/**
+* Dialog example(s)
+*/
+Dialog.open(800,500, function()
+{
+	Dialog.getDialog().content('This is the content of the dialog');
+})
+</code>
+			</pre>
+			<script type="text/javascript" src="highlight/highlight.pack.js"></script>
+			<script type="text/javascript">
+			$(document).ready(function() 
+			{
+				$('pre code').each(function(i, e) 
+				{
+					hljs.highlightBlock(e)
+				});
+			});
 			</script>
 		</div>
 	</body>
