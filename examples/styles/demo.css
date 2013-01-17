@@ -20,6 +20,12 @@ ul.nav li.active a { border:1px solid #6b90da; border-bottom:none; background:#f
 
 .canvas { position:absolute; top:50px; left:50px; width:600px; height:600px; border:1px solid #ffff; }
 
+.data { background: url(images/image_01.png) 0 0 no-repeat, 
+url(images/image_02.png) 1000px 0 no-repeat, 
+url(images/image_03.png) 2000px 0 no-repeat, 
+url(images/image_04.png) 0 1000px no-repeat, 
+url(images/image_05.png) 1000px 1000px no-repeat; }
+
 /* Crossbrowser float clear */
 .fix { position:relative; display:inline-block; }
 .fix { zoom:1; display:block; }/* IE6 fix */

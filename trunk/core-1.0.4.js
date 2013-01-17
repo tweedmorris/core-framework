@@ -863,15 +863,28 @@
 				},
 				getCssImages: function()
 				{
-					var rules = this.getCssRules(), i = rules.length, images = [], regex = new RegExp('[^\(|\'\"]+\.(gif|jpg|jpeg|png)','ig');
+					var rules = this.getCssRules(), i = rules.length, images = [], regex = new RegExp('[^\(|\'\"]+\.(gif|jpg|jpeg|png)\\)?','ig');
 
 					while(i--)
 					{
 						var img = rules[i].declaration.match(regex);
 						
+
+					
+						
 						if (img && img.length)
 						{
-							images.push(img);
+							if (1 == img.length)
+							{
+								images.push(img);
+							}
+							else 
+							{
+								for (var i in img)
+								{
+									images.push(img[i])
+								}
+							}
 						}
 					}
 					return images;
