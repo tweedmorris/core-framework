@@ -869,9 +869,6 @@
 					{
 						var img = rules[i].declaration.match(regex);
 						
-
-					
-						
 						if (img && img.length)
 						{
 							if (1 == img.length)
