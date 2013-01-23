@@ -2,7 +2,7 @@
 * Core Framework
 * http://code.google.com/p/core-framework/
 * 
-* @version 1.0.4
+* @version 1.0.5
 * @copyright Angeneer
 * @author Angel Kostadinov
 */
