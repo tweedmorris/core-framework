@@ -777,13 +777,6 @@
 					{
 						var image = new Image();
 						
-						image.onload  = Core.delegate(this, this.finish, ([i,image]));
-						image.onerror = Core.delegate(this, this.finish, ([i,image]));
-						image.onabort = Core.delegate(this, this.finish, ([i,image]));
-						
-						/* Set image source */
-						image.src = config.cache ? queue[i] : (queue[i] + '?u=' + (new Date().getTime()));
-						
 						/* Push image */
 						images.push(
 						{
@@ -795,6 +788,13 @@
 								height: 0
 							}
 						});
+						
+						image.onload  = Core.delegate(this, this.finish, ([i,image]));
+						image.onerror = Core.delegate(this, this.finish, ([i,image]));
+						image.onabort = Core.delegate(this, this.finish, ([i,image]));
+						
+						/* Set image source */
+						image.src = config.cache ? queue[i] : (queue[i] + '?u=' + (new Date().getTime()));
 					}
 				},
 				preloadCssImages: function(callback)
