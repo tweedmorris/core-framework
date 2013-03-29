@@ -723,7 +723,10 @@
 				{
 					if (Core.pattern.isString(element))
 					{
-						queue.push(element)
+						queue.push(
+						{
+							source: element
+						})
 					}
 					else 
 					{
@@ -794,7 +797,7 @@
 						image.onabort = Core.delegate(this, this.finish, ([i,image]));
 						
 						/* Set image source */
-						image.src = config.cache ? queue[i] : (queue[i] + '?u=' + (new Date().getTime()));
+						image.src = config.cache ? queue[i].source : (queue[i].source + '?u=' + (new Date().getTime()));
 					}
 				},
 				preloadCssImages: function(callback)
